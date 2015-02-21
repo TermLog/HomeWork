@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Warehouse</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="login_textDescr">Укажите имя пользователя и пароль для входа</string>
+    <string name="login_textDescr_user">Укажите имя пользователя для входа</string>
+    <string name="login_textDescr_password">Укажите пароль для входа</string>
+    <string name="login_textUser">Пользователь:</string>
+    <string name="login_textEnter">Вход</string>
+    <string name="login_textPassword">Пароль:</string>
+    <string name="login_editUser_hint">Имя пользователя</string>
+    <string name="login_editPassword_hint">Пароль</string>
+    <string name="login_buttonOk">Войти</string>
+    <string name="login_buttonCancel">Отмена</string>
+    <string name="title_activity_main_menu">Главное меню</string>
+    <string name="title_activity_update_document">Обновить документ</string>
+    <string name="mainMenu_buttonRefresh">Обновить документ</string>
+    <string name="mainMenu_buttonDelete">Удалить апостроф</string>
+    <string name="mainMenu_buttonLockUnlock">Блокировка зон</string>
+    <string name="mainMenu_buttonExit">Выйти</string>
+    <string name="update_textDocument">Укажите номера документов</string>
+    <string name="update_editDocument_hint">Укажите номер документа(ов)</string>
+    <string name="title_activity_lock_unlock">LockUnlockActivity</string>
+    <string name="title_activity_test">TestActivity</string>
+
+</resources>

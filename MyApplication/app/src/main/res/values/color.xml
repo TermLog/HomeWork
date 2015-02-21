@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_blue">#3691BE</color>
+    <color name="background_white">#fff</color>
+    <color name="text_blue">#235E7B</color>
+    <color name="text_white">#fff</color>
+    <color name="main_EditHint_Default">#f0ffa000</color>
+    <color name="main_EditHint_Error">#fff</color>
+    <color name="main_EditBackground_Default">#0fff</color>
+    <color name="main_EditBackground_Error">#ffff0000</color>
+    <color name="lockUnlock_button_blocked">#ffff0000</color>
+    <color name="lockUnlock_button_unblocked">#ff00ff00</color>
+    <color name="lockUnlock_button_both">#ffffff00</color>
+    <color name="lockUnlock_button_zoneAndLevel">#ff235E7B</color>
+</resources>

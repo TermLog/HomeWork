@@ -1,0 +1,143 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@color/background_blue"
+    tools:context=".LoginActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_white"
+        android:layout_gravity="center"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/login_layout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_textEnter"
+            android:id="@+id/login_textEnter"
+            android:textSize="30sp"
+            android:textColor="@color/text_blue"
+            android:textStyle="bold"
+            android:layout_alignParentStart="true"
+            android:paddingBottom="15dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_textDescr"
+            android:id="@+id/login_textDescr"
+            android:textColor="@color/text_blue"
+            android:textStyle="italic"
+            android:layout_below="@+id/login_textEnter"
+            android:layout_alignStart="@+id/login_editUser"
+            android:paddingBottom="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_textUser"
+            android:textSize="20sp"
+            android:id="@+id/main_textUser"
+            android:textColor="@color/text_blue"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/login_textDescr"
+            android:paddingBottom="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_textPassword"
+            android:textSize="20sp"
+            android:id="@+id/login_textPassword"
+            android:textColor="@color/text_blue"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/login_editUser"
+            android:paddingBottom="10dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="@string/login_editUser_hint"
+            android:ems="10"
+            android:id="@+id/login_editUser"
+            android:imeActionLabel="Готово"
+            android:textColor="@color/text_blue"
+            android:textColorHint="@color/main_EditHint_Default"
+            android:drawableStart="@mipmap/ic_user"
+            android:selectAllOnFocus="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/main_textUser"
+            android:paddingBottom="10dp"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="@string/login_editPassword_hint"
+            android:ems="10"
+            android:id="@+id/login_editPassword"
+            android:imeActionLabel="Готово"
+            android:textColor="@color/text_blue"
+            android:textColorHint="@color/main_EditHint_Default"
+            android:drawableStart="@mipmap/ic_password"
+            android:selectAllOnFocus="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/login_textPassword"
+            android:paddingBottom="10dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/login_editPassword"
+            android:paddingBottom="10dp">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_buttonOk"
+                android:id="@+id/login_buttonOk"
+                android:layout_gravity="center"
+                android:background="@color/background_blue"
+                android:textSize="@dimen/button_text_size"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/text_white"
+                android:onClick="enterClick"
+                style="@style/Base.Widget.AppCompat.Light.ActionBar"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_buttonCancel"
+                android:id="@+id/login_buttonCancel"
+                android:layout_gravity="center"
+                android:background="@color/background_blue"
+                android:textSize="@dimen/button_text_size"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/text_white"
+                android:onClick="cancelClick"
+                style="@style/Base.Widget.AppCompat.Light.ActionBar"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>
