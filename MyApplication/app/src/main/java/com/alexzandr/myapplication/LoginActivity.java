@@ -18,6 +18,8 @@ public class LoginActivity extends ActionBarActivity {
     static final int EMPTY_BOTH = 3;
     static final int DEFAULT_USER = R.string.login_textDescr_user;
     static final int DEFAULT_PASSWORD = R.string.login_textDescr_password;
+    
+    //this commment added on github
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
