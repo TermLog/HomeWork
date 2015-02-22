@@ -3,11 +3,9 @@ package com.alexzandr.myapplication;
 import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.util.TypedValue;
 import android.view.View;
-import android.widget.ActionMenuView;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -46,6 +44,7 @@ public class LockUnlockActivity extends ActionBarActivity {
             buttonZone.setLayoutParams(rowLayoutParam);
             buttonZone.setText("Zone " + buttonName);
             buttonZone.setBackgroundResource(R.color.lockUnlock_button_zoneAndLevel);
+            buttonZone.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
 
             TableRow row = new TableRow(this);
             row.setLayoutParams(rowLayoutParam);
@@ -60,6 +59,8 @@ public class LockUnlockActivity extends ActionBarActivity {
 
             table.addView(row);
         }
+        QueryToServer query = new QueryToServer();
+        captionText.setText("connection is " + query.getLevelCount());
     }
 
     private class BlockButton extends Button{
@@ -68,38 +69,8 @@ public class LockUnlockActivity extends ActionBarActivity {
             setZone(zone);
             setLevel(level);
             setBlocked(blocked);
-
-            setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        String block;
-                        if (isBlocked()) {
-                            block = "заблокированныу";
-                        } else {
-                            block = "разблокированные";
-                        }
-                        captionText.setText("Зона = " + getZone() + "; уровень = " + getLevel() + ". Ячейки " + block + "(" + mBlocked + ")");
-                        captionText.setBackground(getBackground());
-                    }
-                    return false;
-                }
-            });
-
-            switch (mBlocked){
-                case UNBLOCKED:
-                    setBackgroundResource(R.color.lockUnlock_button_unblocked);
-                    break;
-                case BLOCKED:
-                    setBackgroundResource(R.color.lockUnlock_button_blocked);
-                    break;
-                case BOTH:
-                    setBackgroundResource(R.color.lockUnlock_button_both);
-                    break;
-                default: break;
-            }
-
-
+            addListener();
+            setAndroidSettings();
         }
 
         private int mZone;
@@ -127,6 +98,38 @@ public class LockUnlockActivity extends ActionBarActivity {
         }
         public boolean isBlocked() {
             return this.mBlocked != UNBLOCKED;
+        }
+
+        private void setAndroidSettings(){
+            switch (mBlocked){
+                case UNBLOCKED:
+                    setBackgroundResource(R.color.lockUnlock_button_unblocked);
+                    break;
+                case BLOCKED:
+                    setBackgroundResource(R.color.lockUnlock_button_blocked);
+                    break;
+                case BOTH:
+                    setBackgroundResource(R.color.lockUnlock_button_both);
+                    break;
+                default: break;
+            }
+            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+        }
+
+        private void addListener(){
+            setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String block;
+                    if (isBlocked()) {
+                        block = "заблокированныу";
+                    } else {
+                        block = "разблокированные";
+                    }
+                    captionText.setText("Зона = " + getZone() + "; уровень = " + getLevel() + ". Ячейки " + block + "(" + mBlocked + ")");
+                    captionText.setBackground(getBackground());
+                }
+            });
         }
 
     }
