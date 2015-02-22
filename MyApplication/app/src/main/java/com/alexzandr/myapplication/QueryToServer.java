@@ -11,7 +11,7 @@ import java.sql.*;
 public class QueryToServer {
     private final static String USER_NAME = "sa";
     private final static String USER_PASS = "sql";
-    String connectionUrl = "jdbc:sqlserver://127.0.0.1;databaseName=PRD1;";
+    String connectionUrl = "jdbc:jtds:sqlserver://192.168.1.104:1433/PRD1";
     Connection cn = null;
     Statement st = null;
     ResultSet rs = null;
@@ -25,7 +25,7 @@ public class QueryToServer {
 
 
         try{
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
             Thread thread = new Thread(new Runnable(){
                 @Override
