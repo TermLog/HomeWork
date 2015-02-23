@@ -1,6 +1,5 @@
 package com.alexzandr.myapplication;
 
-import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -10,128 +9,114 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 
 public class LockUnlockActivity extends ActionBarActivity {
 
-    public TextView captionText;
     public TableLayout table;
+    public TableRow firstRow;
+    public Button refreshButton;
+    private static int refreshCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock_unlock);
-        captionText = (TextView)findViewById(R.id.lockUnlock_captionText);
         table = (TableLayout) findViewById(R.id.lockUnlock_table);
-    }
-
-    @Override
-    protected void onStop(){
-        super.onStop();
+        firstRow = (TableRow) findViewById(R.id.lockUnlock_firstRow);
+        refreshButton = (Button) findViewById(R.id.lockUnlock_buttonRefresh);
     }
 
     @Override
     protected void onStart(){
         super.onStart();
-        int zone, level;
-        TableRow.LayoutParams rowLayoutParam = new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        rowLayoutParam.setMargins(2, 2, 2, 2);
-        for (zone = 1; zone <= ((int)(Math.random() * 6)) + 5; zone++){
-
-            String buttonName = "00" + zone;
-            buttonName = "P" + buttonName.substring(buttonName.length() - 2, buttonName.length());
-
-            Button buttonZone = new Button(this);
-            buttonZone.setLayoutParams(rowLayoutParam);
-            buttonZone.setText("Zone " + buttonName);
-            buttonZone.setBackgroundResource(R.color.lockUnlock_button_zoneAndLevel);
-            buttonZone.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-
-            TableRow row = new TableRow(this);
-            row.setLayoutParams(rowLayoutParam);
-            row.addView(buttonZone);
-
-            for (level = 1; level <= ((int)(Math.random() * 3)) + 2; level++){
-                BlockButton button = new BlockButton(this, zone, level, (int)(Math.random() * 3) + 1);
-                button.setLayoutParams(rowLayoutParam);
-                button.setText(buttonName + ", " + level);
-                row.addView(button);
-            }
-
-            table.addView(row);
+        if(table.getChildCount() <= 1) {
+            createTable();
         }
-        QueryToServer query = new QueryToServer();
-        captionText.setText("connection is " + query.getLevelCount());
     }
 
-    private class BlockButton extends Button{
-        public BlockButton(Context context, int zone, int level, int blocked) {
-            super(context);
-            setZone(zone);
-            setLevel(level);
-            setBlocked(blocked);
-            addListener();
-            setAndroidSettings();
+    public void createTable(){
+        HashMap<String, Integer> mapForTable = null;
+        DataBaseTask dbt = new DataBaseTask();
+        try{
+            dbt.execute(DataBaseTask.ALL_TABLE);
+            mapForTable = dbt.get();
+        } catch (Exception e){
+            e.printStackTrace();
         }
 
-        private int mZone;
-        private int mLevel;
-        public int mBlocked;
-        final static int UNBLOCKED = 1;
-        final static int BLOCKED = 2;
-        final static int BOTH = 3;
+        if(mapForTable != null) {
+            int zone, level;
+            int zoneCount = mapForTable.get("zoneCount");
+            int levelCount = mapForTable.get("levelCount");
 
-        public void setZone(int zone) {
-            this.mZone = zone;
-        }
-        public void setLevel(int level) {
-            this.mLevel = level;
-        }
-        public void setBlocked(int block) {
-            this.mBlocked = block;
-        }
+            TableRow.LayoutParams rowLayoutParam = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+            rowLayoutParam.setMargins(2, 2, 2, 2);
 
-        public int getZone() {
-            return this.mZone;
-        }
-        public int getLevel() {
-            return this.mLevel;
-        }
-        public boolean isBlocked() {
-            return this.mBlocked != UNBLOCKED;
-        }
 
-        private void setAndroidSettings(){
-            switch (mBlocked){
-                case UNBLOCKED:
-                    setBackgroundResource(R.color.lockUnlock_button_unblocked);
-                    break;
-                case BLOCKED:
-                    setBackgroundResource(R.color.lockUnlock_button_blocked);
-                    break;
-                case BOTH:
-                    setBackgroundResource(R.color.lockUnlock_button_both);
-                    break;
-                default: break;
+            for (level = 1; level <= levelCount; level++){
+                ZoneLevelButton buttonLevel = new ZoneLevelButton(this, ZoneLevelButton.TYPE_LEVEL, level);
+                buttonLevel.setLayoutParams(rowLayoutParam);
+                buttonLevel.setText("LvL " + level);
+                buttonLevel.setBackgroundResource(R.color.lockUnlock_button_zoneAndLevel);
+                buttonLevel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                firstRow.addView(buttonLevel);
             }
-            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-        }
 
-        private void addListener(){
-            setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String block;
-                    if (isBlocked()) {
-                        block = "заблокированныу";
-                    } else {
-                        block = "разблокированные";
-                    }
-                    captionText.setText("Зона = " + getZone() + "; уровень = " + getLevel() + ". Ячейки " + block + "(" + mBlocked + ")");
-                    captionText.setBackground(getBackground());
+            for (zone = 1; zone <= zoneCount; zone++) {
+
+                String zoneName = "00" + zone;
+                zoneName = "P" + zoneName.substring(zoneName.length() - 2, zoneName.length());
+
+                ZoneLevelButton buttonZone = new ZoneLevelButton(this, ZoneLevelButton.TYPE_ZONE, zone);
+                buttonZone.setLayoutParams(rowLayoutParam);
+                buttonZone.setText("Zone " + zoneName);
+                buttonZone.setBackgroundResource(R.color.lockUnlock_button_zoneAndLevel);
+                buttonZone.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+
+                TableRow row = new TableRow(this);
+                row.setLayoutParams(rowLayoutParam);
+                row.addView(buttonZone);
+
+                for (level = 1; level <= levelCount; level++) {
+                    BlockButton button = new BlockButton(this, zone, level, mapForTable.get("P" + zone + "_" + level));
+                    button.setLayoutParams(rowLayoutParam);
+                    button.setText(zoneName + ", " + level);
+                    row.addView(button);
                 }
-            });
-        }
 
+                table.addView(row);
+            }
+        }
     }
 
+    public void onRefreshClick(View view){
+        HashMap<String, Integer> refreshMap = null;
+        DataBaseTask dbt = new DataBaseTask();
+        try{
+            dbt.execute(DataBaseTask.ALL_TABLE);
+            refreshMap = dbt.get();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        if (refreshMap != null) {
+            int rowCount = table.getChildCount();
+            for (int rowNumber = 0; rowNumber < rowCount; rowNumber++) {
+                if (table.getChildAt(rowNumber) instanceof TableRow) {
+                    TableRow row = (TableRow) table.getChildAt(rowNumber);
+                    int buttonCount = row.getChildCount();
+                    for (int buttonNumber = 0; buttonNumber < buttonCount; buttonNumber++) {
+                        if (row.getChildAt(buttonNumber) instanceof BlockButton) {
+                            BlockButton button = (BlockButton) row.getChildAt(buttonNumber);
+                            button.setBlocked(refreshMap.get("P" + rowNumber + "_" + buttonNumber));
+                        }
+                    }
+
+                }
+            }
+        }
+        refreshButton.setText("Ref_" + (++refreshCount));
+
+    }
 }

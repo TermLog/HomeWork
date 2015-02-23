@@ -23,5 +23,8 @@
     <string name="update_editDocument_hint">Укажите номер документа(ов)</string>
     <string name="title_activity_lock_unlock">LockUnlockActivity</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_delete_symbol">DeleteSymbolActivity</string>
+    <string name="start">Start</string>
+    <string name="get">Result</string>
 
 </resources>

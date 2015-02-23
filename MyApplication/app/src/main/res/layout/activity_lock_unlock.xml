@@ -10,72 +10,26 @@
     android:id="@+id/lockUnlock_scrollView"
     tools:context="com.alexzandr.myapplication.LockUnlockActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/lockUnlock_captionText"
-        android:text="Here will be button description"/>
-
-        <TableLayout
+   <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/lockUnlock_table">
 
             <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:id="@+id/lockUnlock_first_row">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lockUnlock_firstRow">
 
                 <Button
                     style="?android:attr/buttonStyleSmall"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Refresh"
-                    android:id="@+id/button3"
+                    android:id="@+id/lockUnlock_buttonRefresh"
                     android:background="@color/lockUnlock_button_zoneAndLevel"
-                    android:layout_margin="2px" />
-
-                <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Level 1"
-                    android:id="@+id/button4"
-                    android:background="@color/lockUnlock_button_zoneAndLevel"
-                    android:layout_margin="2px" />
-
-                <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Level 2"
-                    android:id="@+id/button5"
-                    android:background="@color/lockUnlock_button_zoneAndLevel"
-                    android:layout_margin="2px" />
-
-                <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Level 3"
-                    android:id="@+id/button6"
-                    android:background="@color/lockUnlock_button_zoneAndLevel"
-                    android:layout_margin="2px" />
-
-                <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Level 4"
-                    android:id="@+id/button7"
-                    android:background="@color/lockUnlock_button_zoneAndLevel"
-                    android:layout_margin="2px" />
+                    android:layout_margin="2px"
+                    android:textSize="12dp"
+                    android:onClick="onRefreshClick"/>
             </TableRow>
-        </TableLayout>
-    </LinearLayout>
+    </TableLayout>
 </ScrollView>

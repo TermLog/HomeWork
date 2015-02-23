@@ -1,70 +1,81 @@
 package com.alexzandr.myapplication;
 
-import android.os.AsyncTask;
-
 import java.sql.*;
-//import com.microsoft.sqlserver.jdbc.SQLServerResultSet;
+import java.util.HashMap;
 
 /**
  * Created by AlexZandR on 21.02.2015.
  */
 public class QueryToServer {
-    private final static String USER_NAME = "sa";
-    private final static String USER_PASS = "sql";
-    String connectionUrl = "jdbc:jtds:sqlserver://192.168.1.104:1433/PRD1";
-    Connection cn = null;
-    Statement st = null;
-    ResultSet rs = null;
+    private final static String PARAM1 = "sa";
+    private final static String PARAM2 = "sql";
+    private final static String CONNECTION_URL = "jdbc:jtds:sqlserver://192.168.1.104:1433/PRD1";
+    private final static String JTDS_CLASS_NAME = "net.sourceforge.jtds.jdbc.Driver";
+    private Connection cn = null;
+    private Statement st = null;
+    private ResultSet rs = null;
 
-    public int getLevelCount(){
-        StringBuilder queryText = new StringBuilder("select count(distinct(substring(l.loc, 2, 2))) 'levelCount'\n");
-        queryText.append("from prd1.wh1.loc l (nolock)\n");
-        queryText.append("where l.loc like 'P[0,1][0-9]%'\n");
-        queryText.append("and l.locationtype = 'SPEED-PICK'\n");
-        queryText.append("and l.locationflag = 'NONE'\n");
-
-
+    public HashMap<String, Integer> getAllData(){
+        String queryText = "exec prd1.dbo.proc_Alex_GetAllData";
+        HashMap<String, Integer> resultMap = new HashMap<String, Integer>();
         try{
-            Class.forName("net.sourceforge.jtds.jdbc.Driver");
-
-            Thread thread = new Thread(new Runnable(){
-                @Override
-                public void run() {
-                    try {
-                        cn = DriverManager.getConnection(connectionUrl, USER_NAME, USER_PASS);
-                        System.out.println("cn on");
-                    } catch (Exception e) {
-                        System.out.println("cn off");
-                        e.printStackTrace();
-                    }
-                }
-            });
-            thread.start();
-            if(cn == null) System.out.println("cn is null");
-
+            Class.forName(JTDS_CLASS_NAME);
+            cn = DriverManager.getConnection(CONNECTION_URL, PARAM1, PARAM2);
             st = cn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-            rs = st.executeQuery(queryText.toString());
-            rs.next();
-            return rs.getInt("levelCount");
+            rs = st.executeQuery(queryText);
+            while(rs.next()){
+                resultMap.put(rs.getString("mapKey"), rs.getInt("mapValue"));
+            }
+            return resultMap;
         }catch (Exception e){
             e.printStackTrace();
-            return -10;
+            return null;
         } finally {
             if (rs != null) try { rs.close(); } catch(Exception e) {e.printStackTrace(); }
             if (st != null) try { st.close(); } catch(Exception e) {e.printStackTrace(); }
             if (cn != null) try { cn.close(); } catch(Exception e) {e.printStackTrace(); }
         }
-
     }
-
-    /*Thread thread = new Thread(new Runnable(){
-        @Override
-        public void run() {
-            try {
-                //Your code goes here
-            } catch (Exception e) {
-                e.printStackTrace();
+    public HashMap<String, Integer> changeSection(int zone, int level){
+        String queryText = "exec prd1.dbo.proc_Alex_ChangeSection @zone = '" + zone + "', @level = '" + level + "'";
+        HashMap<String, Integer> resultMap = new HashMap<String, Integer>();
+        try{
+            Class.forName(JTDS_CLASS_NAME);
+            cn = DriverManager.getConnection(CONNECTION_URL, PARAM1, PARAM2);
+            st = cn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+            rs = st.executeQuery(queryText);
+            while(rs.next()){
+                resultMap.put(rs.getString("mapKey"), rs.getInt("mapValue"));
             }
+            return resultMap;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (rs != null) try { rs.close(); } catch(Exception e) {e.printStackTrace(); }
+            if (st != null) try { st.close(); } catch(Exception e) {e.printStackTrace(); }
+            if (cn != null) try { cn.close(); } catch(Exception e) {e.printStackTrace(); }
         }
-    });*/
+    }
+    public HashMap<String, Integer> changeZoneLevel(int type, int value){
+        String queryText = "exec prd1.dbo.proc_Alex_ChangeZoneLevel @type = '" + type + "', @value = '" + value + "'";
+        HashMap<String, Integer> resultMap = new HashMap<String, Integer>();
+        try{
+            Class.forName(JTDS_CLASS_NAME);
+            cn = DriverManager.getConnection(CONNECTION_URL, PARAM1, PARAM2);
+            st = cn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+            rs = st.executeQuery(queryText);
+            while(rs.next()){
+                resultMap.put(rs.getString("mapKey"), rs.getInt("mapValue"));
+            }
+            return resultMap;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (rs != null) try { rs.close(); } catch(Exception e) {e.printStackTrace(); }
+            if (st != null) try { st.close(); } catch(Exception e) {e.printStackTrace(); }
+            if (cn != null) try { cn.close(); } catch(Exception e) {e.printStackTrace(); }
+        }
+    }
 }

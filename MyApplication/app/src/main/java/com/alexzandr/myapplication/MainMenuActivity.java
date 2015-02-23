@@ -20,6 +20,10 @@ public class MainMenuActivity extends ActionBarActivity {
         showUpdate();
     }
 
+    public void deleteClick(View view) {
+        showDelete();
+    }
+
     public void lockUnlockClick(View view) {
         showLockUnlock();
     }
@@ -29,12 +33,13 @@ public class MainMenuActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    public void showLockUnlock() {
-        Intent intent = new Intent(MainMenuActivity.this, LockUnlockActivity.class);
+    public void showDelete() {
+        Intent intent = new Intent(MainMenuActivity.this, UpdateDocumentActivity.class);
         startActivity(intent);
     }
 
-    public void deleteClick(View view) {
-
+    public void showLockUnlock() {
+        Intent intent = new Intent(MainMenuActivity.this, LockUnlockActivity.class);
+        startActivity(intent);
     }
 }
