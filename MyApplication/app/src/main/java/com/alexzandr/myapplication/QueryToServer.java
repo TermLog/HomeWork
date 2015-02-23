@@ -17,7 +17,7 @@ public class QueryToServer {
 
     public HashMap<String, Integer> getAllData(){
         String queryText = "exec prd1.dbo.proc_Alex_GetAllData";
-        HashMap<String, Integer> resultMap = new HashMap<String, Integer>();
+        HashMap<String, Integer> resultMap = new HashMap<>();
         try{
             Class.forName(JTDS_CLASS_NAME);
             cn = DriverManager.getConnection(CONNECTION_URL, PARAM1, PARAM2);
@@ -38,7 +38,7 @@ public class QueryToServer {
     }
     public HashMap<String, Integer> changeSection(int zone, int level){
         String queryText = "exec prd1.dbo.proc_Alex_ChangeSection @zone = '" + zone + "', @level = '" + level + "'";
-        HashMap<String, Integer> resultMap = new HashMap<String, Integer>();
+        HashMap<String, Integer> resultMap = new HashMap<>();
         try{
             Class.forName(JTDS_CLASS_NAME);
             cn = DriverManager.getConnection(CONNECTION_URL, PARAM1, PARAM2);
@@ -59,7 +59,7 @@ public class QueryToServer {
     }
     public HashMap<String, Integer> changeZoneLevel(int type, int value){
         String queryText = "exec prd1.dbo.proc_Alex_ChangeZoneLevel @type = '" + type + "', @value = '" + value + "'";
-        HashMap<String, Integer> resultMap = new HashMap<String, Integer>();
+        HashMap<String, Integer> resultMap = new HashMap<>();
         try{
             Class.forName(JTDS_CLASS_NAME);
             cn = DriverManager.getConnection(CONNECTION_URL, PARAM1, PARAM2);

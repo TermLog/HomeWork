@@ -1,13 +1,12 @@
 package com.alexzandr.myapplication;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by AlexZandR on 22.02.2015.
@@ -17,7 +16,16 @@ public class ZoneLevelButton extends Button {
     public final static int TYPE_LEVEL = 2;
     private int mType;
     private int mValue;
-    private TableLayout parentTable;
+
+    public ZoneLevelButton(Context context){
+        super(context);
+    }
+    public ZoneLevelButton(Context context, AttributeSet attSet){
+        super(context, attSet);
+    }
+    public ZoneLevelButton(Context context, AttributeSet attSet, int defStyleAttr){
+        super(context, attSet, defStyleAttr);
+    }
 
     ZoneLevelButton(Context context, int type, int value){
         super(context);
@@ -60,10 +68,10 @@ public class ZoneLevelButton extends Button {
         }
         if(getType() == TYPE_ZONE && map != null){
 
-            changeButtonInRow((TableRow)getParent(), map);
+            changeButtonInRow((TableRow) getParent(), map);
 
         }else if(map != null) {
-            parentTable = (TableLayout) getParent().getParent();
+             TableLayout parentTable = (TableLayout) getParent().getParent();
             try {
                 int rowCount = parentTable.getChildCount();
                 for (int rowNumber = 0; rowNumber < rowCount; rowNumber++) {

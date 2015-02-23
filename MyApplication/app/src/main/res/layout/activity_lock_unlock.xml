@@ -27,8 +27,8 @@
                     android:text="Refresh"
                     android:id="@+id/lockUnlock_buttonRefresh"
                     android:background="@color/lockUnlock_button_zoneAndLevel"
-                    android:layout_margin="2px"
-                    android:textSize="12dp"
+                    android:layout_margin="2sp"
+                    android:textSize="12sp"
                     android:onClick="onRefreshClick"/>
             </TableRow>
     </TableLayout>

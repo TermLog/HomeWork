@@ -1,10 +1,10 @@
 package com.alexzandr.myapplication;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 /**
  * Created by AlexZandR on 22.02.2015.
@@ -16,6 +16,16 @@ public class BlockButton extends Button {
     final static int UNBLOCKED = 1;
     final static int BLOCKED = 2;
     final static int BOTH = 3;
+
+    public BlockButton(Context context){
+        super(context);
+    }
+    public BlockButton(Context context, AttributeSet attSet){
+        super(context, attSet);
+    }
+    public BlockButton(Context context, AttributeSet attSet, int defStyleAttr){
+        super(context, attSet, defStyleAttr);
+    }
 
     public BlockButton(Context context, int zone, int level, int blocked) {
         super(context);
