@@ -32,6 +32,7 @@ public class ZoneLevelButton extends Button {
         setType(type);
         setValue(value);
         addListener();
+        setTextColor(getResources().getColor(R.color.text_white));
     }
 
     public void setType(int type){

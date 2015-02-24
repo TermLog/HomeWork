@@ -11,5 +11,5 @@
     <color name="lockUnlock_button_blocked">#ffff0000</color>
     <color name="lockUnlock_button_unblocked">#ff00ff00</color>
     <color name="lockUnlock_button_both">#ffffff00</color>
-    <color name="lockUnlock_button_zoneAndLevel">#ff235E7B</color>
+    <color name="lockUnlock_button_zoneAndLevel">#3691BE</color>
 </resources>
