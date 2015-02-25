@@ -91,10 +91,12 @@ public class ZoneLevelButton extends Button {
         for (int i = 0; i < buttonCount; i++){
             if (parentRow.getChildAt(i) instanceof BlockButton){
                 BlockButton button = (BlockButton)parentRow.getChildAt(i);
-                try {
-                    button.setBlocked(map.get("P" + button.getZone() + "_" + button.getLevel()));
-                }catch (Exception e){
-                    e.printStackTrace();
+                if (button.getLevel() == getValue()) {
+                    try {
+                        button.setBlocked(map.get("P" + button.getZone() + "_" + button.getLevel()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

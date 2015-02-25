@@ -7,6 +7,7 @@
     <string name="login_textUser">Пользователь:</string>
     <string name="login_textEnter">Вход</string>
     <string name="login_textPassword">Пароль:</string>
+    <string name="login_textServer">Сервер:</string>
     <string name="login_editUser_hint">Имя пользователя</string>
     <string name="login_editPassword_hint">Пароль</string>
     <string name="login_buttonOk">Войти</string>
@@ -20,5 +21,15 @@
     <string name="update_textDocument">Укажите номера документов</string>
     <string name="update_editDocument_hint">Укажите номер документа(ов)</string>
     <string name="title_activity_lock_unlock">LockUnlockActivity</string>
+    <string name="serverName_default">Выберите сервер</string>
+    <string name="serverName_home">Дом</string>
+    <string name="serverName_work">Работа</string>
+    <string name="serverName_other">Другой</string>
+
+    <string-array name="serverList">
+        <item>@string/serverName_home</item>
+        <item>@string/serverName_work</item>
+        <item>@string/serverName_other</item>
+    </string-array>
 
 </resources>

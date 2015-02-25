@@ -11,6 +11,7 @@ public class DataBaseTask extends AsyncTask<Integer, Void, HashMap<String, Integ
     final static int ALL_TABLE = 1;
     final static int ZONE_LEVEL = 2;
     final static int BLOCK_BUTTON = 3;
+    final static int CHECK = 4;
     public int procedureParamType;
     public int procedureParamValue;
     public int procedureParamZone;
@@ -18,7 +19,7 @@ public class DataBaseTask extends AsyncTask<Integer, Void, HashMap<String, Integ
     @Override
     protected HashMap<String, Integer> doInBackground(Integer... params) {
         int intParams = params[0];
-        QueryToServer serverData = new QueryToServer();
+        QueryToServer serverData = LoginActivity.db;
         HashMap<String, Integer> mapResult = null;
         switch (intParams){
             case ALL_TABLE:
@@ -29,6 +30,10 @@ public class DataBaseTask extends AsyncTask<Integer, Void, HashMap<String, Integ
                 break;
             case BLOCK_BUTTON:
                 mapResult = serverData.changeSection(procedureParamZone, procedureParamLevel);
+                break;
+            case CHECK:
+                if(serverData.checkConnection())
+                    mapResult = new HashMap<>();
                 break;
             default: break;
         }

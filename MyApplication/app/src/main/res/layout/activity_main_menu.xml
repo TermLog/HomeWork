@@ -18,55 +18,27 @@
 
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
             android:text="@string/mainMenu_buttonRefresh"
-            android:textColor="@color/text_white"
-            android:textSize="@dimen/button_text_size"
             android:id="@+id/mainMenu_buttonRefresh"
-            android:layout_gravity="center"
-            android:background="@color/background_blue"
-            android:paddingTop="@dimen/mainMenu_buttonSpacing_top"
-            android:paddingBottom="@dimen/mainMenu_buttonSpacing_bottom"
-            android:onClick="updateClick"/>
+            android:onClick="updateClick"
+            style="@style/buttonStyle.MainMenu"/>
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
             android:text="@string/mainMenu_buttonDelete"
-            android:textColor="@color/text_white"
-            android:textSize="@dimen/button_text_size"
             android:id="@+id/mainMenu_buttonDelete"
-            android:layout_gravity="center"
-            android:background="@color/background_blue"
-            android:paddingTop="@dimen/mainMenu_buttonSpacing_top"
-            android:paddingBottom="@dimen/mainMenu_buttonSpacing_bottom"
-            android:onClick="deleteClick" />
+            android:onClick="deleteClick"
+            style="@style/buttonStyle.MainMenu"/>
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
             android:text="@string/mainMenu_buttonLockUnlock"
-            android:textColor="@color/text_white"
-            android:textSize="@dimen/button_text_size"
             android:id="@+id/mainMenu_buttonLockUnlock"
-            android:layout_gravity="center"
-            android:background="@color/background_blue"
-            android:paddingTop="@dimen/mainMenu_buttonSpacing_top"
-            android:paddingBottom="@dimen/mainMenu_buttonSpacing_bottom"
-            android:onClick="lockUnlockClick"/>
+            android:onClick="lockUnlockClick"
+            style="@style/buttonStyle.MainMenu"/>
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
             android:text="@string/mainMenu_buttonExit"
-            android:textColor="@color/text_white"
-            android:textSize="@dimen/button_text_size"
             android:id="@+id/mainMenu_buttonExit"
-            android:layout_gravity="center"
-            android:background="@color/background_blue"
-            android:paddingTop="@dimen/mainMenu_buttonSpacing_top"
-            android:paddingBottom="@dimen/mainMenu_buttonSpacing_bottom"
-            android:onClick="exitClick"/>
+            android:onClick="exitClick"
+            style="@style/buttonStyle.MainMenu"/>
     </LinearLayout>
 </RelativeLayout>

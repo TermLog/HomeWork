@@ -2,14 +2,16 @@
 <resources>
     <color name="background_blue">#3691BE</color>
     <color name="background_white">#fff</color>
+    <color name="background_server">#ffff8a35</color>
     <color name="text_blue">#235E7B</color>
     <color name="text_white">#fff</color>
     <color name="main_EditHint_Default">#f0ffa000</color>
     <color name="main_EditHint_Error">#fff</color>
     <color name="main_EditBackground_Default">#0fff</color>
     <color name="main_EditBackground_Error">#ffff0000</color>
-    <color name="lockUnlock_button_blocked">#ffff0000</color>
-    <color name="lockUnlock_button_unblocked">#ff00ff00</color>
-    <color name="lockUnlock_button_both">#ffffff00</color>
+    <color name="lockUnlock_button_blocked">#c8ff0000</color>
+    <color name="lockUnlock_button_unblocked">#c800ff00</color>
+    <color name="lockUnlock_button_both">#ffffc73a</color>
     <color name="lockUnlock_button_zoneAndLevel">#3691BE</color>
+    <color name="login_buttonServer">#ffffdb49</color>
 </resources>

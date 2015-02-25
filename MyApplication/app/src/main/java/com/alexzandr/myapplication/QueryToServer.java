@@ -7,75 +7,82 @@ import java.util.HashMap;
  * Created by AlexZandR on 21.02.2015.
  */
 public class QueryToServer {
-    private final static String PARAM1 = "sa";
-    private final static String PARAM2 = "sql";
-    private final static String CONNECTION_URL = "jdbc:jtds:sqlserver://192.168.1.104:1433/PRD1";
+    private String mParam1;
+    private String mParam2;
+    private final static int HOME_SERVER = R.string.serverName_home;
+    private final static int WORK_SERVER = R.string.serverName_work;
+//    private final static int OTHER_SERVER = R.string.serverName_other;
+    private final static String HOME_URL = "jdbc:jtds:sqlserver://192.168.1.104:1433/PRD1";
+    private final static String WORK_URL = "jdbc:jtds:sqlserver://10.100.6.15:1433/PRD1";
+//    private final static String OTHER_URL = "jdbc:jtds:sqlserver://192.168.1.104:1433/PRD1";
     private final static String JTDS_CLASS_NAME = "net.sourceforge.jtds.jdbc.Driver";
-    private Connection cn = null;
-    private Statement st = null;
-    private ResultSet rs = null;
+    private String mConnectionUrl;
+    private Connection mCN = null;
+    private Statement mST = null;
+    private ResultSet mRS = null;
+
+    public QueryToServer(int serverId, String param1, String param2){
+        switch (serverId){
+            case HOME_SERVER:
+                mConnectionUrl = HOME_URL;
+                break;
+            case WORK_SERVER:
+                mConnectionUrl = WORK_URL;
+                break;
+            default: break;
+        }
+        mParam1 = param1;
+        mParam2 = param2;
+    }
 
     public HashMap<String, Integer> getAllData(){
         String queryText = "exec prd1.dbo.proc_Alex_GetAllData";
-        HashMap<String, Integer> resultMap = new HashMap<>();
-        try{
-            Class.forName(JTDS_CLASS_NAME);
-            cn = DriverManager.getConnection(CONNECTION_URL, PARAM1, PARAM2);
-            st = cn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-            rs = st.executeQuery(queryText);
-            while(rs.next()){
-                resultMap.put(rs.getString("mapKey"), rs.getInt("mapValue"));
-            }
-            return resultMap;
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        } finally {
-            if (rs != null) try { rs.close(); } catch(Exception e) {e.printStackTrace(); }
-            if (st != null) try { st.close(); } catch(Exception e) {e.printStackTrace(); }
-            if (cn != null) try { cn.close(); } catch(Exception e) {e.printStackTrace(); }
-        }
+        return getResult(queryText);
     }
+
     public HashMap<String, Integer> changeSection(int zone, int level){
         String queryText = "exec prd1.dbo.proc_Alex_ChangeSection @zone = '" + zone + "', @level = '" + level + "'";
-        HashMap<String, Integer> resultMap = new HashMap<>();
-        try{
-            Class.forName(JTDS_CLASS_NAME);
-            cn = DriverManager.getConnection(CONNECTION_URL, PARAM1, PARAM2);
-            st = cn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-            rs = st.executeQuery(queryText);
-            while(rs.next()){
-                resultMap.put(rs.getString("mapKey"), rs.getInt("mapValue"));
-            }
-            return resultMap;
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        } finally {
-            if (rs != null) try { rs.close(); } catch(Exception e) {e.printStackTrace(); }
-            if (st != null) try { st.close(); } catch(Exception e) {e.printStackTrace(); }
-            if (cn != null) try { cn.close(); } catch(Exception e) {e.printStackTrace(); }
-        }
+        return getResult(queryText);
     }
+
     public HashMap<String, Integer> changeZoneLevel(int type, int value){
         String queryText = "exec prd1.dbo.proc_Alex_ChangeZoneLevel @type = '" + type + "', @value = '" + value + "'";
+        return getResult(queryText);
+    }
+
+    public boolean checkConnection(){
+        try{
+            Class.forName(JTDS_CLASS_NAME);
+            mCN = DriverManager.getConnection(mConnectionUrl, mParam1, mParam2);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (mRS != null) try { mRS.close(); } catch(Exception e) {e.printStackTrace(); }
+            if (mST != null) try { mST.close(); } catch(Exception e) {e.printStackTrace(); }
+            if (mCN != null) try { mCN.close(); } catch(Exception e) {e.printStackTrace(); }
+        }
+    }
+
+    private  HashMap<String, Integer> getResult(String text){
         HashMap<String, Integer> resultMap = new HashMap<>();
         try{
             Class.forName(JTDS_CLASS_NAME);
-            cn = DriverManager.getConnection(CONNECTION_URL, PARAM1, PARAM2);
-            st = cn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-            rs = st.executeQuery(queryText);
-            while(rs.next()){
-                resultMap.put(rs.getString("mapKey"), rs.getInt("mapValue"));
+            mCN = DriverManager.getConnection(mConnectionUrl, mParam1, mParam2);
+            mST = mCN.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+            mRS = mST.executeQuery(text);
+            while(mRS.next()){
+                resultMap.put(mRS.getString("mapKey"), mRS.getInt("mapValue"));
             }
             return resultMap;
         }catch (Exception e){
             e.printStackTrace();
             return null;
         } finally {
-            if (rs != null) try { rs.close(); } catch(Exception e) {e.printStackTrace(); }
-            if (st != null) try { st.close(); } catch(Exception e) {e.printStackTrace(); }
-            if (cn != null) try { cn.close(); } catch(Exception e) {e.printStackTrace(); }
+            if (mRS != null) try { mRS.close(); } catch(Exception e) {e.printStackTrace(); }
+            if (mST != null) try { mST.close(); } catch(Exception e) {e.printStackTrace(); }
+            if (mCN != null) try { mCN.close(); } catch(Exception e) {e.printStackTrace(); }
         }
     }
 }
