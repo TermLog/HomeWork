@@ -85,6 +85,7 @@ public class LockUnlockActivity extends ActionBarActivity {
                 }
 
                 table.addView(row);
+                refreshButton.setMinWidth(buttonZone.getWidth());
             }
         }
     }

@@ -1,4 +1,5 @@
 package com.alexzandr.myapplication;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,8 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -22,6 +21,7 @@ public class LoginActivity extends ActionBarActivity {
     private TextView descr;
     private Button choiceServerButton;
     private static int serverId = 0;
+    private static String serverIP;
     public static QueryToServer db;
     static final int EMPTY_USER = 1;
     static final int EMPTY_PASSWORD = 2;
@@ -149,11 +149,13 @@ public class LoginActivity extends ActionBarActivity {
                 switch (item.getItemId()) {
                     case R.id.login_popup_home:
                         serverId = R.string.serverName_home;
+                        serverIP = "192.168.1.104";
                         ((Button) view).setText(getResources().getText(R.string.serverName_home));
                         ((Button) view).setTextColor(getResources().getColor(R.color.text_blue));
                         return true;
                     case R.id.login_popup_work:
                         serverId = R.string.serverName_work;
+                        serverIP = "10.100.6.15";
                         ((Button) view).setText(getResources().getText(R.string.serverName_work));
                         ((Button) view).setTextColor(getResources().getColor(R.color.text_blue));
                         return true;
@@ -170,13 +172,11 @@ public class LoginActivity extends ActionBarActivity {
         popupMenu.show();
     }
     private boolean createConnection(){
-        boolean result;
         db = new QueryToServer(serverId, user.getText().toString(), password.getText().toString());
         DataBaseTask dbt = new DataBaseTask();
         try{
-            dbt.execute(DataBaseTask.ALL_TABLE);
-            result = (dbt.get(30, TimeUnit.SECONDS) != null);
-            return result;
+            dbt.execute(DataBaseTask.CHECK);
+            return (dbt.get(30, TimeUnit.SECONDS) != null);
         } catch(TimeoutException timeoutException){
             timeoutException.printStackTrace();
             dbt.cancel(true);

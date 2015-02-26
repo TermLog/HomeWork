@@ -12,7 +12,9 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,15 +24,17 @@
         <activity
             android:name=".MainMenuActivity"
             android:label="@string/title_activity_main_menu"
-            android:parentActivityName=".LoginActivity" >
+            android:parentActivityName=".LoginActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.alexzandr.myapplication.LoginActivity" />
         </activity>
         <activity
-            android:name=".UpdateDocumentActivity"
+            android:name=".WorkWithDocumentActivity"
             android:label="@string/title_activity_update_document"
-            android:parentActivityName=".MainMenuActivity" >
+            android:parentActivityName=".MainMenuActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.alexzandr.myapplication.MainMenuActivity" />
@@ -38,7 +42,8 @@
         <activity
             android:name=".LockUnlockActivity"
             android:label="@string/title_activity_lock_unlock"
-            android:parentActivityName=".MainMenuActivity" >
+            android:parentActivityName=".MainMenuActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.alexzandr.myapplication.MainMenuActivity" />

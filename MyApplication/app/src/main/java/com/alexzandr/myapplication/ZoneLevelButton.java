@@ -67,7 +67,9 @@ public class ZoneLevelButton extends Button {
         }catch (Exception e){
             e.printStackTrace();
         }
+
         if(getType() == TYPE_ZONE && map != null){
+            System.out.println(getText().toString() + " = " + getType());
 
             changeButtonInRow((TableRow) getParent(), map);
 
@@ -91,7 +93,7 @@ public class ZoneLevelButton extends Button {
         for (int i = 0; i < buttonCount; i++){
             if (parentRow.getChildAt(i) instanceof BlockButton){
                 BlockButton button = (BlockButton)parentRow.getChildAt(i);
-                if (button.getLevel() == getValue()) {
+                if (button.getLevel() == getValue() || getType() == TYPE_ZONE) {
                     try {
                         button.setBlocked(map.get("P" + button.getZone() + "_" + button.getLevel()));
                     } catch (Exception e) {

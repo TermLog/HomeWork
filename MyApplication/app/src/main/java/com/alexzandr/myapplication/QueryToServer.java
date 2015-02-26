@@ -1,5 +1,6 @@
 package com.alexzandr.myapplication;
 
+import java.net.Socket;
 import java.sql.*;
 import java.util.HashMap;
 
@@ -12,8 +13,8 @@ public class QueryToServer {
     private final static int HOME_SERVER = R.string.serverName_home;
     private final static int WORK_SERVER = R.string.serverName_work;
 //    private final static int OTHER_SERVER = R.string.serverName_other;
-    private final static String HOME_URL = "jdbc:jtds:sqlserver://192.168.1.104:1433/PRD1";
-    private final static String WORK_URL = "jdbc:jtds:sqlserver://10.100.6.15:1433/PRD1";
+    private final static String HOME_URL = "192.168.1.104";
+    private final static String WORK_URL = "10.100.6.15";
 //    private final static String OTHER_URL = "jdbc:jtds:sqlserver://192.168.1.104:1433/PRD1";
     private final static String JTDS_CLASS_NAME = "net.sourceforge.jtds.jdbc.Driver";
     private String mConnectionUrl;
@@ -24,10 +25,10 @@ public class QueryToServer {
     public QueryToServer(int serverId, String param1, String param2){
         switch (serverId){
             case HOME_SERVER:
-                mConnectionUrl = HOME_URL;
+                mConnectionUrl = "jdbc:jtds:sqlserver://" + HOME_URL + ":1433/PRD1";
                 break;
             case WORK_SERVER:
-                mConnectionUrl = WORK_URL;
+                mConnectionUrl = "jdbc:jtds:sqlserver://" + WORK_URL + ":1433/PRD1";
                 break;
             default: break;
         }
@@ -50,6 +51,16 @@ public class QueryToServer {
         return getResult(queryText);
     }
 
+    public HashMap<String, Integer> updateDoc(String docList){
+        String queryText = "exec prd1.dbo.proc_Alex_UpdateDocument @rec = '" + docList + "'";
+        return getResult(queryText);
+    }
+
+    public HashMap<String, Integer> deleteDoc(String docList){
+        String queryText = "exec prd1.dbo.proc_Alex_DeleteQuote @rec = '" + docList + "'";
+        return getResult(queryText);
+    }
+
     public boolean checkConnection(){
         try{
             Class.forName(JTDS_CLASS_NAME);
@@ -57,12 +68,12 @@ public class QueryToServer {
             return true;
         }catch (Exception e){
             e.printStackTrace();
-            return false;
         } finally {
             if (mRS != null) try { mRS.close(); } catch(Exception e) {e.printStackTrace(); }
             if (mST != null) try { mST.close(); } catch(Exception e) {e.printStackTrace(); }
             if (mCN != null) try { mCN.close(); } catch(Exception e) {e.printStackTrace(); }
         }
+        return false;
     }
 
     private  HashMap<String, Integer> getResult(String text){
