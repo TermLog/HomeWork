@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
-
 import java.util.HashMap;
 
 
@@ -60,7 +58,7 @@ public class LockUnlockActivity extends ActionBarActivity {
                 buttonLevel.setLayoutParams(rowLayoutParam);
                 buttonLevel.setText("LvL " + level);
                 buttonLevel.setBackgroundResource(R.color.lockUnlock_button_zoneAndLevel);
-                buttonLevel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                buttonLevel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                 firstRow.addView(buttonLevel);
             }
 
@@ -73,7 +71,7 @@ public class LockUnlockActivity extends ActionBarActivity {
                 buttonZone.setLayoutParams(rowLayoutParam);
                 buttonZone.setText("Zone " + zoneName);
                 buttonZone.setBackgroundResource(R.color.lockUnlock_button_zoneAndLevel);
-                buttonZone.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                buttonZone.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
                 TableRow row = new TableRow(this);
                 row.setLayoutParams(rowLayoutParam);

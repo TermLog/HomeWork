@@ -1,14 +1,13 @@
 <resources>
     <string name="app_name">Warehouse</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
     <string name="login_textDescr">Укажите имя пользователя и пароль для входа</string>
     <string name="login_textDescr_user">Укажите имя пользователя для входа</string>
     <string name="login_textDescr_password">Укажите пароль для входа</string>
     <string name="login_textUser">Пользователь:</string>
     <string name="login_textEnter">Вход</string>
     <string name="login_textPassword">Пароль:</string>
+    <string name="login_textServer">Сервер:</string>
     <string name="login_editUser_hint">Имя пользователя</string>
     <string name="login_editPassword_hint">Пароль</string>
     <string name="login_buttonOk">Войти</string>
@@ -22,9 +21,15 @@
     <string name="update_textDocument">Укажите номера документов</string>
     <string name="update_editDocument_hint">Укажите номер документа(ов)</string>
     <string name="title_activity_lock_unlock">LockUnlockActivity</string>
-    <string name="title_activity_test">TestActivity</string>
-    <string name="title_activity_delete_symbol">DeleteSymbolActivity</string>
-    <string name="start">Start</string>
-    <string name="get">Result</string>
+    <string name="serverName_default">Выберите сервер</string>
+    <string name="serverName_home">Дом</string>
+    <string name="serverName_work">Работа</string>
+    <string name="serverName_other">Другой</string>
+
+    <string-array name="serverList">
+        <item>@string/serverName_home</item>
+        <item>@string/serverName_work</item>
+        <item>@string/serverName_other</item>
+    </string-array>
 
 </resources>

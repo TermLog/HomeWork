@@ -10,9 +10,10 @@
     android:background="@color/background_blue"
     tools:context=".LoginActivity">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:background="@color/background_white"
         android:layout_gravity="center"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -29,7 +30,6 @@
             android:textSize="30sp"
             android:textColor="@color/text_blue"
             android:textStyle="bold"
-            android:layout_alignParentStart="true"
             android:paddingBottom="15dp" />
 
         <TextView
@@ -39,8 +39,6 @@
             android:id="@+id/login_textDescr"
             android:textColor="@color/text_blue"
             android:textStyle="italic"
-            android:layout_below="@+id/login_textEnter"
-            android:layout_alignStart="@+id/login_editUser"
             android:paddingBottom="10dp" />
 
         <TextView
@@ -48,22 +46,8 @@
             android:layout_height="wrap_content"
             android:text="@string/login_textUser"
             android:textSize="20sp"
-            android:id="@+id/main_textUser"
+            android:id="@+id/login_textUser"
             android:textColor="@color/text_blue"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/login_textDescr"
-            android:paddingBottom="10dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/login_textPassword"
-            android:textSize="20sp"
-            android:id="@+id/login_textPassword"
-            android:textColor="@color/text_blue"
-            android:layout_alignParentEnd="false"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/login_editUser"
             android:paddingBottom="10dp"/>
 
         <EditText
@@ -78,9 +62,17 @@
             android:textColorHint="@color/main_EditHint_Default"
             android:drawableStart="@mipmap/ic_user"
             android:selectAllOnFocus="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/main_textUser"
             android:paddingBottom="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_textPassword"
+            android:textSize="20sp"
+            android:id="@+id/login_textPassword"
+            android:textColor="@color/text_blue"
+            android:paddingBottom="10dp"/>
+
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -93,51 +85,60 @@
             android:textColorHint="@color/main_EditHint_Default"
             android:drawableStart="@mipmap/ic_password"
             android:selectAllOnFocus="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/login_textPassword"
             android:paddingBottom="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_textServer"
+            android:textSize="20sp"
+            android:id="@+id/login_textServer"
+            android:textColor="@color/text_blue"/>
+
+       <!-- <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_spinner"
+            android:drawableStart="@mipmap/ic_password"/>
+        -->
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/mainMenu_buttonSpacing_bottom"
+            android:background="@color/background_white"
+            android:clickable="true">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_server"
+                android:text="@string/serverName_default"
+                android:textSize="20sp"
+                android:id="@+id/login_buttonChoice"
+                android:textColor="@color/login_buttonServer"
+                android:gravity="center"
+                android:onClick="serverChoice"/>
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="false"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/login_editPassword"
             android:paddingBottom="10dp">
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/login_buttonOk"
                 android:id="@+id/login_buttonOk"
-                android:layout_gravity="center"
-                android:background="@color/background_blue"
-                android:textSize="@dimen/button_text_size"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textColor="@color/text_white"
                 android:onClick="enterClick"
-                style="@style/Base.Widget.AppCompat.Light.ActionBar"
-                android:layout_marginLeft="5sp"
-                android:layout_marginRight="5sp" />
+                style="@style/buttonStyle"/>
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/login_buttonCancel"
                 android:id="@+id/login_buttonCancel"
-                android:layout_gravity="center"
-                android:background="@color/background_blue"
-                android:textSize="@dimen/button_text_size"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textColor="@color/text_white"
                 android:onClick="cancelClick"
-                style="@style/Base.Widget.AppCompat.Light.ActionBar"
-                android:layout_marginLeft="5sp"
-                android:layout_marginRight="5sp" />
+                style="@style/buttonStyle"/>
         </LinearLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 </ScrollView>

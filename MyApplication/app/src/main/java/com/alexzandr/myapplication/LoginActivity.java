@@ -4,15 +4,25 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class LoginActivity extends ActionBarActivity {
     private EditText user;
     private EditText password;
     private TextView descr;
+    private Button choiceServerButton;
+    private static int serverId = 0;
+    public static QueryToServer db;
     static final int EMPTY_USER = 1;
     static final int EMPTY_PASSWORD = 2;
     static final int EMPTY_BOTH = 3;
@@ -27,6 +37,7 @@ public class LoginActivity extends ActionBarActivity {
         user = (EditText) findViewById(R.id.login_editUser);
         password = (EditText) findViewById(R.id.login_editPassword);
         descr = (TextView) findViewById(R.id.login_textDescr);
+        choiceServerButton = (Button) findViewById(R.id.login_buttonChoice);
 
         // interesting decision :) I can't say this is wrong
         // but I'd implement this another way
@@ -57,17 +68,6 @@ public class LoginActivity extends ActionBarActivity {
             }
         });
 
-    }
-
-    @Override
-    public void onPause(){
-        super.onPause();
-
-        /**
-         * what is it done for?
-         * user.setText(null);
-         * password.setText(null);
-         */
     }
 
     private void showMainMenu(){
@@ -101,11 +101,18 @@ public class LoginActivity extends ActionBarActivity {
                     break;
                 default: break;
             }
-        }else{
+        }else if (serverId == 0){
+            descr.setText("Не выбран сервер!");
+            choiceServerButton.callOnClick();
+        }else if (createConnection()){
             Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
             startActivity(intent);
             user.setText(null);
             password.setText(null);
+        }else{
+            descr.setText("Не верно указаны данные для соединения с сервером " + getResources().getString(serverId) + "!\n" + "Введите данные заново.");
+            setErrorStyleEditText(user);
+            setErrorStyleEditText(password);
         }
     }
 
@@ -114,6 +121,9 @@ public class LoginActivity extends ActionBarActivity {
     }
     public void cancelClick(View view){
         this.finish();
+    }
+    public void serverChoice(View view){
+        showPopupMenu(view);
     }
 
     public void setDefaultEditText(EditText view, int stringResId) {
@@ -129,4 +139,51 @@ public class LoginActivity extends ActionBarActivity {
         view.setHintTextColor(getResources().getColor(R.color.main_EditHint_Error));
     }
 
+    private void showPopupMenu(final View view){
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        popupMenu.inflate(R.menu.popup_menu_login);
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.login_popup_home:
+                        serverId = R.string.serverName_home;
+                        ((Button) view).setText(getResources().getText(R.string.serverName_home));
+                        ((Button) view).setTextColor(getResources().getColor(R.color.text_blue));
+                        return true;
+                    case R.id.login_popup_work:
+                        serverId = R.string.serverName_work;
+                        ((Button) view).setText(getResources().getText(R.string.serverName_work));
+                        ((Button) view).setTextColor(getResources().getColor(R.color.text_blue));
+                        return true;
+//                    case R.id.login_popup_other:
+//                        serverId = R.string.serverName_other;
+//                        ((Button) view).setText(getResources().getText(R.string.serverName_other));
+//                        ((Button) view).setTextColor(getResources().getColor(R.color.text_blue));
+//                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        popupMenu.show();
+    }
+    private boolean createConnection(){
+        boolean result;
+        db = new QueryToServer(serverId, user.getText().toString(), password.getText().toString());
+        DataBaseTask dbt = new DataBaseTask();
+        try{
+            dbt.execute(DataBaseTask.ALL_TABLE);
+            result = (dbt.get(30, TimeUnit.SECONDS) != null);
+            return result;
+        } catch(TimeoutException timeoutException){
+            timeoutException.printStackTrace();
+            dbt.cancel(true);
+            return false;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
