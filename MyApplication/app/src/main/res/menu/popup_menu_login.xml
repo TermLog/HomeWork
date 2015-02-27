@@ -7,9 +7,8 @@
         <item
             android:id="@+id/login_popup_work"
             android:title="@string/serverName_work"/>
-        <!--<item
+        <item
             android:id="@+id/login_popup_other"
             android:title="@string/serverName_other"/>
-        -->
     </group>
 </menu>

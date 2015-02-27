@@ -12,44 +12,42 @@
     tools:context="com.alexzandr.warehouse.UpdateDocumentActivity">
 
     <TextView
-        android:text="@string/update_textDocument"
-        android:layout_width="wrap_content"
+        android:text="@string/doc_textView_text"
+        android:layout_width="match_parent"
+        android:gravity="center"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:id="@+id/doc_textView"
+        android:textSize="20sp"
         android:textColor="@color/text_white"
         android:textStyle="bold"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/update_editDocument"
-        android:hint="@string/update_editDocument_hint"
+        android:id="@+id/doc_editText"
+        android:hint="@string/doc_editText_hint"
         android:imeActionLabel="Готово"
         android:textColorHint="@color/main_EditHint_Default"
         android:selectAllOnFocus="true"
         android:height="100dp"/>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button"
-            android:layout_alignParentStart="true"
-            style="@style/Base.Widget.AppCompat.Light.ActionBar" />
+            android:text="@string/doc_buttonBack"
+            android:id="@+id/doc_buttonBack"
+            android:onClick="onClick"
+            style="@style/buttonStyle" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button2"
-            android:layout_alignParentEnd="true"
-            style="@style/Base.Widget.AppCompat.Light.ActionBar" />
-    </RelativeLayout>
+            android:text="@string/doc_buttonUpdate"
+            android:id="@+id/doc_buttonAction"
+            android:onClick="onClick"
+            style="@style/buttonStyle" />
+    </LinearLayout>
 
 </LinearLayout>

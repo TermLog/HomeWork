@@ -29,12 +29,14 @@ public class MainMenuActivity extends ActionBarActivity {
     }
 
     public void showUpdate() {
-        Intent intent = new Intent(MainMenuActivity.this, UpdateDocumentActivity.class);
+        Intent intent = new Intent(MainMenuActivity.this, WorkWithDocumentActivity.class);
+        intent.putExtra(WorkWithDocumentActivity.MAP_KEY, WorkWithDocumentActivity.UPDATE_ACTIVITY);
         startActivity(intent);
     }
 
     public void showDelete() {
-        Intent intent = new Intent(MainMenuActivity.this, UpdateDocumentActivity.class);
+        Intent intent = new Intent(MainMenuActivity.this, WorkWithDocumentActivity.class);
+        intent.putExtra(WorkWithDocumentActivity.MAP_KEY, WorkWithDocumentActivity.DELETE_ACTIVITY);
         startActivity(intent);
     }
 

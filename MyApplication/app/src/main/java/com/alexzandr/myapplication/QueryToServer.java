@@ -1,5 +1,8 @@
 package com.alexzandr.myapplication;
 
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.sql.*;
 import java.util.HashMap;
 
@@ -9,28 +12,14 @@ import java.util.HashMap;
 public class QueryToServer {
     private String mParam1;
     private String mParam2;
-    private final static int HOME_SERVER = R.string.serverName_home;
-    private final static int WORK_SERVER = R.string.serverName_work;
-//    private final static int OTHER_SERVER = R.string.serverName_other;
-    private final static String HOME_URL = "jdbc:jtds:sqlserver://192.168.1.104:1433/PRD1";
-    private final static String WORK_URL = "jdbc:jtds:sqlserver://10.100.6.15:1433/PRD1";
-//    private final static String OTHER_URL = "jdbc:jtds:sqlserver://192.168.1.104:1433/PRD1";
     private final static String JTDS_CLASS_NAME = "net.sourceforge.jtds.jdbc.Driver";
     private String mConnectionUrl;
     private Connection mCN = null;
     private Statement mST = null;
     private ResultSet mRS = null;
 
-    public QueryToServer(int serverId, String param1, String param2){
-        switch (serverId){
-            case HOME_SERVER:
-                mConnectionUrl = HOME_URL;
-                break;
-            case WORK_SERVER:
-                mConnectionUrl = WORK_URL;
-                break;
-            default: break;
-        }
+    public QueryToServer(String serverIP, String param1, String param2){
+        mConnectionUrl = "jdbc:jtds:sqlserver://" + serverIP + ":1433/PRD1";
         mParam1 = param1;
         mParam2 = param2;
     }
@@ -50,19 +39,50 @@ public class QueryToServer {
         return getResult(queryText);
     }
 
+    public HashMap<String, Integer> updateDoc(String docList){
+        String queryText = "exec prd1.dbo.proc_Alex_UpdateDocument @rec = '" + docList + "'";
+        return getResult(queryText);
+    }
+
+    public HashMap<String, Integer> deleteDoc(String docList){
+        String queryText = "exec prd1.dbo.proc_Alex_DeleteQuote @rec = '" + docList + "'";
+        return getResult(queryText);
+    }
+
     public boolean checkConnection(){
+        if (!isReachableServer()) {
+            return false;
+        }
         try{
             Class.forName(JTDS_CLASS_NAME);
             mCN = DriverManager.getConnection(mConnectionUrl, mParam1, mParam2);
             return true;
         }catch (Exception e){
             e.printStackTrace();
-            return false;
+            LoginActivity.errorType = LoginActivity.ERROR_WRONG_LOGIN_PASSWORD;
         } finally {
             if (mRS != null) try { mRS.close(); } catch(Exception e) {e.printStackTrace(); }
             if (mST != null) try { mST.close(); } catch(Exception e) {e.printStackTrace(); }
             if (mCN != null) try { mCN.close(); } catch(Exception e) {e.printStackTrace(); }
         }
+        return false;
+    }
+
+    private boolean isReachableServer(){
+        Socket socket = new Socket();
+        SocketAddress address = new InetSocketAddress(LoginActivity.mServerIp, 1433);
+        int timeOut = 5000;
+        try{
+            socket.connect(address, timeOut);
+            if (socket.isConnected())
+                return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            LoginActivity.errorType = LoginActivity.ERROR_WRONG_SERVER;
+        }finally {
+            if (socket != null) try{ socket.close(); }catch (Exception e){ e.printStackTrace(); }
+        }
+        return false;
     }
 
     private  HashMap<String, Integer> getResult(String text){

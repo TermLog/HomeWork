@@ -95,12 +95,6 @@
             android:id="@+id/login_textServer"
             android:textColor="@color/text_blue"/>
 
-       <!-- <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/login_spinner"
-            android:drawableStart="@mipmap/ic_password"/>
-        -->
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
