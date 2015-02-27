@@ -30,6 +30,10 @@
     <string name="doc_buttonUpdate">Обновить</string>
     <string name="doc_buttonDelete">Удалить</string>
     <string name="doc_buttonRepeat">Повторить</string>
+    <string name="dialog_IP_filter">0123456789.</string>
+    <string name="dialog_buttonOk">Подтвердить</string>
+    <string name="dialog_buttonCancel">Отмена</string>
+    <string name="dialog_editText_hint">введите IP-адресс</string>
 
     <string-array name="serverList">
         <item>@string/serverName_home</item>

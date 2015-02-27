@@ -41,8 +41,9 @@ public class DataBaseTask extends AsyncTask<Integer, Void, HashMap<String, Integ
                 mapResult = serverData.deleteDoc(procedureParamDocList);
                 break;
             case CHECK:
-                if(serverData.checkConnection())
+                if(serverData.checkConnection()) {
                     mapResult = new HashMap<>();
+                }
                 break;
             default: break;
         }
