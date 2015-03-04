@@ -19,6 +19,7 @@ public class DataBaseTask extends AsyncTask<Integer, Void, HashMap<String, Integ
     public int procedureParamZone;
     public int procedureParamLevel;
     public String procedureParamDocList;
+
     @Override
     protected HashMap<String, Integer> doInBackground(Integer... params) {
         int intParams = params[0];

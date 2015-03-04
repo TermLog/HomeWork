@@ -14,12 +14,14 @@ public class QueryToServer {
     private String mParam2;
     private final static String JTDS_CLASS_NAME = "net.sourceforge.jtds.jdbc.Driver";
     private String mConnectionUrl;
+    private String mServerIp;
     private Connection mCN = null;
     private Statement mST = null;
     private ResultSet mRS = null;
 
     public QueryToServer(String serverIP, String param1, String param2){
-        mConnectionUrl = "jdbc:jtds:sqlserver://" + serverIP + ":1433/PRD1";
+        mServerIp = serverIP;
+        mConnectionUrl = "jdbc:jtds:sqlserver://" + mServerIp + ":1433/PRD1";
         mParam1 = param1;
         mParam2 = param2;
     }
@@ -70,7 +72,7 @@ public class QueryToServer {
 
     private boolean isReachableServer(){
         Socket socket = new Socket();
-        SocketAddress address = new InetSocketAddress(LoginActivity.mServerIp, 1433);
+        SocketAddress address = new InetSocketAddress(mServerIp, 1433);
         int timeOut = 5000;
         try{
             socket.connect(address, timeOut);

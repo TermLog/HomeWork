@@ -18,9 +18,9 @@ public class WorkWithDocumentActivity extends ActionBarActivity {
     public static final int DOC_UPDATED = 1;
     public static final int DOC_DELETED = 2;
     public static final String MAP_KEY = "type";
-    private static final int FOR_UPDATE = R.string.doc_buttonUpdate;
-    private static final int FOR_DELETE = R.string.doc_buttonDelete;
-    private static final int FOR_REPEAT = R.string.doc_buttonRepeat;
+//    private static final int FOR_UPDATE = R.string.doc_buttonUpdate;
+//    private static final int FOR_DELETE = R.string.doc_buttonDelete;
+//    private static final int FOR_REPEAT = R.string.doc_buttonRepeat;
     private EditText mDocList;
     private TextView mLabel;
     private Button mButtonAction;
@@ -30,13 +30,16 @@ public class WorkWithDocumentActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work_with_document);
+
         mButtonAction = (Button) findViewById(R.id.doc_buttonAction);
         mDocList = (EditText) findViewById(R.id.doc_editText);
         mLabel = (TextView) findViewById(R.id.doc_textView);
-        mActivityType = getIntent().getIntExtra(MAP_KEY, 1);
-        if (mActivityType == DELETE_ACTIVITY)
+        mActivityType = getIntent().getIntExtra(MAP_KEY, UPDATE_ACTIVITY);
+
+        if (mActivityType == DELETE_ACTIVITY) {
             setTitle(R.string.title_activity_delete_document);
-        doAction(FOR_REPEAT);
+        }
+        doAction(R.string.doc_buttonRepeat);
     }
 
     public void onClick(View view){
@@ -48,12 +51,16 @@ public class WorkWithDocumentActivity extends ActionBarActivity {
                 case R.id.doc_buttonAction:
                     if (mDocList.getText().length() >= 10) {
                         String buttonText = ((Button) view).getText().toString();
-                        if (buttonText.equals(getText(FOR_UPDATE)))
-                            doAction(FOR_UPDATE);
-                        else if (buttonText.equals(getText(FOR_DELETE)))
-                            doAction(FOR_DELETE);
-                        else
-                            doAction(FOR_REPEAT);
+
+                        if (buttonText.equals(getText(R.string.doc_buttonUpdate))) {
+                            doAction(R.string.doc_buttonUpdate);
+                        }
+                        else if (buttonText.equals(getText(R.string.doc_buttonDelete))) {
+                            doAction(R.string.doc_buttonDelete);
+                        }
+                        else {
+                            doAction(R.string.doc_buttonRepeat);
+                        }
                     } else if (TextUtils.isEmpty(mDocList.getText())){
                         mDocList.append("Не указан номер документа");
                         mDocList.selectAll();
@@ -66,7 +73,7 @@ public class WorkWithDocumentActivity extends ActionBarActivity {
     }
 
     private void workWithDoc(int type){
-        mButtonAction.setText(getText(FOR_REPEAT));
+        mButtonAction.setText(getText(R.string.doc_buttonRepeat));
         mDocList.setVisibility(View.GONE);
         DataBaseTask dbt = new DataBaseTask();
         HashMap<String, Integer> map = null;
@@ -79,6 +86,7 @@ public class WorkWithDocumentActivity extends ActionBarActivity {
         }
         if (map != null) {
             String resultText = "";
+            StringBuilder stringBuilder = new StringBuilder("");
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
                 String docStatus = "";
                 switch (entry.getValue()){
@@ -94,31 +102,40 @@ public class WorkWithDocumentActivity extends ActionBarActivity {
                     default:break;
                 }
                 resultText = resultText + entry.getKey() + docStatus + "\n";
+                stringBuilder.append(entry.getKey());
+                stringBuilder.append(docStatus);
+                stringBuilder.append("\n");
             }
-            mLabel.setText(resultText);
-        }
-        else
+            mLabel.setText(stringBuilder);
+        } else {
             mLabel.setText("Произошла ошибка при работе с базой данных");
+        }
     }
+
     private void doAction(int actionType){
         switch (actionType){
-            case FOR_REPEAT:
-                if (mActivityType == DELETE_ACTIVITY)
-                    mButtonAction.setText(getText(FOR_DELETE));
-                else
-                    mButtonAction.setText(getText(FOR_UPDATE));
+            case R.string.doc_buttonRepeat:
+
+                if (mActivityType == DELETE_ACTIVITY) {
+                    mButtonAction.setText(getText(R.string.doc_buttonDelete));
+                }
+                else {
+                    mButtonAction.setText(getText(R.string.doc_buttonUpdate));
+                }
+
                 mDocList.setVisibility(View.VISIBLE);
                 mLabel.setText(getText(R.string.doc_textView_text));
                 break;
-            case FOR_UPDATE:
+            case R.string.doc_buttonUpdate:
                 workWithDoc(DataBaseTask.UPDATE_DOC);
                 break;
-            case FOR_DELETE:
+            case R.string.doc_buttonDelete:
                 workWithDoc(DataBaseTask.DELETE_DOC);
                 break;
             default:break;
         }
     }
+
     private String stringInOneLine(String resultString){
         return resultString.replace("\n", ",").replace(" ", "");
     }

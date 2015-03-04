@@ -35,6 +35,7 @@
     <string name="dialog_buttonCancel">Отмена</string>
     <string name="dialog_editText_hint">введите IP-адресс</string>
 
+
     <string-array name="serverList">
         <item>@string/serverName_home</item>
         <item>@string/serverName_work</item>

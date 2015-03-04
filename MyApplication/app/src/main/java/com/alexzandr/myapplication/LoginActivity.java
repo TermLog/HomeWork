@@ -17,14 +17,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class LoginActivity extends ActionBarActivity {
-    private EditText user;
-    private EditText password;
-    private TextView descr;
-    private Button choiceServerButton;
-    private DialogFragment dialogOtherIP;
-    public static int mServerId = R.string.serverName_default;
-    public static String mServerIp;
+    private EditText mUser;
+    private EditText mPassword;
+    private TextView mDescr;
+    private Button mChoiceServerButton;
+    private DialogFragment mDialogOtherIP;
+    private int mServerId = R.string.serverName_default;
+    private String mServerIp;
+
     public static QueryToServer db;
+
     public static final int NO_ERROR = 0;
     public static final int ERROR_EMPTY_USER = 1;
     public static final int ERROR_EMPTY_PASSWORD = 2;
@@ -34,53 +36,51 @@ public class LoginActivity extends ActionBarActivity {
     public static final int ERROR_WRONG_LOGIN_PASSWORD = 6;
     public static final int ERROR_UNAVAILABLE_MSSQL = 7;
     public static int errorType = NO_ERROR;
-    static final int DEFAULT_USER = R.string.login_textDescr_user;
-    static final int DEFAULT_PASSWORD = R.string.login_textDescr_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        user = (EditText) findViewById(R.id.login_editUser);
-        password = (EditText) findViewById(R.id.login_editPassword);
-        descr = (TextView) findViewById(R.id.login_textDescr);
-        choiceServerButton = (Button) findViewById(R.id.login_buttonChoice);
-        dialogOtherIP = new EnterIpDialog();
+        mUser = (EditText) findViewById(R.id.login_editUser);
+        mPassword = (EditText) findViewById(R.id.login_editPassword);
+        mDescr = (TextView) findViewById(R.id.login_textDescr);
+        mChoiceServerButton = (Button) findViewById(R.id.login_buttonChoice);
+        mDialogOtherIP = new EnterIpDialog();
 
         // interesting decision :) I can't say this is wrong
         // but I'd implement this another way
-        user.setOnTouchListener(new View.OnTouchListener() {
+        mUser.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    setDefaultEditText(user, DEFAULT_USER);
+                    setDefaultEditText(mUser, R.string.login_textDescr_user);
                 }
                 return false;
             }
         });
-        user.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mUser.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    setDefaultEditText(user, DEFAULT_USER);
+                    setDefaultEditText(mUser, R.string.login_textDescr_user);
                 }
             }
         });
-        password.setOnTouchListener(new View.OnTouchListener() {
+        mPassword.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    setDefaultEditText(password, DEFAULT_PASSWORD);
+                    setDefaultEditText(mPassword, R.string.login_textDescr_password);
                 }
                 return false;
             }
         });
-        password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    setDefaultEditText(password, DEFAULT_PASSWORD);
+                    setDefaultEditText(mPassword, R.string.login_textDescr_password);
                 }
             }
         });
@@ -89,15 +89,15 @@ public class LoginActivity extends ActionBarActivity {
 
     private boolean isEmptyLoginForms(){
         errorType = NO_ERROR;
-        String userName = user.getText().toString();
-        String passwordValue = password.getText().toString();
+        String userName = mUser.getText().toString();
+        String passwordValue = mPassword.getText().toString();
 
         if(TextUtils.isEmpty(userName)){
-            setErrorStyleEditText(user);
+            setErrorStyleEditText(mUser);
             errorType = ERROR_EMPTY_USER;
         }
         if(TextUtils.isEmpty(passwordValue)){
-            setErrorStyleEditText(password);
+            setErrorStyleEditText(mPassword);
             errorType += ERROR_EMPTY_PASSWORD;
         }
         return errorType != NO_ERROR;
@@ -112,42 +112,42 @@ public class LoginActivity extends ActionBarActivity {
 
     private void showMainMenu(){
         if (isEmptyLoginForms() || isEmptyServer() || !createConnection()){
-            descr.setTextColor(Color.RED);
+            mDescr.setTextColor(Color.RED);
             switch (errorType) {
                 case ERROR_EMPTY_USER:
-                    descr.setText("Не указано имя пользователя!");
+                    mDescr.setText("Не указано имя пользователя!");
                     break;
                 case ERROR_EMPTY_PASSWORD:
-                    descr.setText("Не указан пароль!");
+                    mDescr.setText("Не указан пароль!");
                     break;
                 case ERROR_EMPTY_BOTH:
-                    descr.setText("Не указано имя пользователя и пароль!");
+                    mDescr.setText("Не указано имя пользователя и пароль!");
                     break;
                 case ERROR_EMPTY_SERVER:
-                    descr.setText("Не выбран сервер!");
-                    choiceServerButton.callOnClick();
+                    mDescr.setText("Не выбран сервер!");
+                    mChoiceServerButton.callOnClick();
                     break;
                 case ERROR_WRONG_SERVER:
                     if (mServerId != R.string.serverName_other) {
-                        descr.setText("Не доступен сервер " + getText(mServerId) + "!");
+                        mDescr.setText("Не доступен сервер " + getText(mServerId) + "!");
                     } else {
-                        descr.setText("Не доступен сервер " + mServerIp + "!");
+                        mDescr.setText("Не доступен сервер " + mServerIp + "!");
                     }
                     break;
                 case ERROR_WRONG_LOGIN_PASSWORD:
-                    setErrorStyleEditText(user);
-                    setErrorStyleEditText(password);
+                    setErrorStyleEditText(mUser);
+                    setErrorStyleEditText(mPassword);
                     if (mServerId != R.string.serverName_other) {
-                        descr.setText("Не верно указан логин или пароль \n для соединения с MSSQL сервером " + getString(mServerId));
+                        mDescr.setText("Не верно указан логин или пароль \n для соединения с MSSQL сервером " + getString(mServerId));
                     } else {
-                        descr.setText("Не верно указан логин или пароль \n для соединения с MSSQL сервером " + mServerIp);
+                        mDescr.setText("Не верно указан логин или пароль \n для соединения с MSSQL сервером " + mServerIp);
                     }
                     break;
                 case ERROR_UNAVAILABLE_MSSQL:
                     if (mServerId != R.string.serverName_other) {
-                        descr.setText("Не доступен MSSQLSERVER на сервере " + getString(mServerId));
+                        mDescr.setText("Не доступен MSSQLSERVER на сервере " + getString(mServerId));
                     } else {
-                        descr.setText("Не доступен MSSQLSERVER на сервере " + mServerIp);
+                        mDescr.setText("Не доступен MSSQLSERVER на сервере " + mServerIp);
                     }
                     break;
                 default: break;
@@ -156,9 +156,9 @@ public class LoginActivity extends ActionBarActivity {
         } else {
             Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
             startActivity(intent);
-            descr.setText(getText(R.string.login_textDescr));
-            user.setText(null);
-            password.setText(null);
+            mDescr.setText(getText(R.string.login_textDescr));
+            mUser.setText(null);
+            mPassword.setText(null);
         }
     }
 
@@ -170,7 +170,7 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     public void serverChoice(View view){
-        PopupMenu popupMenu = new PopupMenu(this, choiceServerButton);
+        PopupMenu popupMenu = new PopupMenu(this, mChoiceServerButton);
         popupMenu.inflate(R.menu.popup_menu_login);
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -184,7 +184,7 @@ public class LoginActivity extends ActionBarActivity {
                         makeServerChoice(R.string.serverName_work, "10.100.6.15");
                         return true;
                     case R.id.login_popup_other:
-                        dialogOtherIP.show(getFragmentManager(), "myDialog");
+                        mDialogOtherIP.show(getFragmentManager(), "myDialog");
                         return true;
                     default:
                         return false;
@@ -195,8 +195,8 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     public void setDefaultEditText(EditText view, int stringResId) {
-        descr.setText(stringResId);
-        descr.setTextColor(getResources().getColor(R.color.text_blue));
+        mDescr.setText(stringResId);
+        mDescr.setTextColor(getResources().getColor(R.color.text_blue));
         view.setBackgroundResource(R.color.main_EditBackground_Default);
         view.setHintTextColor(getResources().getColor(R.color.main_EditHint_Default));
     }
@@ -210,19 +210,19 @@ public class LoginActivity extends ActionBarActivity {
     public void makeServerChoice(String serverIp){
         mServerId = R.string.serverName_other;
         mServerIp = serverIp;
-        choiceServerButton.setText(serverIp);
-        choiceServerButton.setTextColor(getResources().getColor(R.color.text_blue));
+        mChoiceServerButton.setText(serverIp);
+        mChoiceServerButton.setTextColor(getResources().getColor(R.color.text_blue));
     }
 
     public void makeServerChoice(int serverId, String serverIp){
         mServerId = serverId;
         mServerIp = serverIp;
-        choiceServerButton.setText(getText(serverId));
-        choiceServerButton.setTextColor(getResources().getColor(R.color.text_blue));
+        mChoiceServerButton.setText(getText(serverId));
+        mChoiceServerButton.setTextColor(getResources().getColor(R.color.text_blue));
     }
 
     private boolean createConnection(){
-        db = new QueryToServer(mServerIp, user.getText().toString(), password.getText().toString());
+        db = new QueryToServer(mServerIp, mUser.getText().toString(), mPassword.getText().toString());
         DataBaseTask dbt = new DataBaseTask();
         try{
             dbt.execute(DataBaseTask.CHECK);
