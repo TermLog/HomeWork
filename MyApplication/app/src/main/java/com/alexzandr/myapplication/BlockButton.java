@@ -3,7 +3,6 @@ package com.alexzandr.myapplication;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.View;
 import android.widget.Button;
 
 /**
@@ -32,7 +31,11 @@ public class BlockButton extends Button {
         setZone(zone);
         setLevel(level);
         setBlocked(blocked);
-        addListener();
+        setOnClickListener((LockUnlockActivity)context);
+        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+
+        String resultNameN = "00" + zone;
+        setText("P" + resultNameN.substring(resultNameN.length() - 2) + ", " + level);
     }
 
     public void setZone(int zone) {
@@ -52,6 +55,9 @@ public class BlockButton extends Button {
     public int getLevel() {
         return this.mLevel;
     }
+    public String getStringForKey(){
+        return "P" + getZone() + "_" + getLevel();
+    }
     public int getBlocked() {
         return this.mBlocked;
     }
@@ -69,28 +75,6 @@ public class BlockButton extends Button {
                 break;
             default: break;
         }
-        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-    }
 
-    public void addListener(){
-        setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                blockButtonClick();
-            }
-        });
     }
-
-    private void blockButtonClick(){
-        DataBaseTask dbt = new DataBaseTask();
-        dbt.procedureParamZone = getZone();
-        dbt.procedureParamLevel = getLevel();
-        try {
-            dbt.execute(DataBaseTask.BLOCK_BUTTON);
-            setBlocked(dbt.get().get("P" + getZone() + "_" + getLevel()));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
 }

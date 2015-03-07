@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -25,8 +26,6 @@ public class LoginActivity extends ActionBarActivity {
     private int mServerId = R.string.serverName_default;
     private String mServerIp;
 
-    public static QueryToServer db;
-
     public static final int NO_ERROR = 0;
     public static final int ERROR_EMPTY_USER = 1;
     public static final int ERROR_EMPTY_PASSWORD = 2;
@@ -35,6 +34,8 @@ public class LoginActivity extends ActionBarActivity {
     public static final int ERROR_WRONG_SERVER = 5;
     public static final int ERROR_WRONG_LOGIN_PASSWORD = 6;
     public static final int ERROR_UNAVAILABLE_MSSQL = 7;
+
+    public static QueryToServer db;
     public static int errorType = NO_ERROR;
 
     @Override
@@ -115,39 +116,39 @@ public class LoginActivity extends ActionBarActivity {
             mDescr.setTextColor(Color.RED);
             switch (errorType) {
                 case ERROR_EMPTY_USER:
-                    mDescr.setText("Не указано имя пользователя!");
+                    mDescr.setText(R.string.login_textDescr_no_user);
                     break;
                 case ERROR_EMPTY_PASSWORD:
-                    mDescr.setText("Не указан пароль!");
+                    mDescr.setText(R.string.login_textDescr_no_password);
                     break;
                 case ERROR_EMPTY_BOTH:
-                    mDescr.setText("Не указано имя пользователя и пароль!");
+                    mDescr.setText(R.string.login_textDescr_no_user_password);
                     break;
                 case ERROR_EMPTY_SERVER:
-                    mDescr.setText("Не выбран сервер!");
+                    mDescr.setText(R.string.login_textDescr_no_server);
                     mChoiceServerButton.callOnClick();
                     break;
                 case ERROR_WRONG_SERVER:
                     if (mServerId != R.string.serverName_other) {
-                        mDescr.setText("Не доступен сервер " + getText(mServerId) + "!");
+                        mDescr.setText(getString(R.string.login_textDescr_wrong_server) + getString(mServerId) + "!");
                     } else {
-                        mDescr.setText("Не доступен сервер " + mServerIp + "!");
+                        mDescr.setText(getString(R.string.login_textDescr_wrong_server) + mServerIp + "!");
                     }
                     break;
                 case ERROR_WRONG_LOGIN_PASSWORD:
                     setErrorStyleEditText(mUser);
                     setErrorStyleEditText(mPassword);
                     if (mServerId != R.string.serverName_other) {
-                        mDescr.setText("Не верно указан логин или пароль \n для соединения с MSSQL сервером " + getString(mServerId));
+                        mDescr.setText(getString(R.string.login_textDescr_wrong_user_password) + getString(mServerId));
                     } else {
-                        mDescr.setText("Не верно указан логин или пароль \n для соединения с MSSQL сервером " + mServerIp);
+                        mDescr.setText(getString(R.string.login_textDescr_wrong_user_password) + mServerIp);
                     }
                     break;
                 case ERROR_UNAVAILABLE_MSSQL:
                     if (mServerId != R.string.serverName_other) {
-                        mDescr.setText("Не доступен MSSQLSERVER на сервере " + getString(mServerId));
+                        mDescr.setText(getString(R.string.login_textDescr_unavailable_server) + getString(mServerId));
                     } else {
-                        mDescr.setText("Не доступен MSSQLSERVER на сервере " + mServerIp);
+                        mDescr.setText(getString(R.string.login_textDescr_unavailable_server) + mServerIp);
                     }
                     break;
                 default: break;
@@ -156,7 +157,7 @@ public class LoginActivity extends ActionBarActivity {
         } else {
             Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
             startActivity(intent);
-            mDescr.setText(getText(R.string.login_textDescr));
+            mDescr.setText(R.string.login_textDescr);
             mUser.setText(null);
             mPassword.setText(null);
         }
@@ -178,10 +179,10 @@ public class LoginActivity extends ActionBarActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.login_popup_home:
-                        makeServerChoice(R.string.serverName_home, "192.168.1.104");
+                        makeServerChoice(R.string.serverName_home, getString(R.string.serverIp_home));
                         return true;
                     case R.id.login_popup_work:
-                        makeServerChoice(R.string.serverName_work, "10.100.6.15");
+                        makeServerChoice(R.string.serverName_work, getString(R.string.serverIp_work));
                         return true;
                     case R.id.login_popup_other:
                         mDialogOtherIP.show(getFragmentManager(), "myDialog");
@@ -217,7 +218,7 @@ public class LoginActivity extends ActionBarActivity {
     public void makeServerChoice(int serverId, String serverIp){
         mServerId = serverId;
         mServerIp = serverIp;
-        mChoiceServerButton.setText(getText(serverId));
+        mChoiceServerButton.setText(serverId);
         mChoiceServerButton.setTextColor(getResources().getColor(R.color.text_blue));
     }
 

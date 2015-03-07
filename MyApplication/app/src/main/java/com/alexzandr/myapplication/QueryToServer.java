@@ -12,12 +12,17 @@ import java.util.HashMap;
 public class QueryToServer {
     private String mParam1;
     private String mParam2;
-    private final static String JTDS_CLASS_NAME = "net.sourceforge.jtds.jdbc.Driver";
     private String mConnectionUrl;
     private String mServerIp;
     private Connection mCN = null;
     private Statement mST = null;
     private ResultSet mRS = null;
+
+    private final static String JTDS_CLASS_NAME = "net.sourceforge.jtds.jdbc.Driver";
+    private final static String MAP_KEY_COLUMN = "mapKey";
+    private final static String MAP_VALUE_COLUMN = "mapValue";
+    private final static int PORT = 1433;
+    private final static int CONNECTION_TIMEOUT_MS = 5 * 1000;
 
     public QueryToServer(String serverIP, String param1, String param2){
         mServerIp = serverIP;
@@ -72,10 +77,9 @@ public class QueryToServer {
 
     private boolean isReachableServer(){
         Socket socket = new Socket();
-        SocketAddress address = new InetSocketAddress(mServerIp, 1433);
-        int timeOut = 5000;
+        SocketAddress address = new InetSocketAddress(mServerIp, PORT);
         try{
-            socket.connect(address, timeOut);
+            socket.connect(address, CONNECTION_TIMEOUT_MS);
             if (socket.isConnected())
                 return true;
         }catch (Exception e){
@@ -95,7 +99,7 @@ public class QueryToServer {
             mST = mCN.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
             mRS = mST.executeQuery(text);
             while(mRS.next()){
-                resultMap.put(mRS.getString("mapKey"), mRS.getInt("mapValue"));
+                resultMap.put(mRS.getString(MAP_KEY_COLUMN), mRS.getInt(MAP_VALUE_COLUMN));
             }
             return resultMap;
         }catch (Exception e){

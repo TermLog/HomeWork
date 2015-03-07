@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,7 +37,7 @@ public class EnterIpDialog extends DialogFragment implements OnClickListener {
     @Override
     public void onStart(){
         super.onStart();
-        getDialog().setTitle("Укажите IP-адрес сервера");
+        getDialog().setTitle(R.string.dialog_title);
         if (!TextUtils.isEmpty(mEditTextIP.getText().toString())) {
             mEditTextIP.selectAll();
         }
@@ -60,7 +59,7 @@ public class EnterIpDialog extends DialogFragment implements OnClickListener {
     public void buttonOkClick(){
         String valueIp = mEditTextIP.getText().toString();
         if (TextUtils.isEmpty(valueIp)) {
-            mEditTextIP.setHint("Необходимо указать IP-адрес");
+            mEditTextIP.setHint(R.string.dialog_editText_hint_noIp);
             mEditTextIP.requestFocus();
         }else {
             Pattern pattern = Pattern.compile(IP_ADDRESS_PATTERN);
@@ -69,7 +68,7 @@ public class EnterIpDialog extends DialogFragment implements OnClickListener {
                 ((LoginActivity)getActivity()).makeServerChoice(valueIp);
                 dismiss();
             }else {
-                getDialog().setTitle("Не верный формат IP-адреса");
+                getDialog().setTitle(R.string.dialog_title_wrongIp);
                 mEditTextIP.selectAll();
                 mEditTextIP.requestFocus();
             }

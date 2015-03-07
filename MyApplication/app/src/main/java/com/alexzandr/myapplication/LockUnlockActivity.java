@@ -2,20 +2,24 @@ package com.alexzandr.myapplication;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import java.util.HashMap;
 
 
-public class LockUnlockActivity extends ActionBarActivity {
+public class LockUnlockActivity extends ActionBarActivity implements OnClickListener {
 
     public TableLayout table;
     public TableRow firstRow;
     public Button refreshButton;
-    private static int refreshCount;
+
+    private static int sRefreshCount;
+
+    private final static String KEY_COUNT_OF_ZONES = "zoneCount";
+    private final static String KEY_COUNT_OF_LEVELS = "levelCount";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,15 @@ public class LockUnlockActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    public void onClick(View view) {
+        if(view instanceof BlockButton){
+            blockButtonClick((BlockButton) view);
+        } else if (view instanceof ZoneLevelButton){
+            zoneLevelClick((ZoneLevelButton) view);
+        }
+    }
+
     public void createTable(){
         HashMap<String, Integer> mapForTable = null;
         DataBaseTask dbt = new DataBaseTask();
@@ -46,46 +59,25 @@ public class LockUnlockActivity extends ActionBarActivity {
 
         if(mapForTable != null) {
             int zone, level;
-            int zoneCount = mapForTable.get("zoneCount");
-            int levelCount = mapForTable.get("levelCount");
+            int zoneCount = mapForTable.get(KEY_COUNT_OF_ZONES);
+            int levelCount = mapForTable.get(KEY_COUNT_OF_LEVELS);
 
-            TableRow.LayoutParams rowLayoutParam = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-            rowLayoutParam.setMargins(2, 2, 2, 2);
-
+//            TableRow.LayoutParams rowLayoutParam = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+//            rowLayoutParam.setMargins(2, 2, 2, 2);
 
             for (level = 1; level <= levelCount; level++){
-                ZoneLevelButton buttonLevel = new ZoneLevelButton(this, ZoneLevelButton.TYPE_LEVEL, level);
-                buttonLevel.setLayoutParams(rowLayoutParam);
-                buttonLevel.setText("LvL " + level);
-                buttonLevel.setBackgroundResource(R.color.lockUnlock_button_zoneAndLevel);
-                buttonLevel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-                firstRow.addView(buttonLevel);
+                firstRow.addView(new ZoneLevelButton(this, ZoneLevelButton.TYPE_LEVEL, level));
             }
 
             for (zone = 1; zone <= zoneCount; zone++) {
-
-                String zoneName = "00" + zone;
-                zoneName = "P" + zoneName.substring(zoneName.length() - 2, zoneName.length());
-
-                ZoneLevelButton buttonZone = new ZoneLevelButton(this, ZoneLevelButton.TYPE_ZONE, zone);
-                buttonZone.setLayoutParams(rowLayoutParam);
-                buttonZone.setText("Zone " + zoneName);
-                buttonZone.setBackgroundResource(R.color.lockUnlock_button_zoneAndLevel);
-                buttonZone.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-
                 TableRow row = new TableRow(this);
-                row.setLayoutParams(rowLayoutParam);
-                row.addView(buttonZone);
+                row.addView(new ZoneLevelButton(this, ZoneLevelButton.TYPE_ZONE, zone));
 
                 for (level = 1; level <= levelCount; level++) {
-                    BlockButton button = new BlockButton(this, zone, level, mapForTable.get("P" + zone + "_" + level));
-                    button.setLayoutParams(rowLayoutParam);
-                    button.setText(zoneName + ", " + level);
-                    row.addView(button);
+                    row.addView(new BlockButton(this, zone, level, mapForTable.get("P" + zone + "_" + level)));
                 }
 
                 table.addView(row);
-                refreshButton.setMinWidth(buttonZone.getWidth());
             }
         }
     }
@@ -115,7 +107,64 @@ public class LockUnlockActivity extends ActionBarActivity {
                 }
             }
         }
-        refreshButton.setText("Ref_" + (++refreshCount));
+        refreshButton.setText("Ref_" + (++sRefreshCount));
+    }
 
+    private void blockButtonClick(BlockButton button){
+        DataBaseTask dbt = new DataBaseTask();
+        dbt.procedureParamZone = button.getZone();
+        dbt.procedureParamLevel = button.getLevel();
+        try {
+            dbt.execute(DataBaseTask.BLOCK_BUTTON);
+            button.setBlocked(dbt.get().get(button.getStringForKey()));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void zoneLevelClick(ZoneLevelButton button){
+        DataBaseTask dbt = new DataBaseTask();
+        HashMap<String, Integer> map = null;
+        dbt.procedureParamType = button.getType();
+        dbt.procedureParamValue = button.getValue();
+        try {
+            dbt.execute(DataBaseTask.ZONE_LEVEL);
+            map = dbt.get();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        if(button.getType() == ZoneLevelButton.TYPE_ZONE && map != null){
+
+            changeButtonInRow((TableRow) button.getParent(), map, button);
+
+        }else if(map != null) {
+            try {
+                int rowCount = table.getChildCount();
+                for (int rowNumber = 0; rowNumber < rowCount; rowNumber++) {
+                    if (table.getChildAt(rowNumber) instanceof TableRow) {
+                        changeButtonInRow((TableRow) table.getChildAt(rowNumber), map, button);
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void changeButtonInRow(TableRow parentRow, HashMap<String, Integer> map, ZoneLevelButton zoneLevelButton){
+        int buttonCount = parentRow.getChildCount();
+        for (int i = 0; i < buttonCount; i++){
+            if (parentRow.getChildAt(i) instanceof BlockButton){
+                BlockButton button = (BlockButton)parentRow.getChildAt(i);
+                if (button.getLevel() == zoneLevelButton.getValue() || zoneLevelButton.getType() == ZoneLevelButton.TYPE_ZONE) {
+                    try {
+                        button.setBlocked(map.get(button.getStringForKey()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 }

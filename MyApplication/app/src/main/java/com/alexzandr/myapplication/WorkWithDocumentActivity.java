@@ -17,6 +17,7 @@ public class WorkWithDocumentActivity extends ActionBarActivity {
     public static final int DOC_NOT_EXISTS = 0;
     public static final int DOC_UPDATED = 1;
     public static final int DOC_DELETED = 2;
+    public static final int DOC_LENGTH = 10;
     public static final String MAP_KEY = "type";
 //    private static final int FOR_UPDATE = R.string.doc_buttonUpdate;
 //    private static final int FOR_DELETE = R.string.doc_buttonDelete;
@@ -49,7 +50,7 @@ public class WorkWithDocumentActivity extends ActionBarActivity {
                     finish();
                     break;
                 case R.id.doc_buttonAction:
-                    if (mDocList.getText().length() >= 10) {
+                    if (mDocList.getText().length() >= DOC_LENGTH) {
                         String buttonText = ((Button) view).getText().toString();
 
                         if (buttonText.equals(getText(R.string.doc_buttonUpdate))) {
@@ -62,10 +63,10 @@ public class WorkWithDocumentActivity extends ActionBarActivity {
                             doAction(R.string.doc_buttonRepeat);
                         }
                     } else if (TextUtils.isEmpty(mDocList.getText())){
-                        mDocList.append("Не указан номер документа");
+                        mDocList.append(getText(R.string.doc_editText_no_docNumber));
                         mDocList.selectAll();
                     } else {
-                        mDocList.append(" - неверный номер документа");
+                        mDocList.append(getText(R.string.doc_editText_wrong_docNumber));
                         mDocList.selectAll();
                     }
             }
@@ -73,7 +74,7 @@ public class WorkWithDocumentActivity extends ActionBarActivity {
     }
 
     private void workWithDoc(int type){
-        mButtonAction.setText(getText(R.string.doc_buttonRepeat));
+        mButtonAction.setText(R.string.doc_buttonRepeat);
         mDocList.setVisibility(View.GONE);
         DataBaseTask dbt = new DataBaseTask();
         HashMap<String, Integer> map = null;
@@ -85,30 +86,30 @@ public class WorkWithDocumentActivity extends ActionBarActivity {
             e.printStackTrace();
         }
         if (map != null) {
-            String resultText = "";
+            //String resultText = "";
             StringBuilder stringBuilder = new StringBuilder("");
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
                 String docStatus = "";
                 switch (entry.getValue()){
                     case DOC_NOT_EXISTS:
-                        docStatus = " - не существует в БД";
+                        docStatus = getString(R.string.doc_editText_wrong_docNumber);
                         break;
                     case DOC_UPDATED:
-                        docStatus = " - обновлен";
+                        docStatus = getString(R.string.doc_editText_update_docNumber);
                         break;
                     case DOC_DELETED:
-                        docStatus = " - апостроф удален";
+                        docStatus = getString(R.string.doc_editText_delete_docNumber);
                         break;
                     default:break;
                 }
-                resultText = resultText + entry.getKey() + docStatus + "\n";
+                //resultText = resultText + entry.getKey() + docStatus + "\n";
                 stringBuilder.append(entry.getKey());
                 stringBuilder.append(docStatus);
                 stringBuilder.append("\n");
             }
             mLabel.setText(stringBuilder);
         } else {
-            mLabel.setText("Произошла ошибка при работе с базой данных");
+            mLabel.setText(R.string.doc_textView_error_in_DB);
         }
     }
 
@@ -117,14 +118,14 @@ public class WorkWithDocumentActivity extends ActionBarActivity {
             case R.string.doc_buttonRepeat:
 
                 if (mActivityType == DELETE_ACTIVITY) {
-                    mButtonAction.setText(getText(R.string.doc_buttonDelete));
+                    mButtonAction.setText(R.string.doc_buttonDelete);
                 }
                 else {
-                    mButtonAction.setText(getText(R.string.doc_buttonUpdate));
+                    mButtonAction.setText(R.string.doc_buttonUpdate);
                 }
 
                 mDocList.setVisibility(View.VISIBLE);
-                mLabel.setText(getText(R.string.doc_textView_text));
+                mLabel.setText(R.string.doc_textView_text);
                 break;
             case R.string.doc_buttonUpdate:
                 workWithDoc(DataBaseTask.UPDATE_DOC);
