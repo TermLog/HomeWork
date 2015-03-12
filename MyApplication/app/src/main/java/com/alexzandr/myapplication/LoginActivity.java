@@ -17,7 +17,7 @@ import android.widget.TextView;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends ActionBarActivity implements EnterIpDialog.OnMadeServerChoice {
     private EditText mUser;
     private EditText mPassword;
     private TextView mDescr;
@@ -208,6 +208,7 @@ public class LoginActivity extends ActionBarActivity {
         view.setHintTextColor(getResources().getColor(R.color.main_EditHint_Error));
     }
 
+    @Override
     public void makeServerChoice(String serverIp){
         mServerId = R.string.serverName_other;
         mServerIp = serverIp;

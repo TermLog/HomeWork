@@ -1,5 +1,6 @@
 package com.alexzandr.myapplication;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
 public class EnterIpDialog extends DialogFragment implements OnClickListener {
 
     private EditText mEditTextIP;
+    private OnMadeServerChoice mActivity;
     private static final String IP_ADDRESS_PATTERN =
             "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
                     "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
@@ -27,6 +29,7 @@ public class EnterIpDialog extends DialogFragment implements OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_enter_ip, null);
+
         view.findViewById(R.id.dialog_buttonOk).setOnClickListener(this);
         view.findViewById(R.id.dialog_buttonCancel).setOnClickListener(this);
 
@@ -65,7 +68,7 @@ public class EnterIpDialog extends DialogFragment implements OnClickListener {
             Pattern pattern = Pattern.compile(IP_ADDRESS_PATTERN);
             Matcher matcher = pattern.matcher(valueIp);
             if (matcher.matches()){
-                ((LoginActivity)getActivity()).makeServerChoice(valueIp);
+                mActivity.makeServerChoice(valueIp);
                 dismiss();
             }else {
                 getDialog().setTitle(R.string.dialog_title_wrongIp);
@@ -73,5 +76,24 @@ public class EnterIpDialog extends DialogFragment implements OnClickListener {
                 mEditTextIP.requestFocus();
             }
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+
+        try {
+            mActivity = (OnMadeServerChoice) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnMadeServerChoice");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public interface OnMadeServerChoice {
+        public void makeServerChoice(String serverIp);
     }
 }
