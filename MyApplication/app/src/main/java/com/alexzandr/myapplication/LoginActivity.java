@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class LoginActivity extends ActionBarActivity implements EnterIpDialog.OnMadeServerChoice {
+	
+	//TEST GIT ON WINDOWS XP. USE GIT BASH
     private EditText mUser;
     private EditText mPassword;
     private TextView mDescr;
