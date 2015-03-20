@@ -53,6 +53,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
+        mProgressDialog.setCancelable(false);
         mProgressDialog.setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
