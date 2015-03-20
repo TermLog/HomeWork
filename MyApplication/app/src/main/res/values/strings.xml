@@ -8,10 +8,9 @@
     <string name="login_textDescr_no_password">Не указан пароль!</string>
     <string name="login_textDescr_no_user_password">Не указано имя пользователя и пароль!</string>
     <string name="login_textDescr_no_server">Не выбран сервер!</string>
-    <string name="login_textDescr_wrong_server">Не доступен сервер </string>
-    <string name="login_textDescr_wrong_user_password">Не верно указан логин или пароль\n
-        для соединения с MSSQL сервером </string>
-    <string name="login_textDescr_unavailable_server">Не доступен MSSQL SERVER на сервере </string>
+    <string name="login_textDescr_wrong_server">Не доступен сервер  </string>
+    <string name="login_textDescr_wrong_user_password">"Не верно указан логин или пароль \n для соединения с MSSQL сервером "</string>
+    <string name="login_textDescr_unavailable_server">Не доступен MSSQL SERVER на сервере  </string>
     <string name="login_textUser">Пользователь:</string>
     <string name="login_textEnter">Вход</string>
     <string name="login_textPassword">Пароль:</string>
@@ -57,6 +56,12 @@
     <string name="dialog_editText_hint_noIp">Необходимо указать IP-адрес</string>
     <string name="dialog_title">Укажите IP-адрес сервера</string>
     <string name="dialog_title_wrongIp">Не верный формат IP-адреса</string>
+
+    <string name="errorShow_negativeButton">Вернутся</string>
+    <string name="errorShow_title">Произошла ошибка!</string>
+
+    <string name="progressBar_title">Соединение…</string>
+    <string name="progressBar_massage">Подождите, выполняется соединение с сервером</string>
 
     <!--<string name="lock_keyMap_count_of_zones">zoneCount</string>-->
     <!--<string name="lock_keyMap_count_of_levels">levelCount</string>-->

@@ -13,6 +13,10 @@ public class MainMenuActivity extends ActionBarActivity {
     }
 
     public void exitClick(View view) {
+        Intent intent = new Intent(MainMenuActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
         this.finish();
     }
 

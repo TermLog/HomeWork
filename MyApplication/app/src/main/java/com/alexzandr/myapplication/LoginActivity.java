@@ -1,8 +1,10 @@
 package com.alexzandr.myapplication;
 
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
@@ -12,19 +14,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.HashMap;
 
-public class LoginActivity extends ActionBarActivity implements EnterIpDialog.OnMadeServerChoice {
+public class LoginActivity extends ActionBarActivity implements EnterIpDialog.OnMadeServerChoice, ErrorShowDialog.OnShowMainMenu {
 	
-	//TEST GIT ON WINDOWS XP. USE GIT BASH
     private EditText mUser;
     private EditText mPassword;
-    private TextView mDescr;
     private Button mChoiceServerButton;
     private DialogFragment mDialogOtherIP;
+    private ProgressDialog mProgressDialog;
+    private ErrorShowDialog mErrorDialog;
     private int mServerId = R.string.serverName_default;
     private String mServerIp;
 
@@ -47,9 +47,24 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
 
         mUser = (EditText) findViewById(R.id.login_editUser);
         mPassword = (EditText) findViewById(R.id.login_editPassword);
-        mDescr = (TextView) findViewById(R.id.login_textDescr);
         mChoiceServerButton = (Button) findViewById(R.id.login_buttonChoice);
         mDialogOtherIP = new EnterIpDialog();
+        mErrorDialog = new ErrorShowDialog();
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setTitle(R.string.progressBar_title);
+        mProgressDialog.setMessage(getText(R.string.progressBar_massage));
+        mProgressDialog.setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (errorType != NO_ERROR){
+                    showError();
+                } else {
+                    Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
+                    startActivity(intent);
+                    LoginActivity.this.finish();
+                }
+            }
+        });
 
         // interesting decision :) I can't say this is wrong
         // but I'd implement this another way
@@ -57,7 +72,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    setDefaultEditText(mUser, R.string.login_textDescr_user);
+                    setDefaultEditText(mUser);
                 }
                 return false;
             }
@@ -66,7 +81,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    setDefaultEditText(mUser, R.string.login_textDescr_user);
+                    setDefaultEditText(mUser);
                 }
             }
         });
@@ -74,7 +89,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    setDefaultEditText(mPassword, R.string.login_textDescr_password);
+                    setDefaultEditText(mPassword);
                 }
                 return false;
             }
@@ -83,7 +98,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    setDefaultEditText(mPassword, R.string.login_textDescr_password);
+                    setDefaultEditText(mPassword);
                 }
             }
         });
@@ -107,61 +122,67 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
     }
 
     private boolean isEmptyServer(){
-        if (mServerId == R.string.serverName_default) {
+        if (mServerId == R.string.serverName_default && errorType == NO_ERROR) {
             errorType = ERROR_EMPTY_SERVER;
         }
         return errorType != NO_ERROR;
     }
 
-    private void showMainMenu(){
-        if (isEmptyLoginForms() || isEmptyServer() || !createConnection()){
-            mDescr.setTextColor(Color.RED);
-            switch (errorType) {
-                case ERROR_EMPTY_USER:
-                    mDescr.setText(R.string.login_textDescr_no_user);
-                    break;
-                case ERROR_EMPTY_PASSWORD:
-                    mDescr.setText(R.string.login_textDescr_no_password);
-                    break;
-                case ERROR_EMPTY_BOTH:
-                    mDescr.setText(R.string.login_textDescr_no_user_password);
-                    break;
-                case ERROR_EMPTY_SERVER:
-                    mDescr.setText(R.string.login_textDescr_no_server);
-                    mChoiceServerButton.callOnClick();
-                    break;
-                case ERROR_WRONG_SERVER:
-                    if (mServerId != R.string.serverName_other) {
-                        mDescr.setText(getString(R.string.login_textDescr_wrong_server) + getString(mServerId) + "!");
-                    } else {
-                        mDescr.setText(getString(R.string.login_textDescr_wrong_server) + mServerIp + "!");
-                    }
-                    break;
-                case ERROR_WRONG_LOGIN_PASSWORD:
-                    setErrorStyleEditText(mUser);
-                    setErrorStyleEditText(mPassword);
-                    if (mServerId != R.string.serverName_other) {
-                        mDescr.setText(getString(R.string.login_textDescr_wrong_user_password) + getString(mServerId));
-                    } else {
-                        mDescr.setText(getString(R.string.login_textDescr_wrong_user_password) + mServerIp);
-                    }
-                    break;
-                case ERROR_UNAVAILABLE_MSSQL:
-                    if (mServerId != R.string.serverName_other) {
-                        mDescr.setText(getString(R.string.login_textDescr_unavailable_server) + getString(mServerId));
-                    } else {
-                        mDescr.setText(getString(R.string.login_textDescr_unavailable_server) + mServerIp);
-                    }
-                    break;
-                default: break;
-            }
-            errorType = NO_ERROR;
+    public void showError(){
+        String result ="";
+        switch (errorType) {
+            case ERROR_EMPTY_USER:
+                result = getString(R.string.login_textDescr_no_user);
+                break;
+            case ERROR_EMPTY_PASSWORD:
+                result = getString(R.string.login_textDescr_no_password);
+                break;
+            case ERROR_EMPTY_BOTH:
+                result = getString(R.string.login_textDescr_no_user_password);
+                break;
+            case ERROR_EMPTY_SERVER:
+                result = getString(R.string.login_textDescr_no_server);
+                break;
+            case ERROR_WRONG_SERVER:
+                if (mServerId != R.string.serverName_other) {
+                    result = getString(R.string.login_textDescr_wrong_server) + getString(mServerId) + "!";
+                } else {
+                    result = getString(R.string.login_textDescr_wrong_server) + mServerIp + "!";
+                }
+                break;
+            case ERROR_WRONG_LOGIN_PASSWORD:
+                setErrorStyleEditText(mUser);
+                setErrorStyleEditText(mPassword);
+                if (mServerId != R.string.serverName_other) {
+                    result = getString(R.string.login_textDescr_wrong_user_password) + getString(mServerId);
+                } else {
+                    result = getString(R.string.login_textDescr_wrong_user_password) + mServerIp;
+                }
+                break;
+            case ERROR_UNAVAILABLE_MSSQL:
+                if (mServerId != R.string.serverName_other) {
+                    result = getString(R.string.login_textDescr_unavailable_server) + getString(mServerId);
+                } else {
+                    result = getString(R.string.login_textDescr_unavailable_server) + mServerIp;
+                }
+                break;
+            default: break;
+        }
+        errorType = NO_ERROR;
+        Bundle errorMassage = new Bundle();
+        errorMassage.putString(ErrorShowDialog.KEY_FOR_ERROR, result);
+        mErrorDialog.setArguments(errorMassage);
+        mErrorDialog.show(getFragmentManager(), "ErrorDialog");
+    }
+
+    @Override
+    public void showMainMenu(){
+        isEmptyLoginForms();
+        isEmptyServer();
+        if (errorType == NO_ERROR){
+            createConnection();
         } else {
-            Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
-            startActivity(intent);
-            mDescr.setText(R.string.login_textDescr);
-            mUser.setText(null);
-            mPassword.setText(null);
+            showError();
         }
     }
 
@@ -187,7 +208,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
                         makeServerChoice(R.string.serverName_work, getString(R.string.serverIp_work));
                         return true;
                     case R.id.login_popup_other:
-                        mDialogOtherIP.show(getFragmentManager(), "myDialog");
+                        mDialogOtherIP.show(getFragmentManager(), "otherIpDialog");
                         return true;
                     default:
                         return false;
@@ -197,9 +218,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
         popupMenu.show();
     }
 
-    public void setDefaultEditText(EditText view, int stringResId) {
-        mDescr.setText(stringResId);
-        mDescr.setTextColor(getResources().getColor(R.color.text_blue));
+    public void setDefaultEditText(EditText view) {
         view.setBackgroundResource(R.color.main_EditBackground_Default);
         view.setHintTextColor(getResources().getColor(R.color.main_EditHint_Default));
     }
@@ -225,20 +244,18 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
         mChoiceServerButton.setTextColor(getResources().getColor(R.color.text_blue));
     }
 
-    private boolean createConnection(){
+    private void createConnection(){
+        mProgressDialog.show();
         db = new QueryToServer(mServerIp, mUser.getText().toString(), mPassword.getText().toString());
-        DataBaseTask dbt = new DataBaseTask();
-        try{
+        InnerTask dbt = new InnerTask();
             dbt.execute(DataBaseTask.CHECK);
-            return (dbt.get(30, TimeUnit.SECONDS) != null);
-        } catch(TimeoutException timeoutException){
-            timeoutException.printStackTrace();
-            dbt.cancel(true);
-            errorType = ERROR_UNAVAILABLE_MSSQL;
-            return false;
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
+    }
+
+    class InnerTask extends DataBaseTask{
+        @Override
+        protected void onPostExecute(HashMap<String, Integer> result) {
+            super.onPostExecute(result);
+            mProgressDialog.dismiss();
         }
     }
 }
