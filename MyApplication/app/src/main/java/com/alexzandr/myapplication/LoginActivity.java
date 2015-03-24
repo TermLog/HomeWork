@@ -111,11 +111,11 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
         String userName = mUser.getText().toString();
         String passwordValue = mPassword.getText().toString();
 
-        if(TextUtils.isEmpty(userName)){
+        if (TextUtils.isEmpty(userName)){
             setErrorStyleEditText(mUser);
             errorType = ERROR_EMPTY_USER;
         }
-        if(TextUtils.isEmpty(passwordValue)){
+        if (TextUtils.isEmpty(passwordValue)){
             setErrorStyleEditText(mPassword);
             errorType += ERROR_EMPTY_PASSWORD;
         }

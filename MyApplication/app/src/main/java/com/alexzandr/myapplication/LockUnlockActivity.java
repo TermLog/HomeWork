@@ -34,14 +34,14 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
     @Override
     protected void onStart(){
         super.onStart();
-        if(table.getChildCount() <= 1) {
+        if (table.getChildCount() <= 1) {
             createTable();
         }
     }
 
     @Override
     public void onClick(View view) {
-        if(view instanceof BlockButton){
+        if (view instanceof BlockButton){
             blockButtonClick((BlockButton) view);
         } else if (view instanceof ZoneLevelButton){
             zoneLevelClick((ZoneLevelButton) view);
@@ -58,7 +58,7 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
             e.printStackTrace();
         }
 
-        if(mapForTable != null) {
+        if (mapForTable != null) {
             int zone, level;
             int zoneCount = mapForTable.get(KEY_COUNT_OF_ZONES);
             int levelCount = mapForTable.get(KEY_COUNT_OF_LEVELS);
@@ -135,11 +135,11 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
             e.printStackTrace();
         }
 
-        if(button.getType() == ZoneLevelButton.TYPE_ZONE && map != null){
+        if (button.getType() == ZoneLevelButton.TYPE_ZONE && map != null){
 
             changeButtonInRow((TableRow) button.getParent(), map, button);
 
-        }else if(map != null) {
+        }else if (map != null) {
             try {
                 int rowCount = table.getChildCount();
                 for (int rowNumber = 0; rowNumber < rowCount; rowNumber++) {
