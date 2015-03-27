@@ -45,12 +45,15 @@ public class ZoneLevelButton extends Button {
     public void setType(int type){
         mType = type;
     }
+
     public void setValue(int value){
         mValue = value;
     }
+
     public int getType(){
         return mType;
     }
+
     public int getValue(){
         return mValue;
     }

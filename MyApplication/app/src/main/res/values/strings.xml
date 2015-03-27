@@ -1,16 +1,13 @@
 <resources>
     <string name="app_name">Warehouse</string>
 
-    <string name="login_textDescr">Укажите имя пользователя и пароль для входа</string>
-    <string name="login_textDescr_user">Укажите имя пользователя для входа</string>
-    <string name="login_textDescr_password">Укажите пароль для входа</string>
-    <string name="login_textDescr_no_user">Не указано имя пользователя!</string>
-    <string name="login_textDescr_no_password">Не указан пароль!</string>
-    <string name="login_textDescr_no_user_password">Не указано имя пользователя и пароль!</string>
-    <string name="login_textDescr_no_server">Не выбран сервер!</string>
-    <string name="login_textDescr_wrong_server">Не доступен сервер  </string>
-    <string name="login_textDescr_wrong_user_password">"Не верно указан логин или пароль \n для соединения с MSSQL сервером "</string>
-    <string name="login_textDescr_unavailable_server">Не доступен MSSQL SERVER на сервере  </string>
+    <string name="login_error_msg_no_user">Не указано имя пользователя!</string>
+    <string name="login_error_msg_no_password">Не указан пароль!</string>
+    <string name="login_error_msg_no_server">Не выбран сервер!</string>
+    <string name="login_error_msg_wrong_server">"Не доступен сервер "</string>
+    <string name="login_error_msg_unavailable_server">"Не доступен MSSQL SERVER на сервере "</string>
+    <string name="login_error_msg_wrong_user_password">"Не верно указан логин или пароль \n для соединения с MSSQL сервером "</string>
+    <string name="login_error_msg_disconnect_from_server">"Соединение было прервано сервером "</string>
     <string name="login_textUser">Пользователь:</string>
     <string name="login_textEnter">Вход</string>
     <string name="login_textPassword">Пароль:</string>
@@ -42,12 +39,14 @@
     <string name="doc_buttonDelete">Удалить</string>
     <string name="doc_buttonRepeat">Повторить</string>
 
+    <string name="lock_buttonRefresh">Обновить</string>
+
     <string name="serverName_default">Выберите сервер</string>
     <string name="serverName_home">Дом</string>
     <string name="serverName_work">Работа</string>
     <string name="serverName_other">Другой</string>
-    <string name="serverIp_home">192.168.1.104</string>
-    <string name="serverIp_work">10.100.6.15</string>
+    <!--<string name="serverIp_home">192.168.1.104</string>-->
+    <!--<string name="serverIp_work">10.100.6.15</string>-->
 
     <string name="dialog_IP_filter">0123456789.</string>
     <string name="dialog_buttonOk">Подтвердить</string>
@@ -63,14 +62,10 @@
     <string name="progressBar_title">Соединение…</string>
     <string name="progressBar_massage">Подождите, выполняется соединение с сервером</string>
 
-    <!--<string name="lock_keyMap_count_of_zones">zoneCount</string>-->
-    <!--<string name="lock_keyMap_count_of_levels">levelCount</string>-->
-
-
-    <string-array name="serverList">
-        <item>@string/serverName_home</item>
-        <item>@string/serverName_work</item>
-        <item>@string/serverName_other</item>
-    </string-array>
+    <!--<string-array name="serverList">-->
+        <!--<item>@string/serverName_home</item>-->
+        <!--<item>@string/serverName_work</item>-->
+        <!--<item>@string/serverName_other</item>-->
+    <!--</string-array>-->
 
 </resources>

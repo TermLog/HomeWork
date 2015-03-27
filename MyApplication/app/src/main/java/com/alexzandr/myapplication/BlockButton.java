@@ -12,16 +12,18 @@ public class BlockButton extends Button {
     private int mZone;
     private int mLevel;
     private int mBlocked;
-    final static int UNBLOCKED = 1;
-    final static int BLOCKED = 2;
-    final static int BOTH = 3;
+    private final static int UNBLOCKED = 1;
+    private final static int BLOCKED = 2;
+    private final static int BOTH = 3;
 
     public BlockButton(Context context){
         super(context);
     }
+
     public BlockButton(Context context, AttributeSet attSet){
         super(context, attSet);
     }
+
     public BlockButton(Context context, AttributeSet attSet, int defStyleAttr){
         super(context, attSet, defStyleAttr);
     }
@@ -38,12 +40,14 @@ public class BlockButton extends Button {
         setText("P" + resultNameN.substring(resultNameN.length() - 2) + ", " + level);
     }
 
-    public void setZone(int zone) {
+    void setZone(int zone) {
         this.mZone = zone;
     }
-    public void setLevel(int level) {
+
+    void setLevel(int level) {
         this.mLevel = level;
     }
+
     public void setBlocked(int block) {
         this.mBlocked = block;
         setAndroidSettings();
@@ -52,15 +56,20 @@ public class BlockButton extends Button {
     public int getZone() {
         return this.mZone;
     }
+
     public int getLevel() {
         return this.mLevel;
     }
+
     public String getStringForKey(){
         return "P" + getZone() + "_" + getLevel();
     }
-    public int getBlocked() {
-        return this.mBlocked;
-    }
+
+// --Commented out by Inspection START (27.03.15 17:02):
+//    public int getBlocked() {
+//        return this.mBlocked;
+//    }
+// --Commented out by Inspection STOP (27.03.15 17:02)
 
     private void setAndroidSettings(){
         switch (mBlocked){

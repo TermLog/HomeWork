@@ -11,11 +11,15 @@ import android.widget.TableRow;
 import java.util.HashMap;
 
 
-public class LockUnlockActivity extends ActionBarActivity implements OnClickListener {
+public class LockUnlockActivity extends ActionBarActivity implements OnClickListener, ErrorShowDialog.OnShowErrors {
 
-    public TableLayout table;
-    public TableRow firstRow;
-    public Button refreshButton;
+    private TableLayout mTable;
+    private TableRow mFirstRow;
+    private Button mRefreshButton;
+
+    private ErrorShowDialog mErrorDialog;
+    private DataBaseTask mTask;
+    private HashMap<String, Integer> mResultMap;
 
     private static int sRefreshCount;
 
@@ -26,15 +30,20 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock_unlock);
-        table = (TableLayout) findViewById(R.id.lockUnlock_table);
-        firstRow = (TableRow) findViewById(R.id.lockUnlock_firstRow);
-        refreshButton = (Button) findViewById(R.id.lockUnlock_buttonRefresh);
+
+        mTable = (TableLayout) findViewById(R.id.lockUnlock_table);
+        mFirstRow = (TableRow) findViewById(R.id.lockUnlock_firstRow);
+        mRefreshButton = (Button) findViewById(R.id.lockUnlock_buttonRefresh);
+
+        mErrorDialog = new ErrorShowDialog();
+        mErrorDialog.setCancelable(false);
+
     }
 
     @Override
     protected void onStart(){
         super.onStart();
-        if (table.getChildCount() <= 1) {
+        if (mTable.getChildCount() <= 1) {
             createTable();
         }
     }
@@ -48,108 +57,123 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
         }
     }
 
-    public void createTable(){
-        HashMap<String, Integer> mapForTable = null;
-        DataBaseTask dbt = new DataBaseTask();
+    void createTable(){
+        mTask = new DataBaseTask();
+        mResultMap = null;
         try{
-            dbt.execute(DataBaseTask.ALL_TABLE);
-            mapForTable = dbt.get();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+            mTask.execute(DataBaseTask.ALL_TABLE);
+            mResultMap = mTask.get();
 
-        if (mapForTable != null) {
-            int zone, level;
-            int zoneCount = mapForTable.get(KEY_COUNT_OF_ZONES);
-            int levelCount = mapForTable.get(KEY_COUNT_OF_LEVELS);
-
-//            TableRow.LayoutParams rowLayoutParam = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-//            rowLayoutParam.setMargins(2, 2, 2, 2);
-
-            for (level = 1; level <= levelCount; level++){
-                firstRow.addView(new ZoneLevelButton(this, ZoneLevelButton.TYPE_LEVEL, level));
+            if (mTask.exception != null){
+                throw mTask.exception;
             }
 
-            for (zone = 1; zone <= zoneCount; zone++) {
-                TableRow row = new TableRow(this);
-                row.addView(new ZoneLevelButton(this, ZoneLevelButton.TYPE_ZONE, zone));
+            if (mResultMap != null) {
+                int zone, level;
+                int zoneCount = mResultMap.get(KEY_COUNT_OF_ZONES);
+                int levelCount = mResultMap.get(KEY_COUNT_OF_LEVELS);
 
-                for (level = 1; level <= levelCount; level++) {
-                    row.addView(new BlockButton(this, zone, level, mapForTable.get("P" + zone + "_" + level)));
+                for (level = 1; level <= levelCount; level++){
+                    mFirstRow.addView(new ZoneLevelButton(this, ZoneLevelButton.TYPE_LEVEL, level));
                 }
 
-                table.addView(row);
+                for (zone = 1; zone <= zoneCount; zone++) {
+                    TableRow row = new TableRow(this);
+                    row.addView(new ZoneLevelButton(this, ZoneLevelButton.TYPE_ZONE, zone));
+
+                    for (level = 1; level <= levelCount; level++) {
+                        row.addView(new BlockButton(this, zone, level, mResultMap.get("P" + zone + "_" + level)));
+                    }
+
+                    mTable.addView(row);
+                }
             }
+        } catch (Exception e){
+            showError(e.getMessage());
         }
     }
 
     public void onRefreshClick(View view){
-        HashMap<String, Integer> refreshMap = null;
-        DataBaseTask dbt = new DataBaseTask();
+        mTask = new DataBaseTask();
+        mResultMap = null;
         try{
-            dbt.execute(DataBaseTask.ALL_TABLE);
-            refreshMap = dbt.get();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        if (refreshMap != null) {
-            int rowCount = table.getChildCount();
-            for (int rowNumber = 0; rowNumber < rowCount; rowNumber++) {
-                if (table.getChildAt(rowNumber) instanceof TableRow) {
-                    TableRow row = (TableRow) table.getChildAt(rowNumber);
-                    int buttonCount = row.getChildCount();
-                    for (int buttonNumber = 0; buttonNumber < buttonCount; buttonNumber++) {
-                        if (row.getChildAt(buttonNumber) instanceof BlockButton) {
-                            BlockButton button = (BlockButton) row.getChildAt(buttonNumber);
-                            button.setBlocked(refreshMap.get("P" + rowNumber + "_" + buttonNumber));
+            mTask.execute(DataBaseTask.ALL_TABLE);
+            mResultMap = mTask.get();
+
+            if (mTask.exception != null){
+                throw mTask.exception;
+            }
+
+            if (mResultMap != null) {
+                int rowCount = mTable.getChildCount();
+
+                for (int rowNumber = 0; rowNumber < rowCount; rowNumber++) {
+
+                    if (mTable.getChildAt(rowNumber) instanceof TableRow) {
+                        TableRow row = (TableRow) mTable.getChildAt(rowNumber);
+                        int buttonCount = row.getChildCount();
+
+                        for (int buttonNumber = 0; buttonNumber < buttonCount; buttonNumber++) {
+
+                            if (row.getChildAt(buttonNumber) instanceof BlockButton) {
+                                BlockButton button = (BlockButton) row.getChildAt(buttonNumber);
+                                button.setBlocked(mResultMap.get("P" + rowNumber + "_" + buttonNumber));
+                            }
                         }
                     }
-
                 }
             }
+        } catch (Exception e){
+            showError(e.getMessage());
         }
-        refreshButton.setText("Ref_" + (++sRefreshCount));
+        mRefreshButton.setText("Ref_" + (++sRefreshCount));
     }
 
     private void blockButtonClick(BlockButton button){
-        DataBaseTask dbt = new DataBaseTask();
-        dbt.procedureParamZone = button.getZone();
-        dbt.procedureParamLevel = button.getLevel();
+        mTask = new DataBaseTask();
+        mTask.procedureParamZone = button.getZone();
+        mTask.procedureParamLevel = button.getLevel();
         try {
-            dbt.execute(DataBaseTask.BLOCK_BUTTON);
-            button.setBlocked(dbt.get().get(button.getStringForKey()));
+            mTask.execute(DataBaseTask.BLOCK_BUTTON);
+            mResultMap = mTask.get();
+
+            if (mTask.exception != null){
+                throw mTask.exception;
+            }
+
+            button.setBlocked(mResultMap.get(button.getStringForKey()));
         }catch (Exception e){
-            e.printStackTrace();
+            showError(e.getMessage());
         }
     }
 
     private void zoneLevelClick(ZoneLevelButton button){
-        DataBaseTask dbt = new DataBaseTask();
-        HashMap<String, Integer> map = null;
-        dbt.procedureParamType = button.getType();
-        dbt.procedureParamValue = button.getValue();
+        mTask = new DataBaseTask();
+        mResultMap = null;
+        mTask.procedureParamType = button.getType();
+        mTask.procedureParamValue = button.getValue();
         try {
-            dbt.execute(DataBaseTask.ZONE_LEVEL);
-            map = dbt.get();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+            mTask.execute(DataBaseTask.ZONE_LEVEL);
+            mResultMap = mTask.get();
 
-        if (button.getType() == ZoneLevelButton.TYPE_ZONE && map != null){
+            if (mTask.exception != null){
+                throw mTask.exception;
+            }
 
-            changeButtonInRow((TableRow) button.getParent(), map, button);
+            if (button.getType() == ZoneLevelButton.TYPE_ZONE && mResultMap != null){
 
-        }else if (map != null) {
-            try {
-                int rowCount = table.getChildCount();
+                changeButtonInRow((TableRow) button.getParent(), mResultMap, button);
+
+            }else if (mResultMap != null) {
+                int rowCount = mTable.getChildCount();
                 for (int rowNumber = 0; rowNumber < rowCount; rowNumber++) {
-                    if (table.getChildAt(rowNumber) instanceof TableRow) {
-                        changeButtonInRow((TableRow) table.getChildAt(rowNumber), map, button);
+                    if (mTable.getChildAt(rowNumber) instanceof TableRow) {
+                        changeButtonInRow((TableRow) mTable.getChildAt(rowNumber), mResultMap, button);
                     }
                 }
-            }catch (Exception e){
-                e.printStackTrace();
             }
+        }catch (Exception e){
+            showError(e.getMessage());
         }
     }
 
@@ -162,10 +186,18 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
                     try {
                         button.setBlocked(map.get(button.getStringForKey()));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        showError(e.getMessage());
                     }
                 }
             }
         }
+    }
+
+    @Override
+    public void showError(String errorText) {
+        Bundle errorMassage = new Bundle();
+        errorMassage.putString(ErrorShowDialog.KEY_FOR_ERROR, errorText);
+        mErrorDialog.setArguments(errorMassage);
+        mErrorDialog.show(getFragmentManager(), "ErrorDialog");
     }
 }

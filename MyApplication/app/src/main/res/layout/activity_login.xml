@@ -32,15 +32,6 @@
             android:textStyle="bold"
             android:paddingBottom="15dp" />
 
-        <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/login_textDescr"-->
-            <!--android:id="@+id/login_textDescr"-->
-            <!--android:textColor="@color/text_blue"-->
-            <!--android:textStyle="italic"-->
-            <!--android:paddingBottom="10dp" />-->
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

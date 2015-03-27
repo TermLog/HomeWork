@@ -59,7 +59,7 @@ public class EnterIpDialog extends DialogFragment implements OnClickListener {
         }
     }
 
-    public void buttonOkClick(){
+    void buttonOkClick(){
         String valueIp = mEditTextIP.getText().toString();
         if (TextUtils.isEmpty(valueIp)) {
             mEditTextIP.setHint(R.string.dialog_editText_hint_noIp);

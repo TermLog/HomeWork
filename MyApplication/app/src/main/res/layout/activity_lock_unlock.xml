@@ -25,10 +25,10 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Refresh"
+                    android:text="@string/lock_buttonRefresh"
                     android:id="@+id/lockUnlock_buttonRefresh"
                     android:background="@color/lockUnlock_button_zoneAndLevel"
-                    android:layout_margin="2px"
+                    android:layout_margin="2dp"
                     android:textSize="12sp"
                     android:textColor="@color/text_white"
                     android:onClick="onRefreshClick"/>
