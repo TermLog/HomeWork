@@ -4,6 +4,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -16,10 +18,10 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
     private TableLayout mTable;
     private TableRow mFirstRow;
     private Button mRefreshButton;
-
     private ErrorShowDialog mErrorDialog;
     private DataBaseTask mTask;
     private HashMap<String, Integer> mResultMap;
+    private Animation mButtonAnimation = null;
 
     private static int sRefreshCount;
 
@@ -37,6 +39,8 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
 
         mErrorDialog = new ErrorShowDialog();
         mErrorDialog.setCancelable(false);
+
+        mButtonAnimation = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
 
     }
 
@@ -94,6 +98,7 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
     }
 
     public void onRefreshClick(View view){
+        view.startAnimation(mButtonAnimation);
         mTask = new DataBaseTask();
         mResultMap = null;
         try{
@@ -130,6 +135,7 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
     }
 
     private void blockButtonClick(BlockButton button){
+        button.startAnimation(mButtonAnimation);
         mTask = new DataBaseTask();
         mTask.procedureParamZone = button.getZone();
         mTask.procedureParamLevel = button.getLevel();
@@ -148,6 +154,7 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
     }
 
     private void zoneLevelClick(ZoneLevelButton button){
+        button.startAnimation(mButtonAnimation);
         mTask = new DataBaseTask();
         mResultMap = null;
         mTask.procedureParamType = button.getType();

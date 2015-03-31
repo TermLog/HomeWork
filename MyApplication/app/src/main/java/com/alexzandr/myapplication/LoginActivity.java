@@ -10,6 +10,8 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
@@ -33,6 +35,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
 
     public static QueryToServer sQueryToServer;
     private static Context sContext;
+    private Animation mButtonAnimation = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
         mProgressDialog.setCancelable(false);
+        mButtonAnimation = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
     }
 
     private void isEmptyLoginForms(){
@@ -96,10 +100,14 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
     }
 
     public void enterClick(View view) {
+        view.startAnimation(mButtonAnimation);
         showMainMenu();
+
     }
     public void cancelClick(View view){
+        view.startAnimation(mButtonAnimation);
         this.finish();
+
     }
 
     public void serverChoice(View view){

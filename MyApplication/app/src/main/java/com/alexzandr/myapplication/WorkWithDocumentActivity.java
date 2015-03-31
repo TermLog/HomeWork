@@ -4,6 +4,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ public class WorkWithDocumentActivity extends ActionBarActivity implements Error
     private Button mButtonAction;
     private int mActivityType;
     private ErrorShowDialog mErrorDialog;
+    private Animation mButtonAnimation = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,8 @@ public class WorkWithDocumentActivity extends ActionBarActivity implements Error
         mErrorDialog = new ErrorShowDialog();
         mErrorDialog.setCancelable(false);
 
+        mButtonAnimation = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
+
         if (mActivityType == DELETE_ACTIVITY) {
             setTitle(R.string.title_activity_delete_document);
         }
@@ -43,7 +48,7 @@ public class WorkWithDocumentActivity extends ActionBarActivity implements Error
     }
 
     public void onClick(View view){
-
+        view.startAnimation(mButtonAnimation);
         switch (view.getId()) {
             case R.id.doc_buttonBack:
                 finish();
