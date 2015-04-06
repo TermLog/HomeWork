@@ -22,6 +22,7 @@ public class LoginActivity extends ActionBarActivity {
     private TextView descr;
     private Button choiceServerButton;
     private DialogFragment dialogOtherIP;
+    // R.string.serverName_default is already a public static int field, do not duplicate it
     public static int mServerId = R.string.serverName_default;
     public static String mServerIp;
     public static QueryToServer db;
@@ -34,6 +35,7 @@ public class LoginActivity extends ActionBarActivity {
     public static final int ERROR_WRONG_LOGIN_PASSWORD = 6;
     public static final int ERROR_UNAVAILABLE_MSSQL = 7;
     public static int errorType = NO_ERROR;
+    // the same as mServerId
     static final int DEFAULT_USER = R.string.login_textDescr_user;
     static final int DEFAULT_PASSWORD = R.string.login_textDescr_password;
 
