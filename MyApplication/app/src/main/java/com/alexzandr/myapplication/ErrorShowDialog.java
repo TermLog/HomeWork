@@ -13,11 +13,10 @@ import android.os.Bundle;
 public class ErrorShowDialog extends DialogFragment  implements DialogInterface.OnClickListener {
     public static final String KEY_FOR_ERROR = "error";
     private OnShowErrors mActivity;
-    private AlertDialog.Builder mDialog;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        mDialog = new AlertDialog.Builder((Activity)mActivity)
+        AlertDialog.Builder mDialog = new AlertDialog.Builder((Activity) mActivity)
                 .setTitle(R.string.errorShow_title)
                 .setNegativeButton(R.string.errorShow_negativeButton, this)
                 .setMessage(getArguments().getString(KEY_FOR_ERROR));
@@ -46,6 +45,6 @@ public class ErrorShowDialog extends DialogFragment  implements DialogInterface.
     }
 
     public interface OnShowErrors {
-        public void showError(String errorText);
+        void showError(String errorText);
     }
 }

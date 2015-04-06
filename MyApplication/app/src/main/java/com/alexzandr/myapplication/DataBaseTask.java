@@ -8,12 +8,12 @@ import java.util.HashMap;
  * Created by AlexZandR on 23.02.2015.
  */
 class DataBaseTask extends AsyncTask<Integer, Void, HashMap<String, Integer>> {
-    final static int ALL_TABLE = 1;
-    final static int ZONE_LEVEL = 2;
-    final static int BLOCK_BUTTON = 3;
-    final static int CHECK = 4;
-    final static int UPDATE_DOC = 5;
-    final static int DELETE_DOC = 6;
+    final static int GET_ALL_DATA = 1;
+    final static int ZONE_LEVEL_CHANGE = 2;
+    final static int SECTION_CHANGE = 3;
+    final static int CHECK_CONNECTION = 4;
+    final static int UPDATE_IN_DOC = 5;
+    final static int DELETE_IN_DOC = 6;
     public int procedureParamType;
     public int procedureParamValue;
     public int procedureParamZone;
@@ -28,22 +28,22 @@ class DataBaseTask extends AsyncTask<Integer, Void, HashMap<String, Integer>> {
         HashMap<String, Integer> mapResult = null;
         try {
             switch (intParams){
-                case ALL_TABLE:
+                case GET_ALL_DATA:
                     mapResult = serverData.getAllData();
                     break;
-                case ZONE_LEVEL:
+                case ZONE_LEVEL_CHANGE:
                     mapResult = serverData.changeZoneLevel(procedureParamType, procedureParamValue);
                     break;
-                case BLOCK_BUTTON:
+                case SECTION_CHANGE:
                     mapResult = serverData.changeSection(procedureParamZone, procedureParamLevel);
                     break;
-                case UPDATE_DOC:
+                case UPDATE_IN_DOC:
                     mapResult = serverData.updateDoc(procedureParamDocList);
                     break;
-                case DELETE_DOC:
+                case DELETE_IN_DOC:
                     mapResult = serverData.deleteDoc(procedureParamDocList);
                     break;
-                case CHECK:
+                case CHECK_CONNECTION:
                     mapResult = serverData.checkConnection();
                     break;
                 default: break;

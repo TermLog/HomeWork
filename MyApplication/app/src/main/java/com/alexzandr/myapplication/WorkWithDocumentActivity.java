@@ -137,10 +137,10 @@ public class WorkWithDocumentActivity extends ActionBarActivity implements Error
     private void doAction(int actionType){
         switch (actionType){
             case UPDATE_ACTIVITY:
-                workWithDoc(DataBaseTask.UPDATE_DOC);
+                workWithDoc(DataBaseTask.UPDATE_IN_DOC);
                 break;
             case DELETE_ACTIVITY:
-                workWithDoc(DataBaseTask.DELETE_DOC);
+                workWithDoc(DataBaseTask.DELETE_IN_DOC);
                 break;
             default:break;
         }

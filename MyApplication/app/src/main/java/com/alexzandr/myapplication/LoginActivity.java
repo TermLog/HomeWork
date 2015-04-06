@@ -153,7 +153,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
     private void createConnection(){
         sQueryToServer = new QueryToServer(mServerIp, mUser.getText().toString(), mPassword.getText().toString());
         InnerTask task = new InnerTask();
-        task.execute(DataBaseTask.CHECK);
+        task.execute(DataBaseTask.CHECK_CONNECTION);
     }
 
     public static Context getApp(){

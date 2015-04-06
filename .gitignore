@@ -43,5 +43,6 @@ Temporary Items
 .apdisk
 
 *gradle.xml
-
-
+MyApplication/.idea/*
+MyApplication/app/app.iml
+MyApplication/MyApplication.iml

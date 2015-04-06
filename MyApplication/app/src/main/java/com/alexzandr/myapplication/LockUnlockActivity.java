@@ -42,6 +42,8 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
 
         mButtonAnimation = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
 
+        mTask = new DataBaseTask();
+
     }
 
     @Override
@@ -54,18 +56,16 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
 
     @Override
     public void onClick(View view) {
-        if (view instanceof BlockButton){
-            blockButtonClick((BlockButton) view);
+        if (view instanceof SectionButton){
+            sectionButtonClick((SectionButton) view);
         } else if (view instanceof ZoneLevelButton){
             zoneLevelClick((ZoneLevelButton) view);
         }
     }
 
     void createTable(){
-        mTask = new DataBaseTask();
-        mResultMap = null;
         try{
-            mTask.execute(DataBaseTask.ALL_TABLE);
+            mTask.execute(DataBaseTask.GET_ALL_DATA);
             mResultMap = mTask.get();
 
             if (mTask.exception != null){
@@ -73,36 +73,49 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
             }
 
             if (mResultMap != null) {
-                int zone, level;
-                int zoneCount = mResultMap.get(KEY_COUNT_OF_ZONES);
-                int levelCount = mResultMap.get(KEY_COUNT_OF_LEVELS);
+                int zonesCount = mResultMap.get(KEY_COUNT_OF_ZONES);
+                int levelsCount = mResultMap.get(KEY_COUNT_OF_LEVELS);
 
-                for (level = 1; level <= levelCount; level++){
-                    mFirstRow.addView(new ZoneLevelButton(this, ZoneLevelButton.TYPE_LEVEL, level));
-                }
+                fillFirstRow(levelsCount);
 
-                for (zone = 1; zone <= zoneCount; zone++) {
-                    TableRow row = new TableRow(this);
-                    row.addView(new ZoneLevelButton(this, ZoneLevelButton.TYPE_ZONE, zone));
-
-                    for (level = 1; level <= levelCount; level++) {
-                        row.addView(new BlockButton(this, zone, level, mResultMap.get("P" + zone + "_" + level)));
-                    }
-
-                    mTable.addView(row);
-                }
+                addNewRow(zonesCount, levelsCount);
             }
         } catch (Exception e){
             showError(e.getMessage());
+        } finally {
+            mResultMap = null;
+            mTask.exception = null;
+        }
+
+    }
+
+    private void fillFirstRow(int levelsCount) {
+        for (int level = 1; level <= levelsCount; level++){
+            mFirstRow.addView(new ZoneLevelButton(this, ZoneLevelButton.TYPE_LEVEL, level));
+        }
+    }
+
+    private void addNewRow(int zonesCount, int levelsCount) {
+        for (int zone = 1; zone <= zonesCount; zone++) {
+            TableRow newRow = new TableRow(this);
+            fillRow(zone, levelsCount, newRow);
+            mTable.addView(newRow);
+        }
+    }
+
+    private void fillRow(int zoneNumber, int levelsCount, TableRow row){
+        row.addView(new ZoneLevelButton(this, ZoneLevelButton.TYPE_ZONE, zoneNumber));
+
+        for (int level = 1; level <= levelsCount; level++){
+            int buttonBlockedType = mResultMap.get("P" + zoneNumber + "_" + level);
+            row.addView(new SectionButton(this, zoneNumber, level, buttonBlockedType));
         }
     }
 
     public void onRefreshClick(View view){
         view.startAnimation(mButtonAnimation);
-        mTask = new DataBaseTask();
-        mResultMap = null;
         try{
-            mTask.execute(DataBaseTask.ALL_TABLE);
+            mTask.execute(DataBaseTask.GET_ALL_DATA);
             mResultMap = mTask.get();
 
             if (mTask.exception != null){
@@ -113,16 +126,16 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
                 int rowCount = mTable.getChildCount();
 
                 for (int rowNumber = 0; rowNumber < rowCount; rowNumber++) {
-
                     if (mTable.getChildAt(rowNumber) instanceof TableRow) {
                         TableRow row = (TableRow) mTable.getChildAt(rowNumber);
                         int buttonCount = row.getChildCount();
 
                         for (int buttonNumber = 0; buttonNumber < buttonCount; buttonNumber++) {
+                            if (row.getChildAt(buttonNumber) instanceof SectionButton) {
+                                SectionButton button = (SectionButton) row.getChildAt(buttonNumber);
+                                String key = button.getStringForKey();
 
-                            if (row.getChildAt(buttonNumber) instanceof BlockButton) {
-                                BlockButton button = (BlockButton) row.getChildAt(buttonNumber);
-                                button.setBlocked(mResultMap.get("P" + rowNumber + "_" + buttonNumber));
+                                button.setBlockedType(mResultMap.get(key));
                             }
                         }
                     }
@@ -130,37 +143,41 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
             }
         } catch (Exception e){
             showError(e.getMessage());
+        } finally {
+            mResultMap = null;
+            mTask.exception = null;
         }
         mRefreshButton.setText("Ref_" + (++sRefreshCount));
     }
 
-    private void blockButtonClick(BlockButton button){
+    private void sectionButtonClick(SectionButton button){
         button.startAnimation(mButtonAnimation);
-        mTask = new DataBaseTask();
         mTask.procedureParamZone = button.getZone();
         mTask.procedureParamLevel = button.getLevel();
         try {
-            mTask.execute(DataBaseTask.BLOCK_BUTTON);
+            mTask.execute(DataBaseTask.SECTION_CHANGE);
             mResultMap = mTask.get();
 
             if (mTask.exception != null){
                 throw mTask.exception;
             }
 
-            button.setBlocked(mResultMap.get(button.getStringForKey()));
-        }catch (Exception e){
+            String key = button.getStringForKey();
+            button.setBlockedType(mResultMap.get(key));
+        } catch (Exception e){
             showError(e.getMessage());
+        } finally {
+            mResultMap = null;
+            mTask.exception = null;
         }
     }
 
     private void zoneLevelClick(ZoneLevelButton button){
         button.startAnimation(mButtonAnimation);
-        mTask = new DataBaseTask();
-        mResultMap = null;
         mTask.procedureParamType = button.getType();
         mTask.procedureParamValue = button.getValue();
         try {
-            mTask.execute(DataBaseTask.ZONE_LEVEL);
+            mTask.execute(DataBaseTask.ZONE_LEVEL_CHANGE);
             mResultMap = mTask.get();
 
             if (mTask.exception != null){
@@ -181,17 +198,20 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
             }
         }catch (Exception e){
             showError(e.getMessage());
+        } finally {
+            mResultMap = null;
+            mTask.exception = null;
         }
     }
 
     private void changeButtonInRow(TableRow parentRow, HashMap<String, Integer> map, ZoneLevelButton zoneLevelButton){
         int buttonCount = parentRow.getChildCount();
         for (int i = 0; i < buttonCount; i++){
-            if (parentRow.getChildAt(i) instanceof BlockButton){
-                BlockButton button = (BlockButton)parentRow.getChildAt(i);
+            if (parentRow.getChildAt(i) instanceof SectionButton){
+                SectionButton button = (SectionButton)parentRow.getChildAt(i);
                 if (button.getLevel() == zoneLevelButton.getValue() || zoneLevelButton.getType() == ZoneLevelButton.TYPE_ZONE) {
                     try {
-                        button.setBlocked(map.get(button.getStringForKey()));
+                        button.setBlockedType(map.get(button.getStringForKey()));
                     } catch (Exception e) {
                         showError(e.getMessage());
                     }

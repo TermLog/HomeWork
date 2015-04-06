@@ -8,31 +8,31 @@ import android.widget.Button;
 /**
  * Created by AlexZandR on 22.02.2015.
  */
-public class BlockButton extends Button {
+public class SectionButton extends Button {
     private int mZone;
     private int mLevel;
-    private int mBlocked;
+    private int mBlockedType;
     private final static int UNBLOCKED = 1;
     private final static int BLOCKED = 2;
     private final static int BOTH = 3;
 
-    public BlockButton(Context context){
+    public SectionButton(Context context){
         super(context);
     }
 
-    public BlockButton(Context context, AttributeSet attSet){
+    public SectionButton(Context context, AttributeSet attSet){
         super(context, attSet);
     }
 
-    public BlockButton(Context context, AttributeSet attSet, int defStyleAttr){
+    public SectionButton(Context context, AttributeSet attSet, int defStyleAttr){
         super(context, attSet, defStyleAttr);
     }
 
-    public BlockButton(Context context, int zone, int level, int blocked) {
+    public SectionButton(Context context, int zone, int level, int blocked) {
         super(context);
         setZone(zone);
         setLevel(level);
-        setBlocked(blocked);
+        setBlockedType(blocked);
         setOnClickListener((LockUnlockActivity)context);
         setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
 
@@ -48,9 +48,9 @@ public class BlockButton extends Button {
         this.mLevel = level;
     }
 
-    public void setBlocked(int block) {
-        this.mBlocked = block;
-        setAndroidSettings();
+    public void setBlockedType(int block) {
+        this.mBlockedType = block;
+        setBlockedColor();
     }
 
     public int getZone() {
@@ -65,14 +65,12 @@ public class BlockButton extends Button {
         return "P" + getZone() + "_" + getLevel();
     }
 
-// --Commented out by Inspection START (27.03.15 17:02):
 //    public int getBlocked() {
-//        return this.mBlocked;
+//        return this.mBlockedType;
 //    }
-// --Commented out by Inspection STOP (27.03.15 17:02)
 
-    private void setAndroidSettings(){
-        switch (mBlocked){
+    private void setBlockedColor(){
+        switch (mBlockedType){
             case UNBLOCKED:
                 setBackgroundResource(R.color.lockUnlock_button_unblocked);
                 break;
