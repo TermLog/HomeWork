@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Warehouse</string>
 
+    <string name="login_error_msg_title">"Ошибка: "</string>
     <string name="login_error_msg_no_user">Не указано имя пользователя!</string>
     <string name="login_error_msg_no_password">Не указан пароль!</string>
     <string name="login_error_msg_no_server">Не выбран сервер!</string>
@@ -15,7 +16,7 @@
     <string name="login_editUser_hint">Имя пользователя</string>
     <string name="login_editPassword_hint">Пароль</string>
     <string name="login_buttonOk">Войти</string>
-    <string name="login_buttonCancel">Отмена</string>
+    <string name="login_buttonCancel">Выход</string>
 
     <string name="title_activity_main_menu">Главное меню</string>
     <string name="title_activity_update_document">Обновить документ</string>

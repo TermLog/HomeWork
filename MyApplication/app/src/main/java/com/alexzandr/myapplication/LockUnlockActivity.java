@@ -19,9 +19,8 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
     private TableRow mFirstRow;
     private Button mRefreshButton;
     private ErrorShowDialog mErrorDialog;
-    private DataBaseTask mTask;
-    private HashMap<String, Integer> mResultMap;
-    private Animation mButtonAnimation = null;
+    private Animation mScaleAnimationForButton = null;
+    private HashMap<Integer, HashMap<Integer, SectionButton>> mTableMap;
 
     private static int sRefreshCount;
 
@@ -37,13 +36,11 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
         mFirstRow = (TableRow) findViewById(R.id.lockUnlock_firstRow);
         mRefreshButton = (Button) findViewById(R.id.lockUnlock_buttonRefresh);
 
+        mScaleAnimationForButton = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
+
+        mTableMap = new HashMap<>();
         mErrorDialog = new ErrorShowDialog();
         mErrorDialog.setCancelable(false);
-
-        mButtonAnimation = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
-
-        mTask = new DataBaseTask();
-
     }
 
     @Override
@@ -64,27 +61,14 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
     }
 
     void createTable(){
-        try{
-            mTask.execute(DataBaseTask.GET_ALL_DATA);
-            mResultMap = mTask.get();
+        HashMap<String, Integer> resultMap = getQueryResult();
 
-            if (mTask.exception != null){
-                throw mTask.exception;
-            }
+        if (resultMap != null) {
+            int zonesCount = resultMap.get(KEY_COUNT_OF_ZONES);
+            int levelsCount = resultMap.get(KEY_COUNT_OF_LEVELS);
 
-            if (mResultMap != null) {
-                int zonesCount = mResultMap.get(KEY_COUNT_OF_ZONES);
-                int levelsCount = mResultMap.get(KEY_COUNT_OF_LEVELS);
-
-                fillFirstRow(levelsCount);
-
-                addNewRow(zonesCount, levelsCount);
-            }
-        } catch (Exception e){
-            showError(e.getMessage());
-        } finally {
-            mResultMap = null;
-            mTask.exception = null;
+            fillFirstRow(levelsCount);
+            addNewRow(zonesCount, levelsCount, resultMap);
         }
 
     }
@@ -95,129 +79,100 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
         }
     }
 
-    private void addNewRow(int zonesCount, int levelsCount) {
+    private void addNewRow(int zonesCount, int levelsCount, HashMap<String, Integer> map) {
         for (int zone = 1; zone <= zonesCount; zone++) {
             TableRow newRow = new TableRow(this);
-            fillRow(zone, levelsCount, newRow);
+            mTableMap.put(zone, fillRow(zone, levelsCount, newRow, map));
             mTable.addView(newRow);
         }
     }
 
-    private void fillRow(int zoneNumber, int levelsCount, TableRow row){
+    private HashMap<Integer, SectionButton> fillRow(int zoneNumber, int levelsCount, TableRow row, HashMap<String, Integer> map){
+        HashMap<Integer, SectionButton> resultHashMap = new HashMap<>();
         row.addView(new ZoneLevelButton(this, ZoneLevelButton.TYPE_ZONE, zoneNumber));
 
         for (int level = 1; level <= levelsCount; level++){
-            int buttonBlockedType = mResultMap.get("P" + zoneNumber + "_" + level);
-            row.addView(new SectionButton(this, zoneNumber, level, buttonBlockedType));
+            int buttonBlockedType = map.get("P" + zoneNumber + "_" + level);
+            SectionButton sectionButton = new SectionButton(this, zoneNumber, level, buttonBlockedType);
+            row.addView(sectionButton);
+            resultHashMap.put(level, sectionButton);
         }
+
+        return resultHashMap;
     }
 
     public void onRefreshClick(View view){
-        view.startAnimation(mButtonAnimation);
-        try{
-            mTask.execute(DataBaseTask.GET_ALL_DATA);
-            mResultMap = mTask.get();
+        HashMap<String, Integer> resultMap = getQueryResult();
+        view.startAnimation(mScaleAnimationForButton);
 
-            if (mTask.exception != null){
-                throw mTask.exception;
-            }
-
-            if (mResultMap != null) {
-                int rowCount = mTable.getChildCount();
-
-                for (int rowNumber = 0; rowNumber < rowCount; rowNumber++) {
-                    if (mTable.getChildAt(rowNumber) instanceof TableRow) {
-                        TableRow row = (TableRow) mTable.getChildAt(rowNumber);
-                        int buttonCount = row.getChildCount();
-
-                        for (int buttonNumber = 0; buttonNumber < buttonCount; buttonNumber++) {
-                            if (row.getChildAt(buttonNumber) instanceof SectionButton) {
-                                SectionButton button = (SectionButton) row.getChildAt(buttonNumber);
-                                String key = button.getStringForKey();
-
-                                button.setBlockedType(mResultMap.get(key));
-                            }
-                        }
-                    }
+        if (resultMap != null) {
+            for (HashMap<Integer, SectionButton> buttonHashMap : mTableMap.values()) {
+                for (SectionButton sectionButton : buttonHashMap.values()) {
+                    String key = sectionButton.getStringForKey();
+                    sectionButton.setBlockedType(resultMap.get(key));
                 }
             }
-        } catch (Exception e){
-            showError(e.getMessage());
-        } finally {
-            mResultMap = null;
-            mTask.exception = null;
         }
         mRefreshButton.setText("Ref_" + (++sRefreshCount));
     }
 
     private void sectionButtonClick(SectionButton button){
-        button.startAnimation(mButtonAnimation);
-        mTask.procedureParamZone = button.getZone();
-        mTask.procedureParamLevel = button.getLevel();
-        try {
-            mTask.execute(DataBaseTask.SECTION_CHANGE);
-            mResultMap = mTask.get();
-
-            if (mTask.exception != null){
-                throw mTask.exception;
-            }
-
-            String key = button.getStringForKey();
-            button.setBlockedType(mResultMap.get(key));
-        } catch (Exception e){
-            showError(e.getMessage());
-        } finally {
-            mResultMap = null;
-            mTask.exception = null;
-        }
+        String key = button.getStringForKey();
+        button.startAnimation(mScaleAnimationForButton);
+        button.setBlockedType(getQueryResult(button).get(key));
     }
 
     private void zoneLevelClick(ZoneLevelButton button){
-        button.startAnimation(mButtonAnimation);
-        mTask.procedureParamType = button.getType();
-        mTask.procedureParamValue = button.getValue();
-        try {
-            mTask.execute(DataBaseTask.ZONE_LEVEL_CHANGE);
-            mResultMap = mTask.get();
+        HashMap<String, Integer> resultMap = getQueryResult(button);
+        button.startAnimation(mScaleAnimationForButton);
 
-            if (mTask.exception != null){
-                throw mTask.exception;
+        if (button.getType() == ZoneLevelButton.TYPE_ZONE && resultMap != null){
+
+            HashMap<Integer, SectionButton> buttonHashMap = mTableMap.get(button.getValue());
+            for (SectionButton sectionButton : buttonHashMap.values()) {
+                String key = sectionButton.getStringForKey();
+                sectionButton.setBlockedType(resultMap.get(key));
             }
 
-            if (button.getType() == ZoneLevelButton.TYPE_ZONE && mResultMap != null){
-
-                changeButtonInRow((TableRow) button.getParent(), mResultMap, button);
-
-            }else if (mResultMap != null) {
-                int rowCount = mTable.getChildCount();
-                for (int rowNumber = 0; rowNumber < rowCount; rowNumber++) {
-                    if (mTable.getChildAt(rowNumber) instanceof TableRow) {
-                        changeButtonInRow((TableRow) mTable.getChildAt(rowNumber), mResultMap, button);
-                    }
-                }
+        }else if (resultMap != null) {
+            for (HashMap<Integer, SectionButton> buttonHashMap : mTableMap.values()) {
+                SectionButton sectionButton = buttonHashMap.get(button.getValue());
+                String key = sectionButton.getStringForKey();
+                sectionButton.setBlockedType(resultMap.get(key));
             }
-        }catch (Exception e){
-            showError(e.getMessage());
-        } finally {
-            mResultMap = null;
-            mTask.exception = null;
         }
     }
 
-    private void changeButtonInRow(TableRow parentRow, HashMap<String, Integer> map, ZoneLevelButton zoneLevelButton){
-        int buttonCount = parentRow.getChildCount();
-        for (int i = 0; i < buttonCount; i++){
-            if (parentRow.getChildAt(i) instanceof SectionButton){
-                SectionButton button = (SectionButton)parentRow.getChildAt(i);
-                if (button.getLevel() == zoneLevelButton.getValue() || zoneLevelButton.getType() == ZoneLevelButton.TYPE_ZONE) {
-                    try {
-                        button.setBlockedType(map.get(button.getStringForKey()));
-                    } catch (Exception e) {
-                        showError(e.getMessage());
-                    }
-                }
-            }
+    private HashMap<String, Integer> getQueryResult (){
+        DataBaseTask task = new DataBaseTask();
+        return executeQuery(task, DataBaseTask.GET_ALL_DATA);
+    }
+
+
+    private HashMap<String, Integer> getQueryResult (SectionButton btnSection){
+        DataBaseTask task = new DataBaseTask();
+        task.procedureParamZone = btnSection.getZone();
+        task.procedureParamLevel = btnSection.getLevel();
+
+        return executeQuery(task, DataBaseTask.SECTION_CHANGE);
+    }
+
+    private HashMap<String, Integer> getQueryResult (ZoneLevelButton btnZoneLevel){
+        DataBaseTask task = new DataBaseTask();
+        task.procedureParamType = btnZoneLevel.getType();
+        task.procedureParamValue = btnZoneLevel.getValue();
+
+        return executeQuery(task, DataBaseTask.ZONE_LEVEL_CHANGE);
+    }
+
+    private HashMap<String, Integer> executeQuery(DataBaseTask task, int queryType){
+        try {
+            task.execute(queryType);
+            return task.get();
+        } catch (Exception e) {
+            showError(e.getMessage());
         }
+        return null;
     }
 
     @Override

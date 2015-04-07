@@ -2,7 +2,6 @@ package com.alexzandr.myapplication;
 
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -18,12 +17,12 @@ import android.widget.PopupMenu;
 
 import java.util.HashMap;
 
-public class LoginActivity extends ActionBarActivity implements EnterIpDialog.OnMadeServerChoice, ErrorShowDialog.OnShowErrors {
+public class LoginActivity extends ActionBarActivity implements EnterIpDialog.EnterIpDialogInteractionListener, ErrorShowDialog.OnShowErrors {
 	
-    private EditText mUser;
-    private EditText mPassword;
+    private EditText mEditTextUser;
+    private EditText mEditTextPassword;
     private Button mChoiceServerButton;
-    private DialogFragment mDialogOtherIP;
+    private DialogFragment mDialogOtherIp;
     private ProgressDialog mProgressDialog;
     private ErrorShowDialog mErrorDialog;
     private int mServerId = SERVER_DEFAULT;
@@ -34,80 +33,24 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
     private static final int SERVER_DEFAULT = 0;
 
     public static QueryToServer sQueryToServer;
-    private static Context sContext;
-    private Animation mButtonAnimation = null;
+    private Animation mScaleAnimationForButton = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        sContext = getApplicationContext();
-        mUser = (EditText) findViewById(R.id.login_editUser);
-        mPassword = (EditText) findViewById(R.id.login_editPassword);
+        mEditTextUser = (EditText) findViewById(R.id.login_editUser);
+        mEditTextPassword = (EditText) findViewById(R.id.login_editPassword);
         mChoiceServerButton = (Button) findViewById(R.id.login_buttonChoice);
-        mDialogOtherIP = new EnterIpDialog();
+        mDialogOtherIp = new EnterIpDialog();
         mErrorDialog = new ErrorShowDialog();
-        mErrorDialog.setCancelable(false);
+//        mErrorDialog.setCancelable(false);
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
         mProgressDialog.setCancelable(false);
-        mButtonAnimation = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
-    }
-
-    private void isEmptyLoginForms(){
-
-        String userName = mUser.getText().toString();
-        String passwordValue = mPassword.getText().toString();
-        String mErrorText;
-
-        if (TextUtils.isEmpty(userName)){
-            mErrorText = getString(R.string.login_error_msg_no_user);
-            mUser.setError(Html.fromHtml("<h2>Ошибка:</h2>" + mErrorText));
-            throw new LogonException(mErrorText);
-        }
-
-        if (TextUtils.isEmpty(passwordValue)){
-            mErrorText = getString(R.string.login_error_msg_no_password);
-            mPassword.setError(Html.fromHtml("<h2>Ошибка:</h2>" + mErrorText));
-            throw new LogonException(mErrorText);
-        }
-    }
-
-    private void isEmptyServer(){
-        if (mServerId == SERVER_DEFAULT){
-            throw new LogonException(getString(R.string.login_error_msg_no_server));
-        }
-    }
-
-    @Override
-    public void showError(String errorText) {
-        Bundle errorMassage = new Bundle();
-        errorMassage.putString(ErrorShowDialog.KEY_FOR_ERROR, errorText);
-        mErrorDialog.setArguments(errorMassage);
-        mErrorDialog.show(getFragmentManager(), "ErrorDialog");
-    }
-
-    void showMainMenu(){
-        try {
-            isEmptyLoginForms();
-            isEmptyServer();
-            createConnection();
-        } catch (LogonException e){
-            showError(e.getMessage());
-        }
-    }
-
-    public void enterClick(View view) {
-        view.startAnimation(mButtonAnimation);
-        showMainMenu();
-
-    }
-    public void cancelClick(View view){
-        view.startAnimation(mButtonAnimation);
-        this.finish();
-
+        mScaleAnimationForButton = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
     }
 
     public void serverChoice(View view){
@@ -119,13 +62,13 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.login_popup_home:
-                        makeServerChoice(R.string.serverName_home, HOME_IP);
+                        onServerChosen(R.string.serverName_home, HOME_IP);
                         return true;
                     case R.id.login_popup_work:
-                        makeServerChoice(R.string.serverName_work, WORK_IP);
+                        onServerChosen(R.string.serverName_work, WORK_IP);
                         return true;
                     case R.id.login_popup_other:
-                        mDialogOtherIP.show(getFragmentManager(), "otherIpDialog");
+                        mDialogOtherIp.show(getFragmentManager(), "otherIpDialog");
                         return true;
                     default:
                         return false;
@@ -136,28 +79,77 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.On
     }
 
     @Override
-    public void makeServerChoice(String serverIp){
-        mServerId = R.string.serverName_other;
+    public void onServerChosen(String serverIp){
+        onServerChosen(R.string.serverName_other, serverIp);
+    }
+
+    void onServerChosen(int serverId, String serverIp){
+        if (serverId == R.string.serverName_other){
+            mChoiceServerButton.setText(serverIp);
+        } else {
+            mChoiceServerButton.setText(serverId);
+        }
+        mServerId = serverId;
         mServerIp = serverIp;
-        mChoiceServerButton.setText(serverIp);
         mChoiceServerButton.setTextColor(getResources().getColor(R.color.text_blue));
     }
 
-    void makeServerChoice(int serverId, String serverIp){
-        mServerId = serverId;
-        mServerIp = serverIp;
-        mChoiceServerButton.setText(serverId);
-        mChoiceServerButton.setTextColor(getResources().getColor(R.color.text_blue));
+    public void enterClick(View view) {
+        view.startAnimation(mScaleAnimationForButton);
+        showMainMenu();
+    }
+
+    public void cancelClick(View view){
+        view.startAnimation(mScaleAnimationForButton);
+        this.finish();
+    }
+
+    void showMainMenu(){
+        if (!isEmptyLoginForms()) {
+            createConnection();
+        }
+    }
+
+    private boolean isEmptyLoginForms(){
+        String userName = mEditTextUser.getText().toString();
+        String passwordValue = mEditTextPassword.getText().toString();
+        String ErrorTitle = getString(R.string.login_error_msg_title);
+        String ErrorText;
+
+        if (TextUtils.isEmpty(userName)){
+            ErrorText = getString(R.string.login_error_msg_no_user);
+            mEditTextUser.setError(Html.fromHtml("<h2>" + ErrorTitle + "</h2>" + ErrorText));
+            showError(ErrorText);
+            return true;
+        }
+
+        if (TextUtils.isEmpty(passwordValue)){
+            ErrorText = getString(R.string.login_error_msg_no_password);
+            mEditTextPassword.setError(Html.fromHtml("<h2>" + ErrorTitle + "</h2>" + ErrorText));
+            showError(ErrorText);
+            return true;
+        }
+
+        if (mServerId == SERVER_DEFAULT){
+            showError(getString(R.string.login_error_msg_no_server));
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void showError(String errorText) {
+        Bundle errorMassage = new Bundle();
+        errorMassage.putString(ErrorShowDialog.KEY_FOR_ERROR, errorText);
+        mErrorDialog.setArguments(errorMassage);
+        mErrorDialog.show(getFragmentManager(), "ErrorDialog");
     }
 
     private void createConnection(){
-        sQueryToServer = new QueryToServer(mServerIp, mUser.getText().toString(), mPassword.getText().toString());
+        sQueryToServer = new QueryToServer(mServerIp, mEditTextUser.getText().toString(), mEditTextPassword.getText().toString());
         InnerTask task = new InnerTask();
         task.execute(DataBaseTask.CHECK_CONNECTION);
-    }
-
-    public static Context getApp(){
-        return sContext;
     }
 
     private class InnerTask extends DataBaseTask{

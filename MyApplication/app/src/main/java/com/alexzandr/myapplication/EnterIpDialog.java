@@ -18,13 +18,28 @@ import java.util.regex.Pattern;
  */
 public class EnterIpDialog extends DialogFragment implements OnClickListener {
 
-    private EditText mEditTextIP;
-    private OnMadeServerChoice mActivity;
+    private EditText mEditTextIp;
+    private EnterIpDialogInteractionListener mActivity;
     private static final String IP_ADDRESS_PATTERN =
             "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
                     "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
                     "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
                     "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+
+    @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+
+        try {
+            mActivity = (EnterIpDialogInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement " + EnterIpDialogInteractionListener.class.getName());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,7 +48,8 @@ public class EnterIpDialog extends DialogFragment implements OnClickListener {
         view.findViewById(R.id.dialog_buttonOk).setOnClickListener(this);
         view.findViewById(R.id.dialog_buttonCancel).setOnClickListener(this);
 
-        mEditTextIP = (EditText) view.findViewById(R.id.dialog_editText);
+        mEditTextIp = (EditText) view.findViewById(R.id.dialog_editText);
+        setCancelable(false);
         return view;
     }
 
@@ -41,8 +57,8 @@ public class EnterIpDialog extends DialogFragment implements OnClickListener {
     public void onStart(){
         super.onStart();
         getDialog().setTitle(R.string.dialog_title);
-        if (!TextUtils.isEmpty(mEditTextIP.getText().toString())) {
-            mEditTextIP.selectAll();
+        if (!TextUtils.isEmpty(mEditTextIp.getText().toString())) {
+            mEditTextIp.selectAll();
         }
     }
 
@@ -60,40 +76,27 @@ public class EnterIpDialog extends DialogFragment implements OnClickListener {
     }
 
     void buttonOkClick(){
-        String valueIp = mEditTextIP.getText().toString();
+        String valueIp = mEditTextIp.getText().toString();
         if (TextUtils.isEmpty(valueIp)) {
-            mEditTextIP.setHint(R.string.dialog_editText_hint_noIp);
-            mEditTextIP.requestFocus();
+            mEditTextIp.setHint(R.string.dialog_editText_hint_noIp);
+            mEditTextIp.requestFocus();
         }else {
             Pattern pattern = Pattern.compile(IP_ADDRESS_PATTERN);
             Matcher matcher = pattern.matcher(valueIp);
             if (matcher.matches()){
-                mActivity.makeServerChoice(valueIp);
+                mActivity.onServerChosen(valueIp);
                 dismiss();
             }else {
                 getDialog().setTitle(R.string.dialog_title_wrongIp);
-                mEditTextIP.selectAll();
-                mEditTextIP.requestFocus();
+                mEditTextIp.selectAll();
+                mEditTextIp.requestFocus();
             }
         }
     }
 
-    @Override
-    public void onAttach(Activity activity){
-        super.onAttach(activity);
 
-        try {
-            mActivity = (OnMadeServerChoice) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnMadeServerChoice");
-        } catch (Exception e){
-            e.printStackTrace();
-        }
 
-    }
-
-    public interface OnMadeServerChoice {
-        public void makeServerChoice(String serverIp);
+    public interface EnterIpDialogInteractionListener {
+        public void onServerChosen(String serverIp);
     }
 }
