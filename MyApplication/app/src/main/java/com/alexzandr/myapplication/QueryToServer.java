@@ -86,12 +86,9 @@ public class QueryToServer {
             exception =  new CheckConnectionException(e.getMessage());
 
         } finally {
-            if (mResultSet != null) try { mResultSet.close(); } catch(Exception e) {e.printStackTrace(); }
-            if (mStatement != null) try { mStatement.close(); } catch(Exception e) {e.printStackTrace(); }
             if (mConnection != null) try { mConnection.close(); } catch(Exception e) {e.printStackTrace(); }
         }
 
-        exception.printStackTrace();
         throw exception;
     }
 

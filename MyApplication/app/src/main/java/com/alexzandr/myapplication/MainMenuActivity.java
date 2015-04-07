@@ -9,40 +9,34 @@ import android.view.animation.AnimationUtils;
 
 public class MainMenuActivity extends ActionBarActivity {
 
-    private Animation mButtonAnimation = null;
+    private Animation mScaleAnimationForButton = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        mButtonAnimation = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
+        mScaleAnimationForButton = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
     }
 
-    public void exitClick(View view) {
-        Intent intent = new Intent(MainMenuActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        this.finish();
-    }
-
-    public void updateClick(View view) {
-
-        view.startAnimation(mButtonAnimation);
-        showUpdate();
-    }
-
-    public void deleteClick(View view) {
-
-        view.startAnimation(mButtonAnimation);
-        showDelete();
-    }
-
-    public void lockUnlockClick(View view) {
-
-        view.startAnimation(mButtonAnimation);
-        showLockUnlock();
+    public void onClick (View view) {
+        view.startAnimation(mScaleAnimationForButton);
+        switch (view.getId()) {
+            case R.id.mainMenu_buttonUpdate:
+                showUpdate();
+                break;
+            case R.id.mainMenu_buttonDelete:
+                showDelete();
+                break;
+            case R.id.mainMenu_buttonLockUnlock:
+                showLockUnlock();
+                break;
+            case R.id.mainMenu_buttonExit:
+                exitClick();
+                break;
+            default:
+                break;
+        }
     }
 
     public void showUpdate() {
@@ -60,5 +54,13 @@ public class MainMenuActivity extends ActionBarActivity {
     public void showLockUnlock() {
         Intent intent = new Intent(MainMenuActivity.this, LockUnlockActivity.class);
         startActivity(intent);
+    }
+
+    public void exitClick() {
+        Intent intent = new Intent(MainMenuActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        this.finish();
     }
 }

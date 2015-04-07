@@ -15,6 +15,20 @@ public class ErrorShowDialog extends DialogFragment  implements DialogInterface.
     private OnShowErrors mActivity;
 
     @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+
+        try {
+            mActivity = (OnShowErrors) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement " + OnShowErrors.class.getName());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder mDialog = new AlertDialog.Builder((Activity) mActivity)
                 .setTitle(R.string.errorShow_title)
@@ -23,20 +37,6 @@ public class ErrorShowDialog extends DialogFragment  implements DialogInterface.
 
         setCancelable(false);
         return mDialog.create();
-    }
-
-    @Override
-    public void onAttach(Activity activity){
-        super.onAttach(activity);
-
-        try {
-            mActivity = (OnShowErrors) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnShowErrors");
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     @Override

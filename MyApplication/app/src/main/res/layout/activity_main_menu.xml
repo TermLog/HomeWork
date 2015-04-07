@@ -19,26 +19,26 @@
 
         <Button
             android:text="@string/mainMenu_buttonRefresh"
-            android:id="@+id/mainMenu_buttonRefresh"
-            android:onClick="updateClick"
+            android:id="@+id/mainMenu_buttonUpdate"
+            android:onClick="onClick"
             style="@style/buttonStyle.MainMenu"/>
 
         <Button
             android:text="@string/mainMenu_buttonDelete"
             android:id="@+id/mainMenu_buttonDelete"
-            android:onClick="deleteClick"
+            android:onClick="onClick"
             style="@style/buttonStyle.MainMenu"/>
 
         <Button
             android:text="@string/mainMenu_buttonLockUnlock"
             android:id="@+id/mainMenu_buttonLockUnlock"
-            android:onClick="lockUnlockClick"
+            android:onClick="onClick"
             style="@style/buttonStyle.MainMenu"/>
 
         <Button
             android:text="@string/mainMenu_buttonExit"
             android:id="@+id/mainMenu_buttonExit"
-            android:onClick="exitClick"
+            android:onClick="onClick"
             style="@style/buttonStyle.MainMenu"/>
     </LinearLayout>
 </RelativeLayout>
