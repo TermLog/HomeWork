@@ -25,7 +25,7 @@ public class WorkWithDocumentActivity extends ActionBarActivity implements Error
     private Button mButtonAction;
     private int mActivityType;
     private ErrorShowDialog mErrorShowDialog;
-    private Animation mScaleAnimationForButton = null;
+    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +37,6 @@ public class WorkWithDocumentActivity extends ActionBarActivity implements Error
         mTextViewLabel = (TextView) findViewById(R.id.doc_textView);
         mActivityType = getIntent().getIntExtra(MAP_KEY, UPDATE_ACTIVITY);
         mErrorShowDialog = new ErrorShowDialog();
-
-        mScaleAnimationForButton = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
 
         if (mActivityType == DELETE_ACTIVITY) {
             setTitle(R.string.title_activity_delete_document);

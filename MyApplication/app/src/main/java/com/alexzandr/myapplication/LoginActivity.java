@@ -32,7 +32,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
     public static final String WORK_IP = "10.100.6.15";
     private static final int SERVER_DEFAULT = 0;
 
-    private Animation mScaleAnimationForButton = null;
+    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,6 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
         mProgressDialog.setCancelable(false);
-        mScaleAnimationForButton = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
     }
 
     public void serverChoice(View view){

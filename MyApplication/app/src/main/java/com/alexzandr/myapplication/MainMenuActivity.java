@@ -9,14 +9,12 @@ import android.view.animation.AnimationUtils;
 
 public class MainMenuActivity extends ActionBarActivity {
 
-    private Animation mScaleAnimationForButton = null;
+    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
-        mScaleAnimationForButton = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
     }
 
     public void onClick (View view) {

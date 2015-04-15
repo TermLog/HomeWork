@@ -19,7 +19,7 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
     private TableRow mFirstRow;
     private Button mRefreshButton;
     private ErrorShowDialog mErrorDialog;
-    private Animation mScaleAnimationForButton = null;
+    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
     private HashMap<Integer, HashMap<Integer, SectionButton>> mTableMap;
 
     private static int sRefreshCount;
@@ -35,8 +35,6 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
         mTable = (TableLayout) findViewById(R.id.lockUnlock_table);
         mFirstRow = (TableRow) findViewById(R.id.lockUnlock_firstRow);
         mRefreshButton = (Button) findViewById(R.id.lockUnlock_buttonRefresh);
-
-        mScaleAnimationForButton = AnimationUtils.loadAnimation(this, R.anim.button_scale_animation);
 
         mTableMap = new HashMap<>();
         mErrorDialog = new ErrorShowDialog();
