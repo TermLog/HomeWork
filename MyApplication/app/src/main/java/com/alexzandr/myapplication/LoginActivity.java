@@ -93,7 +93,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
     }
 
     public void enterClick(View view) {
-        view.startAnimation(mScaleAnimationForButton);
+        // view.startAnimation(mScaleAnimationForButton);
         showMainMenu();
     }
 

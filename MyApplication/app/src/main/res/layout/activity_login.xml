@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="10dp">
 
-            <Button
+            <com.alexzandr.myapplication.view.AnimatedButton
                 android:text="@string/login_buttonOk"
                 android:id="@+id/login_buttonOk"
                 android:onClick="enterClick"
