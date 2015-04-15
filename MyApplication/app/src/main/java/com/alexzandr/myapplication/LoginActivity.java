@@ -32,7 +32,6 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
     public static final String WORK_IP = "10.100.6.15";
     private static final int SERVER_DEFAULT = 0;
 
-    public static QueryToServer sQueryToServer;
     private Animation mScaleAnimationForButton = null;
 
     @Override
@@ -147,7 +146,8 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
     }
 
     private void createConnection(){
-        sQueryToServer = new QueryToServer(mServerIp, mEditTextUser.getText().toString(), mEditTextPassword.getText().toString());
+        QueryToServer mQueryToServer = new QueryToServer(mServerIp, mEditTextUser.getText().toString(), mEditTextPassword.getText().toString());
+        Singleton.setQuery(mQueryToServer);
         InnerTask task = new InnerTask();
         task.execute(DataBaseTask.CHECK_CONNECTION);
     }

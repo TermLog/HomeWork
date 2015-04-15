@@ -62,7 +62,7 @@ public class QueryToServer {
 
     public HashMap<String, Integer> checkConnection() {
         CheckConnectionException exception;
-        Context context = GlobalAccess.getApp();
+        Context context = Singleton.getContext();
 
         try {
             isReachableServer();

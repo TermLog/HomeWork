@@ -24,7 +24,7 @@ class DataBaseTask extends AsyncTask<Integer, Void, HashMap<String, Integer>> {
     @Override
     protected HashMap<String, Integer> doInBackground(Integer... params) {
         int intParams = params[0];
-        QueryToServer serverData = LoginActivity.sQueryToServer;
+        QueryToServer serverData = Singleton.getQueryToServer();
         HashMap<String, Integer> mapResult = null;
         try {
             switch (intParams){
