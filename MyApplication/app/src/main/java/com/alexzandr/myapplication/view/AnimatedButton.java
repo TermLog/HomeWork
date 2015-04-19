@@ -41,6 +41,8 @@ public class AnimatedButton extends Button implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         startAnimation(Singleton.getAnimation());
-        mOnClickListener.onClick(v);
+        if (mOnClickListener != null) {
+            mOnClickListener.onClick(v);
+        }
     }
 }

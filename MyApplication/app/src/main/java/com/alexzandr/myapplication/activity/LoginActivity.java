@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.activity;
 
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
@@ -10,10 +10,16 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+
+import com.alexzandr.myapplication.DataBaseTask;
+import com.alexzandr.myapplication.fragment.EnterIpDialog;
+import com.alexzandr.myapplication.fragment.ErrorShowDialog;
+import com.alexzandr.myapplication.QueryToServer;
+import com.alexzandr.myapplication.R;
+import com.alexzandr.myapplication.Singleton;
 
 import java.util.HashMap;
 
@@ -28,11 +34,11 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
     private int mServerId = SERVER_DEFAULT;
     private String mServerIp;
 
-    public static final String HOME_IP = "192.168.1.104";
+    public static final String HOME_IP = "192.168.1.105";
     public static final String WORK_IP = "10.100.6.15";
     private static final int SERVER_DEFAULT = 0;
 
-    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
+//    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +104,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
     }
 
     public void cancelClick(View view){
-        view.startAnimation(mScaleAnimationForButton);
+//        view.startAnimation(mScaleAnimationForButton);
         this.finish();
     }
 

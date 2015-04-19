@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".LoginActivity"
+            android:name=".activity.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
 
@@ -23,31 +23,40 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainMenuActivity"
+            android:name=".activity.MainMenuActivity"
             android:label="@string/title_activity_main_menu"
-            android:parentActivityName=".LoginActivity"
+            android:parentActivityName=".activity.LoginActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.alexzandr.myapplication.LoginActivity" />
+                android:value=".activity.LoginActivity" />
         </activity>
         <activity
-            android:name=".WorkWithDocumentActivity"
+            android:name=".activity.WorkWithDocumentActivity"
             android:label="@string/title_activity_update_document"
-            android:parentActivityName=".MainMenuActivity"
+            android:parentActivityName=".activity.MainMenuActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.alexzandr.myapplication.MainMenuActivity" />
+                android:value=".activity.MainMenuActivity" />
         </activity>
         <activity
-            android:name=".LockUnlockActivity"
+            android:name=".activity.LockUnlockActivity"
             android:label="@string/title_activity_lock_unlock"
-            android:parentActivityName=".MainMenuActivity"
+            android:parentActivityName=".activity.MainMenuActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.alexzandr.myapplication.MainMenuActivity" />
+                android:value=".activity.MainMenuActivity" />
+        </activity>
+        <activity
+            android:name=".activity.LockUnlockActivityTest"
+            android:label="@string/title_activity_lock_unlock"
+            android:parentActivityName=".activity.MainMenuActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainMenuActivity" />
         </activity>
     </application>
 

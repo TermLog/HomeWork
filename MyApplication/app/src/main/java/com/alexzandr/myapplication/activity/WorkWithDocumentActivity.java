@@ -1,14 +1,19 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.activity;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.alexzandr.myapplication.DataBaseTask;
+import com.alexzandr.myapplication.fragment.ErrorShowDialog;
+import com.alexzandr.myapplication.R;
+import com.alexzandr.myapplication.Singleton;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +30,7 @@ public class WorkWithDocumentActivity extends ActionBarActivity implements Error
     private Button mButtonAction;
     private int mActivityType;
     private ErrorShowDialog mErrorShowDialog;
-    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
+//    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +50,7 @@ public class WorkWithDocumentActivity extends ActionBarActivity implements Error
     }
 
     public void onClick(View view){
-        view.startAnimation(mScaleAnimationForButton);
+//        view.startAnimation(mScaleAnimationForButton);
         switch (view.getId()) {
             case R.id.doc_buttonBack:
                 finish();

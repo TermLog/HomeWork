@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,6 +6,8 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
+import com.alexzandr.myapplication.R;
 
 /**
  * Created by anekrasov on 19.03.15.

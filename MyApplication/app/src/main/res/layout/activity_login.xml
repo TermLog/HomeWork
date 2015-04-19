@@ -118,7 +118,7 @@
                 android:onClick="enterClick"
                 style="@style/buttonStyle"/>
 
-            <Button
+            <com.alexzandr.myapplication.view.AnimatedButton
                 android:text="@string/login_buttonCancel"
                 android:id="@+id/login_buttonCancel"
                 android:onClick="cancelClick"

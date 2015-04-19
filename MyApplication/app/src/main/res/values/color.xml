@@ -4,6 +4,7 @@
     <color name="background_white">#fff</color>
     <color name="background_server">#ffff8a35</color>
     <color name="text_blue">#235E7B</color>
+    <color name="text_black">#000</color>
     <color name="text_white">#fff</color>
     <color name="main_EditHint_Default">#f0ffa000</color>
     <color name="lockUnlock_button_blocked">#c8ff0000</color>

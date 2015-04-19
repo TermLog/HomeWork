@@ -1,14 +1,17 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.view;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.widget.Button;
+import android.widget.LinearLayout;
+
+import com.alexzandr.myapplication.R;
 
 /**
  * Created by AlexZandR on 22.02.2015.
  */
-public class ZoneLevelButton extends Button {
+public class ZoneLevelButton extends AnimatedButton {
     public final static int TYPE_ZONE = 1;
     public final static int TYPE_LEVEL = 2;
     private int mType;
@@ -24,12 +27,13 @@ public class ZoneLevelButton extends Button {
         super(context, attSet, defStyleAttr);
     }
 
-    ZoneLevelButton(Context context, int type, int value){
+    public ZoneLevelButton(Context context, int type, int value){
         super(context);
         setType(type);
         setValue(value);
+        setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
-        setOnClickListener((LockUnlockActivity)context);
+        setOnClickListener((OnClickListener)context);
         setBackgroundResource(R.color.lockUnlock_button_zoneAndLevel);
         setTextColor(getResources().getColor(R.color.text_white));
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);

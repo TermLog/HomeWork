@@ -7,13 +7,13 @@ import java.util.HashMap;
 /**
  * Created by AlexZandR on 23.02.2015.
  */
-class DataBaseTask extends AsyncTask<Integer, Void, HashMap<String, Integer>> {
-    final static int GET_ALL_DATA = 1;
-    final static int ZONE_LEVEL_CHANGE = 2;
-    final static int SECTION_CHANGE = 3;
-    final static int CHECK_CONNECTION = 4;
-    final static int UPDATE_IN_DOC = 5;
-    final static int DELETE_IN_DOC = 6;
+public class DataBaseTask extends AsyncTask<Integer, Void, HashMap<String, Integer>> {
+    public final static int GET_ALL_DATA = 1;
+    public final static int ZONE_LEVEL_CHANGE = 2;
+    public final static int SECTION_CHANGE = 3;
+    public final static int CHECK_CONNECTION = 4;
+    public final static int UPDATE_IN_DOC = 5;
+    public final static int DELETE_IN_DOC = 6;
     public int procedureParamType;
     public int procedureParamValue;
     public int procedureParamZone;

@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.fragment;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.alexzandr.myapplication.R;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

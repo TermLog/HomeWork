@@ -1,14 +1,16 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.widget.Button;
+import android.widget.LinearLayout;
+
+import com.alexzandr.myapplication.R;
 
 /**
  * Created by AlexZandR on 22.02.2015.
  */
-public class SectionButton extends Button {
+public class SectionButton extends AnimatedButton {
     private int mZone;
     private int mLevel;
     private int mBlockedType;
@@ -33,7 +35,8 @@ public class SectionButton extends Button {
         setZone(zone);
         setLevel(level);
         setBlockedType(blocked);
-        setOnClickListener((LockUnlockActivity)context);
+        setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        setOnClickListener((OnClickListener)context);
         setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
 
         String resultNameN = "00" + zone;
@@ -82,6 +85,5 @@ public class SectionButton extends Button {
                 break;
             default: break;
         }
-
     }
 }

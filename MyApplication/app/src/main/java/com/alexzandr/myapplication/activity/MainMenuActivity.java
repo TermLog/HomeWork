@@ -1,15 +1,15 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+
+import com.alexzandr.myapplication.R;
 
 public class MainMenuActivity extends ActionBarActivity {
 
-    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
+//    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +18,7 @@ public class MainMenuActivity extends ActionBarActivity {
     }
 
     public void onClick (View view) {
-        view.startAnimation(mScaleAnimationForButton);
+//        view.startAnimation(mScaleAnimationForButton);
         switch (view.getId()) {
             case R.id.mainMenu_buttonUpdate:
                 showUpdate();
@@ -50,7 +50,8 @@ public class MainMenuActivity extends ActionBarActivity {
     }
 
     public void showLockUnlock() {
-        Intent intent = new Intent(MainMenuActivity.this, LockUnlockActivity.class);
+//        Intent intent = new Intent(MainMenuActivity.this, LockUnlockActivity.class);
+        Intent intent = new Intent(MainMenuActivity.this, LockUnlockActivityTest.class);
         startActivity(intent);
     }
 

@@ -1,14 +1,20 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.activity;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+
+import com.alexzandr.myapplication.DataBaseTask;
+import com.alexzandr.myapplication.fragment.ErrorShowDialog;
+import com.alexzandr.myapplication.R;
+import com.alexzandr.myapplication.Singleton;
+import com.alexzandr.myapplication.view.SectionButton;
+import com.alexzandr.myapplication.view.ZoneLevelButton;
 
 import java.util.HashMap;
 
@@ -19,7 +25,7 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
     private TableRow mFirstRow;
     private Button mRefreshButton;
     private ErrorShowDialog mErrorDialog;
-    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
+//    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
     private HashMap<Integer, HashMap<Integer, SectionButton>> mTableMap;
 
     private static int sRefreshCount;
@@ -101,7 +107,7 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
 
     public void onRefreshClick(View view){
         HashMap<String, Integer> resultMap = getQueryResult();
-        view.startAnimation(mScaleAnimationForButton);
+//        view.startAnimation(mScaleAnimationForButton);
 
         if (resultMap != null) {
             for (HashMap<Integer, SectionButton> buttonHashMap : mTableMap.values()) {
@@ -116,13 +122,13 @@ public class LockUnlockActivity extends ActionBarActivity implements OnClickList
 
     private void sectionButtonClick(SectionButton button){
         String key = button.getStringForKey();
-        button.startAnimation(mScaleAnimationForButton);
+//        button.startAnimation(mScaleAnimationForButton);
         button.setBlockedType(getQueryResult(button).get(key));
     }
 
     private void zoneLevelClick(ZoneLevelButton button){
         HashMap<String, Integer> resultMap = getQueryResult(button);
-        button.startAnimation(mScaleAnimationForButton);
+//        button.startAnimation(mScaleAnimationForButton);
 
         if (button.getType() == ZoneLevelButton.TYPE_ZONE && resultMap != null){
 

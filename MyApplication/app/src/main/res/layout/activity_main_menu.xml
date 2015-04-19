@@ -17,25 +17,25 @@
         android:background="@color/background_blue">
 
 
-        <Button
+        <com.alexzandr.myapplication.view.AnimatedButton
             android:text="@string/mainMenu_buttonRefresh"
             android:id="@+id/mainMenu_buttonUpdate"
             android:onClick="onClick"
             style="@style/buttonStyle.MainMenu"/>
 
-        <Button
+        <com.alexzandr.myapplication.view.AnimatedButton
             android:text="@string/mainMenu_buttonDelete"
             android:id="@+id/mainMenu_buttonDelete"
             android:onClick="onClick"
             style="@style/buttonStyle.MainMenu"/>
 
-        <Button
+        <com.alexzandr.myapplication.view.AnimatedButton
             android:text="@string/mainMenu_buttonLockUnlock"
             android:id="@+id/mainMenu_buttonLockUnlock"
             android:onClick="onClick"
             style="@style/buttonStyle.MainMenu"/>
 
-        <Button
+        <com.alexzandr.myapplication.view.AnimatedButton
             android:text="@string/mainMenu_buttonExit"
             android:id="@+id/mainMenu_buttonExit"
             android:onClick="onClick"
