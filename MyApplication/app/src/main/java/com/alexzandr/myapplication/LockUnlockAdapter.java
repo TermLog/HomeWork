@@ -14,9 +14,9 @@ import java.util.ArrayList;
  */
 public class LockUnlockAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
-    private ArrayList<ButtonHandler> mButtons;
+    private ArrayList<AdapterItemHandler> mButtons;
 
-    public LockUnlockAdapter(Context context, ArrayList<ButtonHandler> buttons) {
+    public LockUnlockAdapter(Context context, ArrayList<AdapterItemHandler> buttons) {
         mButtons = buttons;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -43,7 +43,7 @@ public class LockUnlockAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.view_for_gridview, parent, false);
         }
 
-        ButtonHandler handler = mButtons.get(position);
+        AdapterItemHandler handler = mButtons.get(position);
         TextView textView = (TextView) view.findViewById(R.id.textView);
         textView.setText(handler.getTextForButton());
         textView.setBackgroundColor(handler.getBackgroundColor());
@@ -52,8 +52,8 @@ public class LockUnlockAdapter extends BaseAdapter {
         return view;
     }
 
-    public ButtonHandler getHandler(int position) {
-        return ((ButtonHandler) getItem(position));
+    public AdapterItemHandler getHandler(int position) {
+        return ((AdapterItemHandler) getItem(position));
     }
 
 }

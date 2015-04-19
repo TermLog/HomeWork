@@ -19,13 +19,14 @@ public class DataBaseTask extends AsyncTask<Integer, Void, HashMap<String, Integ
     public int procedureParamZone;
     public int procedureParamLevel;
     public String procedureParamDocList;
+    public HashMap<String, Integer> mapResult;
     public CheckConnectionException exception = null;
 
     @Override
     protected HashMap<String, Integer> doInBackground(Integer... params) {
         int intParams = params[0];
         QueryToServer serverData = Singleton.getQueryToServer();
-        HashMap<String, Integer> mapResult = null;
+        mapResult = null;
         try {
             switch (intParams){
                 case GET_ALL_DATA:
