@@ -34,4 +34,8 @@ public class Singleton {
         return sScaleAnimationForButton;
     }
 
+    public static int getColor(int color){
+        return getContext().getResources().getColor(color);
+    }
+
 }

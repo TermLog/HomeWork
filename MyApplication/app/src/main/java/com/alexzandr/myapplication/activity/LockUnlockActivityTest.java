@@ -4,34 +4,35 @@ import android.app.ProgressDialog;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 
 import com.alexzandr.myapplication.AdapterItemHandler;
 import com.alexzandr.myapplication.DataBaseTask;
+import com.alexzandr.myapplication.LevelHandler;
 import com.alexzandr.myapplication.LockUnlockAdapter;
+import com.alexzandr.myapplication.SectionHandler;
 import com.alexzandr.myapplication.Singleton;
+import com.alexzandr.myapplication.ZoneHandler;
 import com.alexzandr.myapplication.fragment.ErrorShowDialog;
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.view.ZoneLevelButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class LockUnlockActivityTest extends ActionBarActivity implements OnClickListener, ErrorShowDialog.OnShowErrors {
+public class LockUnlockActivityTest extends ActionBarActivity implements /*OnClickListener, */ErrorShowDialog.OnShowErrors {
 
     private int mLevelsCount;
     private int mZonesCount;
-    private LinearLayout mFirstRow;
-    private LockUnlockAdapter mAdapter;
+    private LockUnlockAdapter mAdapterSection;
+    private LockUnlockAdapter mAdapterLevel;
     private ProgressDialog mProgressDialog;
-    private ArrayList<AdapterItemHandler> mArrayForAdapter;
-    private GridView mGridView;
-    private Button mRefreshButton;
+    private ArrayList<AdapterItemHandler> mSections;
+    private ArrayList<AdapterItemHandler> mLevels;
+    private GridView mGridViewLevel;
+    private GridView mGridViewSection;
+//    private Button mRefreshButton;
     private ErrorShowDialog mErrorDialog;
 
     private static int sRefreshCount;
@@ -44,9 +45,9 @@ public class LockUnlockActivityTest extends ActionBarActivity implements OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock_unlock_test);
 
-        mFirstRow = (LinearLayout) findViewById(R.id.lockUnlock_test_firstRow);
-        mRefreshButton = (Button) findViewById(R.id.lockUnlock_test_buttonRefresh);
-        mGridView = (GridView) findViewById(R.id.lockUnlock_test_list_of_button);
+        mGridViewLevel = (GridView) findViewById(R.id.lockUnlock_test_firstRow);
+//        mRefreshButton = (Button) findViewById(R.id.lockUnlock_test_buttonRefresh);
+        mGridViewSection = (GridView) findViewById(R.id.lockUnlock_test_sections);
 
         mErrorDialog = new ErrorShowDialog();
         mProgressDialog = new ProgressDialog(this);
@@ -58,54 +59,54 @@ public class LockUnlockActivityTest extends ActionBarActivity implements OnClick
         task.execute(DataBaseTask.GET_ALL_DATA);
     }
 
-    @Override
-    public void onClick(View view) {
-        levelClick((ZoneLevelButton) view);
-    }
+//    @Override
+//    public void onClick(View view) {
+//        levelClick((ZoneLevelButton) view);
+//    }
 
     void createTable(HashMap<String, Integer> map){
 
         mZonesCount = map.get(KEY_COUNT_OF_ZONES);
         mLevelsCount = map.get(KEY_COUNT_OF_LEVELS);
-        mArrayForAdapter = createArray(map, mArrayForAdapter);
+        mSections = createSections(map, mSections);
 
         fillFirstRow(mLevelsCount);
 
-        if (mAdapter == null) {
-            mAdapter = new LockUnlockAdapter(this, mArrayForAdapter);
-            mGridView.setAdapter(mAdapter);
-            mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        if (mAdapterSection == null) {
+            mAdapterSection = new LockUnlockAdapter(this, mSections);
+            mGridViewSection.setAdapter(mAdapterSection);
+            mGridViewSection.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    AdapterItemHandler handler = mAdapter.getHandler(position);
-                    if (handler.getAvailability()) {
+                    AdapterItemHandler handler = mAdapterSection.getHandler(position);
+                    if (handler.isAvailability()) {
                         view.startAnimation(Singleton.getAnimation());
                         switch (handler.getType()) {
                             case AdapterItemHandler.ZONE_BUTTON:
-                                zoneClick(handler, position);
+                                zoneClick((ZoneHandler)handler, position);
                                 break;
                             case AdapterItemHandler.SECTION_BUTTON:
-                                sectionClick(handler);
+                                sectionClick((SectionHandler)handler);
                                 break;
                         }
                     }
                 }
             });
         }
-        mGridView.setNumColumns(mLevelsCount + 1);
-        mAdapter.notifyDataSetChanged();
+        mGridViewSection.setNumColumns(mLevelsCount + 1);
+        mAdapterSection.notifyDataSetChanged();
     }
 
-    private ArrayList<AdapterItemHandler> createArray(HashMap<String, Integer> map, ArrayList<AdapterItemHandler> handlers) {
+    private ArrayList<AdapterItemHandler> createSections(HashMap<String, Integer> map, ArrayList<AdapterItemHandler> handlers) {
         if (handlers == null) {
             handlers = new ArrayList<>();
         } else {
             handlers.clear();
         }
         for (int zone = 1; zone <= mZonesCount; zone++) {
-            handlers.add(new AdapterItemHandler(zone));
+            handlers.add(new ZoneHandler(zone));
             for (int level = 1; level <= mLevelsCount; level++) {
-                AdapterItemHandler handler = new AdapterItemHandler(zone, level);
+                SectionHandler handler = new SectionHandler(zone, level);
                 try {
                     handler.setBlockedType(map.get(handler.getStringForKey()));
                 } catch (NullPointerException nullException){
@@ -118,38 +119,59 @@ public class LockUnlockActivityTest extends ActionBarActivity implements OnClick
     }
 
     private void fillFirstRow(int levelsCount) {
-        if (mFirstRow.getChildCount() > 1) {
-            for (int i =  mFirstRow.getChildCount(); i > 0; i--) {
-                if (mFirstRow.getChildAt(i - 1) instanceof ZoneLevelButton){
-                    mFirstRow.removeView(mFirstRow.getChildAt(i - 1));
-                }
-            }
+        if (mLevels == null){
+            mLevels = new ArrayList<>();
         }
+
+        mLevels.clear();
+        mLevels.add(new LevelHandler(LevelHandler.REFRESH_BUTTON));
         for (int level = 1; level <= levelsCount; level++){
-            mFirstRow.addView(new ZoneLevelButton(this, ZoneLevelButton.TYPE_LEVEL, level));
+            mLevels.add(new LevelHandler(level));
         }
+
+        if (mAdapterLevel == null){
+            mAdapterLevel = new LockUnlockAdapter(this, mLevels);
+            mGridViewLevel.setAdapter(mAdapterLevel);
+            mGridViewLevel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    LevelHandler handler = (LevelHandler) mAdapterSection.getHandler(position);
+                    if (handler.isAvailability()) {
+                        view.startAnimation(Singleton.getAnimation());
+                        if (handler.getLevel() == LevelHandler.REFRESH_BUTTON) {
+                            refresh();
+                        } else {
+                            levelClick(handler.getLevel());
+                        }
+                    }
+                }
+            });
+        }
+
+        mAdapterLevel.notifyDataSetChanged();
+        mGridViewLevel.setNumColumns(mLevelsCount + 1);
     }
 
-    public void onRefreshClick(View view){
+    public void refresh(){
         LockTask task = new LockTask();
         task.execute(DataBaseTask.GET_ALL_DATA);
-        mRefreshButton.setText("Ref_" + (++sRefreshCount));
+//        mRefreshButton.setText("Ref_" + (++sRefreshCount));
     }
 
-    private void sectionClick(AdapterItemHandler handler){
+    private void sectionClick(SectionHandler handler){
         LockTask task = new LockTask(handler);
         task.procedureParamZone = handler.getZone();
         task.procedureParamLevel = handler.getLevel();
         task.execute(DataBaseTask.SECTION_CHANGE);
     }
 
-    private void sectionChange(AdapterItemHandler handler, HashMap<String, Integer> map){
+    private void sectionChange(SectionHandler handler, HashMap<String, Integer> map){
         String key = handler.getStringForKey();
         handler.setBlockedType(map.get(key));
-        mAdapter.notifyDataSetChanged();
+        mAdapterSection.notifyDataSetChanged();
     }
 
-    private void zoneClick(AdapterItemHandler handler, int position){
+    private void zoneClick(ZoneHandler handler, int position){
         LockTask task = new LockTask(handler, position);
         task.procedureParamType = handler.getType();
         task.procedureParamValue = handler.getZone();
@@ -158,35 +180,37 @@ public class LockUnlockActivityTest extends ActionBarActivity implements OnClick
 
     private void zoneChange(int itemIndex, HashMap<String, Integer> map){
         for (int level = 1; level <= mLevelsCount; level++) {
-            AdapterItemHandler handler = mArrayForAdapter.get(itemIndex + level);
+            SectionHandler handler = (SectionHandler) mSections.get(itemIndex + level);
             String key = handler.getStringForKey();
             try {
                 handler.setBlockedType(map.get(key));
+                handler.setAvailability(true);
             } catch (NullPointerException e){
-                handler.setBlockedType(handler.getBlockedType());
+                handler.setAvailability(false);
             }
         }
-        mAdapter.notifyDataSetChanged();
+        mAdapterSection.notifyDataSetChanged();
     }
 
-    private void levelClick(ZoneLevelButton levelButton){
-        LockTask task = new LockTask(levelButton.getValue());
-        task.procedureParamType = levelButton.getType();
-        task.procedureParamValue = levelButton.getValue();
+    private void levelClick(int level){
+        LockTask task = new LockTask(level);
+        task.procedureParamType = AdapterItemHandler.SECTION_BUTTON;
+        task.procedureParamValue = level;
         task.execute(DataBaseTask.ZONE_LEVEL_CHANGE);
     }
 
     private void levelChange(int level, HashMap<String, Integer> map){
         for (int zone = 0; zone < mZonesCount; zone++) {
-            AdapterItemHandler button = mArrayForAdapter.get(level + zone * (mLevelsCount + 1));
-            String key = button.getStringForKey();
+            SectionHandler handler = (SectionHandler) mSections.get(level + zone * (mLevelsCount + 1));
+            String key = handler.getStringForKey();
             try {
-                button.setBlockedType(map.get(key));
+                handler.setBlockedType(map.get(key));
+                handler.setAvailability(true);
             } catch (NullPointerException e){
-                button.setBlockedType(button.getBlockedType());
+                handler.setAvailability(false);
             }
         }
-        mAdapter.notifyDataSetChanged();
+        mAdapterSection.notifyDataSetChanged();
     }
 
     @Override
@@ -200,24 +224,34 @@ public class LockUnlockActivityTest extends ActionBarActivity implements OnClick
     private class LockTask extends DataBaseTask{
 
         private final static int NO_INDEX = 0;
+        final static int CREATE_TABLE = 0;
+        final static int SECTION_CHANGE = 1;
+        final static int LEVEL_CHANGE = 2;
+        final static int ZONE_CHANGE = 3;
         AdapterItemHandler itemHandler;
         int itemIndex;
+        int queryType;
 
         LockTask(){
-            this(null, NO_INDEX);
+            this(null, NO_INDEX, CREATE_TABLE);
         }
 
         LockTask(int levelNumber) {
-            this(null, levelNumber);
+            this(null, levelNumber, LEVEL_CHANGE);
         }
 
         LockTask(AdapterItemHandler itemHandler){
-            this(itemHandler, NO_INDEX);
+            this(itemHandler, NO_INDEX, SECTION_CHANGE);
         }
 
         LockTask(AdapterItemHandler itemHandler, int index){
+            this(itemHandler, index, ZONE_CHANGE);
+        }
+
+        LockTask(AdapterItemHandler itemHandler, int index, int type){
             this.itemHandler = itemHandler;
-            itemIndex = index;
+            this.itemIndex = index;
+            this.queryType = type;
         }
 
         @Override
@@ -232,17 +266,23 @@ public class LockUnlockActivityTest extends ActionBarActivity implements OnClick
 
             if (exception != null){
                 showError(exception.getMessage());
-            } else if (result != null) {
-                if (itemHandler == null) {
-                    if (itemIndex == NO_INDEX) {
+            } else if (result == null) {
+                showError(getString(R.string.no_data_in_query));
+            } else {
+                switch (queryType){
+                    case CREATE_TABLE:
                         createTable(result);
-                    } else {
+                        break;
+                    case SECTION_CHANGE:
+                        sectionChange((SectionHandler)itemHandler, result);
+                        break;
+                    case LEVEL_CHANGE:
                         levelChange(itemIndex, result);
-                    }
-                } else if (itemHandler.getType() == AdapterItemHandler.SECTION_BUTTON) {
-                    sectionChange(itemHandler, result);
-                } else {
-                    zoneChange(itemIndex, result);
+                        break;
+                    case ZONE_CHANGE:
+                        zoneChange(itemIndex, result);
+                        break;
+                    default: break;
                 }
             }
         }

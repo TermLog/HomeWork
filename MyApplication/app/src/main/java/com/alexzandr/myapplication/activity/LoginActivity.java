@@ -9,7 +9,6 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
@@ -37,8 +36,9 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
     public static final String HOME_IP = "192.168.1.105";
     public static final String WORK_IP = "10.100.6.15";
     private static final int SERVER_DEFAULT = 0;
-
-//    private final Animation mScaleAnimationForButton = Singleton.getAnimation();
+    private static final int SERVER_HOME = 1;
+    private static final int SERVER_WORK = 2;
+    private static final int SERVER_OTHER = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,6 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
         mChoiceServerButton = (Button) findViewById(R.id.login_buttonChoice);
         mDialogOtherIp = new EnterIpDialog();
         mErrorDialog = new ErrorShowDialog();
-//        mErrorDialog.setCancelable(false);
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
@@ -66,10 +65,10 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.login_popup_home:
-                        onServerChosen(R.string.serverName_home, HOME_IP);
+                        onServerChosen(SERVER_HOME, HOME_IP);
                         return true;
                     case R.id.login_popup_work:
-                        onServerChosen(R.string.serverName_work, WORK_IP);
+                        onServerChosen(SERVER_WORK, WORK_IP);
                         return true;
                     case R.id.login_popup_other:
                         mDialogOtherIp.show(getFragmentManager(), "otherIpDialog");
@@ -84,14 +83,21 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
 
     @Override
     public void onServerChosen(String serverIp){
-        onServerChosen(R.string.serverName_other, serverIp);
+        onServerChosen(SERVER_OTHER, serverIp);
     }
 
     void onServerChosen(int serverId, String serverIp){
-        if (serverId == R.string.serverName_other){
-            mChoiceServerButton.setText(serverIp);
-        } else {
-            mChoiceServerButton.setText(serverId);
+        switch (serverId){
+            case SERVER_HOME:
+                mChoiceServerButton.setText(R.string.serverName_home);
+                break;
+            case SERVER_WORK:
+                mChoiceServerButton.setText(R.string.serverName_work);
+                break;
+            case SERVER_OTHER:
+                mChoiceServerButton.setText(serverIp);
+                break;
+            default: break;
         }
         mServerId = serverId;
         mServerIp = serverIp;
@@ -99,12 +105,10 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
     }
 
     public void enterClick(View view) {
-        // view.startAnimation(mScaleAnimationForButton);
         showMainMenu();
     }
 
     public void cancelClick(View view){
-//        view.startAnimation(mScaleAnimationForButton);
         this.finish();
     }
 
@@ -179,10 +183,17 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
 
                 String errorMassage = exception.getMessage();
 
-                if (mServerId != R.string.serverName_other) {
-                    errorMassage = errorMassage + getString(mServerId);
-                } else {
-                    errorMassage = errorMassage + mServerIp;
+                switch (mServerId){
+                    case SERVER_HOME:
+                        errorMassage = errorMassage + getString(R.string.serverName_home);
+                        break;
+                    case SERVER_WORK:
+                        errorMassage = errorMassage + getString(R.string.serverName_work);
+                        break;
+                    case SERVER_OTHER:
+                        errorMassage = errorMassage + mServerIp;
+                        break;
+                    default: break;
                 }
 
                 showError(errorMassage);

@@ -4,7 +4,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;

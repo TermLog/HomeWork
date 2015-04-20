@@ -10,11 +10,10 @@
     android:layout_height="match_parent"
     android:background="@color/background_blue">
 
-    <LinearLayout
+    <!--<LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/lockUnlock_test_firstRow">
+        android:orientation="horizontal">
 
         <com.alexzandr.myapplication.view.AnimatedButton
             style="?android:attr/buttonStyleSmall"
@@ -26,13 +25,18 @@
             android:background="@color/lockUnlock_button_zoneAndLevel"
             android:textSize="12sp"
             android:textColor="@color/text_white"
-            android:onClick="onRefreshClick"/>
+            android:onClick="refresh"/>-->
 
-    </LinearLayout>
+        <GridView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lockUnlock_test_firstRow"/>
+
+    <!--</LinearLayout>-->
 
     <GridView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lockUnlock_test_list_of_button"/>
+        android:id="@+id/lockUnlock_test_sections"/>
 
 </LinearLayout>
