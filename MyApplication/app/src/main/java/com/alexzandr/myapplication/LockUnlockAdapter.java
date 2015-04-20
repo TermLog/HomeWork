@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.alexzandr.myapplication.handler.AdapterItemHandler;
+
 import java.util.ArrayList;
 
 /**

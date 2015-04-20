@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.handler;
 
 /**
  * Created by anekrasov on 20.04.15.

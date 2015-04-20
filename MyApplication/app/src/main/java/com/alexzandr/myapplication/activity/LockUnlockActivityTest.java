@@ -7,13 +7,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.alexzandr.myapplication.AdapterItemHandler;
+import com.alexzandr.myapplication.handler.AdapterItemHandler;
 import com.alexzandr.myapplication.DataBaseTask;
-import com.alexzandr.myapplication.LevelHandler;
+import com.alexzandr.myapplication.handler.LevelHandler;
 import com.alexzandr.myapplication.LockUnlockAdapter;
-import com.alexzandr.myapplication.SectionHandler;
+import com.alexzandr.myapplication.handler.SectionHandler;
 import com.alexzandr.myapplication.Singleton;
-import com.alexzandr.myapplication.ZoneHandler;
+import com.alexzandr.myapplication.handler.ZoneHandler;
 import com.alexzandr.myapplication.fragment.ErrorShowDialog;
 import com.alexzandr.myapplication.R;
 
@@ -135,7 +135,7 @@ public class LockUnlockActivityTest extends ActionBarActivity implements /*OnCli
             mGridViewLevel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    LevelHandler handler = (LevelHandler) mAdapterSection.getHandler(position);
+                    LevelHandler handler = (LevelHandler) mAdapterLevel.getHandler(position);
                     if (handler.isAvailability()) {
                         view.startAnimation(Singleton.getAnimation());
                         if (handler.getLevel() == LevelHandler.REFRESH_BUTTON) {
@@ -194,7 +194,7 @@ public class LockUnlockActivityTest extends ActionBarActivity implements /*OnCli
 
     private void levelClick(int level){
         LockTask task = new LockTask(level);
-        task.procedureParamType = AdapterItemHandler.SECTION_BUTTON;
+        task.procedureParamType = AdapterItemHandler.LEVEL_BUTTON;
         task.procedureParamValue = level;
         task.execute(DataBaseTask.ZONE_LEVEL_CHANGE);
     }

@@ -1,15 +1,19 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.handler;
+
+import com.alexzandr.myapplication.R;
+import com.alexzandr.myapplication.Singleton;
 
 /**
  * Created by anekrasov on 20.04.15.
  */
-public class ZoneHandler implements AdapterItemHandler {
+public class LevelHandler implements AdapterItemHandler {
     private boolean mAvailability;
-    private int mZone;
-    private static final String PREFIX_FOR_TEXT = "Zone ";
+    private int mLevel;
+    private static final String PREFIX_FOR_TEXT = "LvL ";
+    public static final int REFRESH_BUTTON = 0;
 
-    public ZoneHandler(int zone){
-        this.mZone = zone;
+    public LevelHandler(int level){
+        this.mLevel = level;
         this.mAvailability = true;
     }
 
@@ -20,7 +24,7 @@ public class ZoneHandler implements AdapterItemHandler {
 
     @Override
     public int getType() {
-        return ZONE_BUTTON;
+        return LEVEL_BUTTON;
     }
 
     @Override
@@ -40,10 +44,10 @@ public class ZoneHandler implements AdapterItemHandler {
 
     @Override
     public String getTextForButton() {
-        return PREFIX_FOR_TEXT + mZone;
+        return mLevel != REFRESH_BUTTON ? PREFIX_FOR_TEXT + mLevel : Singleton.getContext().getResources().getString(R.string.lock_buttonRefresh);
     }
 
-    public int getZone(){
-        return mZone;
+    public int getLevel(){
+        return mLevel;
     }
 }

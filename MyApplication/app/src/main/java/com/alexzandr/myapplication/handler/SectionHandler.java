@@ -1,4 +1,7 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.handler;
+
+import com.alexzandr.myapplication.R;
+import com.alexzandr.myapplication.Singleton;
 
 /**
  * Created by anekrasov on 20.04.15.
