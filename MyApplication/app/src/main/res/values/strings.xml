@@ -47,8 +47,6 @@
     <string name="serverName_home">Дом</string>
     <string name="serverName_work">Работа</string>
     <string name="serverName_other">Другой</string>
-    <!--<string name="serverIp_home">192.168.1.104</string>-->
-    <!--<string name="serverIp_work">10.100.6.15</string>-->
 
     <string name="dialog_IP_filter">0123456789.</string>
     <string name="dialog_buttonOk">Подтвердить</string>
@@ -63,11 +61,20 @@
 
     <string name="progressBar_title">Соединение…</string>
     <string name="progressBar_massage">Подождите, выполняется соединение с сервером</string>
+    <string name="title_activity_test_menu">TestMenuActivity</string>
 
-    <!--<string-array name="serverList">-->
-        <!--<item>@string/serverName_home</item>-->
-        <!--<item>@string/serverName_work</item>-->
-        <!--<item>@string/serverName_other</item>-->
-    <!--</string-array>-->
+    <string name="login_menu_forget">Забыть мои данные</string>
+    <string name="login_menu_section_color">Цвет секций</string>
+    <string name="login_menu_headLine_height">Высота заголовка</string>
+    <string name="login_menu_section_height">Высота секций</string>
+
+    <string name="dialog_set_height_textView_prefix">"Высота секций = "</string>
+    <string name="dialog_set_height_headLine_title">Установите высоту заголовка</string>
+    <string name="dialog_set_height_section_title">Установите высоту секции</string>
+
+    <string name="preference_name">"com.alexzandr.myapplication.SAVED_SETTINGS"</string>
+    <string name="preference_headLine_height">"com.alexzandr.myapplication.HEADLINE_HEIGHT"</string>
+    <string name="preference_section_height">"com.alexzandr.myapplication.SECTION_HEIGHT"</string>
+
 
 </resources>

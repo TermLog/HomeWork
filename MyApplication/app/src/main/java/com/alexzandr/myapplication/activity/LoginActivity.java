@@ -2,11 +2,14 @@ package com.alexzandr.myapplication.activity;
 
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +22,7 @@ import com.alexzandr.myapplication.fragment.ErrorShowDialog;
 import com.alexzandr.myapplication.QueryToServer;
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.Singleton;
+import com.alexzandr.myapplication.fragment.SetHeightDialog;
 
 import java.util.HashMap;
 
@@ -29,6 +33,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
     private Button mChoiceServerButton;
     private DialogFragment mDialogOtherIp;
     private ProgressDialog mProgressDialog;
+    private SetHeightDialog mDialogSetHeight;
     private ErrorShowDialog mErrorDialog;
     private int mServerId = SERVER_DEFAULT;
     private String mServerIp;
@@ -50,10 +55,40 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
         mChoiceServerButton = (Button) findViewById(R.id.login_buttonChoice);
         mDialogOtherIp = new EnterIpDialog();
         mErrorDialog = new ErrorShowDialog();
+        mDialogSetHeight = new SetHeightDialog();
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
         mProgressDialog.setCancelable(false);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_login, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        Bundle dialogType = new Bundle();
+
+        switch (itemId){
+            case R.id.login_menu_headLine_height:
+                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.HEAD_LINE_HEIGHT);
+                mDialogSetHeight.setArguments(dialogType);
+                mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
+                break;
+            case R.id.login_menu_section_height:
+                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.SECTION_HEIGHT);
+                mDialogSetHeight.setArguments(dialogType);
+                mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
+                break;
+            default: break;
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void serverChoice(View view){

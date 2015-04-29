@@ -14,8 +14,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
-
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +25,7 @@
             android:name=".activity.MainMenuActivity"
             android:label="@string/title_activity_main_menu"
             android:parentActivityName=".activity.LoginActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.LoginActivity" />
@@ -35,7 +34,7 @@
             android:name=".activity.WorkWithDocumentActivity"
             android:label="@string/title_activity_update_document"
             android:parentActivityName=".activity.MainMenuActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainMenuActivity" />
@@ -44,7 +43,7 @@
             android:name=".activity.LockUnlockActivity"
             android:label="@string/title_activity_lock_unlock"
             android:parentActivityName=".activity.MainMenuActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainMenuActivity" />
@@ -53,7 +52,7 @@
             android:name=".activity.LockUnlockActivityTest"
             android:label="@string/title_activity_lock_unlock"
             android:parentActivityName=".activity.MainMenuActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainMenuActivity" />
