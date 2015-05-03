@@ -4,7 +4,6 @@ import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
@@ -60,6 +59,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
         mProgressDialog.setCancelable(false);
+//        getSharedPreferences(getString(R.string.preference_name), Context.MODE_PRIVATE).edit().clear().commit();
     }
 
     @Override
@@ -75,12 +75,12 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
 
         switch (itemId){
             case R.id.login_menu_headLine_height:
-                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.HEAD_LINE_HEIGHT);
+                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.DIALOG_TYPE_HEADLINE_HEIGHT);
                 mDialogSetHeight.setArguments(dialogType);
                 mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
                 break;
             case R.id.login_menu_section_height:
-                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.SECTION_HEIGHT);
+                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.DIALOG_TYPE_SECTION_HEIGHT);
                 mDialogSetHeight.setArguments(dialogType);
                 mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
                 break;

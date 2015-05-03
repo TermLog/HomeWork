@@ -115,16 +115,17 @@
             android:paddingBottom="10dp">
 
             <com.alexzandr.myapplication.view.AnimatedButton
+                android:text="@string/login_buttonCancel"
+                android:id="@+id/login_buttonCancel"
+                android:onClick="cancelClick"
+                style="@style/buttonStyle"/>
+
+            <com.alexzandr.myapplication.view.AnimatedButton
                 android:text="@string/login_buttonOk"
                 android:id="@+id/login_buttonOk"
                 android:onClick="enterClick"
                 style="@style/buttonStyle"/>
 
-            <com.alexzandr.myapplication.view.AnimatedButton
-                android:text="@string/login_buttonCancel"
-                android:id="@+id/login_buttonCancel"
-                android:onClick="cancelClick"
-                style="@style/buttonStyle"/>
         </LinearLayout>
 
     </LinearLayout>

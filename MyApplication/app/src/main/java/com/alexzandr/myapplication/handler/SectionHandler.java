@@ -61,7 +61,7 @@ public class SectionHandler implements AdapterItemHandler {
     }
 
     @Override
-    public String getTextForButton() {
+    public String getTextForView() {
         String text = "00" + getZone();
         text = PREFIX_FOR_TEXT + text.substring(text.length() - 2) + SEPARATOR_FOR_TEXT + getLevel();
         return text;

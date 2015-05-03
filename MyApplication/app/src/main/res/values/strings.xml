@@ -71,6 +71,8 @@
     <string name="dialog_set_height_textView_prefix">"Высота секций = "</string>
     <string name="dialog_set_height_headLine_title">Установите высоту заголовка</string>
     <string name="dialog_set_height_section_title">Установите высоту секции</string>
+    <string name="dialog_set_button_cancel_text">Отмена</string>
+    <string name="dialog_set_button_save_text">Сохранить</string>
 
     <string name="preference_name">"com.alexzandr.myapplication.SAVED_SETTINGS"</string>
     <string name="preference_headLine_height">"com.alexzandr.myapplication.HEADLINE_HEIGHT"</string>

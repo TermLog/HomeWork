@@ -1,6 +1,7 @@
 package com.alexzandr.myapplication;
 
 import android.content.Context;
+import android.util.TypedValue;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -12,6 +13,8 @@ public class Singleton {
     private static Context sContext;
     private static QueryToServer sQueryToServer;
     private static Animation sScaleAnimationForButton;
+    private static final int DEFAULT_SECTION_HEIGHT_DP = 80;
+    private static final int DEFAULT_HEADLINE_HEIGHT_DP = 80;
 
     private Singleton(){
         sContext =  GlobalAccess.getApp();
@@ -36,6 +39,24 @@ public class Singleton {
 
     public static int getColor(int color){
         return getContext().getResources().getColor(color);
+    }
+
+    public static int getDefaultSectionHeightDp(){
+        return DEFAULT_SECTION_HEIGHT_DP;
+    }
+
+    public static int getDefaultSectionHeightPx(){
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_SECTION_HEIGHT_DP,
+                getContext().getResources().getDisplayMetrics());
+    }
+
+    public static int getDefaultHeadlineHeightDp(){
+        return DEFAULT_HEADLINE_HEIGHT_DP;
+    }
+
+    public static int getDefaultHeadlineHeightPx(){
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_HEADLINE_HEIGHT_DP,
+                getContext().getResources().getDisplayMetrics());
     }
 
 }

@@ -1,6 +1,8 @@
 package com.alexzandr.myapplication;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,21 +18,31 @@ import java.util.ArrayList;
  */
 public class LockUnlockAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
-    private ArrayList<AdapterItemHandler> mButtons;
+    private ArrayList<AdapterItemHandler> mHandlers;
+    private String mKeyHeadlineHeight;
+    private String mKeySectionHeight;
+    private SharedPreferences mSettings;
+    private Context mContext;
 
-    public LockUnlockAdapter(Context context, ArrayList<AdapterItemHandler> buttons) {
-        mButtons = buttons;
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public LockUnlockAdapter(Context context, ArrayList<AdapterItemHandler> handlers) {
+        mContext = context;
+        mHandlers = handlers;
+        mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        String mPreferenceName = mContext.getResources().getString(R.string.preference_name);
+        mKeyHeadlineHeight = mContext.getResources().getString(R.string.preference_headLine_height);
+        mKeySectionHeight = mContext.getResources().getString(R.string.preference_section_height);
+        mSettings = mContext.getSharedPreferences(mPreferenceName, Context.MODE_PRIVATE);
+
     }
 
     @Override
     public int getCount() {
-        return mButtons.size();
+        return mHandlers.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mButtons.get(position);
+        return mHandlers.get(position);
     }
 
     @Override
@@ -45,11 +57,25 @@ public class LockUnlockAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.view_for_gridview, parent, false);
         }
 
-        AdapterItemHandler handler = mButtons.get(position);
+        AdapterItemHandler handler = mHandlers.get(position);
         TextView textView = (TextView) view.findViewById(R.id.textView);
-        textView.setText(handler.getTextForButton());
+        textView.setText(handler.getTextForView());
         textView.setBackgroundColor(handler.getBackgroundColor());
         textView.setTextColor(handler.getTextColor());
+        int height;
+
+        if (handler.getType() == AdapterItemHandler.LEVEL_BUTTON){
+            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    mSettings.getInt(mKeyHeadlineHeight, Singleton.getDefaultHeadlineHeightDp()),
+                    mContext.getResources().getDisplayMetrics());
+            textView.setHeight(height);
+        } else {
+            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    mSettings.getInt(mKeySectionHeight, Singleton.getDefaultSectionHeightDp()),
+                    mContext.getResources().getDisplayMetrics());
+        }
+
+        textView.setHeight(height);
 
         return view;
     }

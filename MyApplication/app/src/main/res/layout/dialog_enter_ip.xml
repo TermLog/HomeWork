@@ -22,21 +22,25 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        style="?android:attr/buttonBarStyle">
 
         <Button
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            style="?android:attr/buttonBarButtonStyle"
+            android:text="@string/dialog_buttonCancel"
+            android:id="@+id/dialog_buttonCancel" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/buttonBarButtonStyle"
             android:text="@string/dialog_buttonOk"
             android:id="@+id/dialog_buttonOk" />
 
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="@string/dialog_buttonCancel"
-            android:id="@+id/dialog_buttonCancel" />
     </LinearLayout>
 
 </LinearLayout>

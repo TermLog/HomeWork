@@ -42,7 +42,7 @@ public class ZoneHandler implements AdapterItemHandler {
     }
 
     @Override
-    public String getTextForButton() {
+    public String getTextForView() {
         return PREFIX_FOR_TEXT + mZone;
     }
 

@@ -17,6 +17,6 @@ public interface AdapterItemHandler {
     int getTextColor();
     int getBackgroundColor();
     boolean isAvailability();
-    String getTextForButton();
+    String getTextForView();
 
 }

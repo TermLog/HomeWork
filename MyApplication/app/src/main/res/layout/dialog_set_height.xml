@@ -44,8 +44,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/dialog_set_height_cancelButton"
             style="?android:attr/buttonBarButtonStyle"
-            android:focusable="true"
-            android:text="Cancel"/>
+            android:text="@string/dialog_set_button_cancel_text"/>
 
         <Button
             android:layout_width="0dp"
@@ -53,8 +52,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/dialog_set_height_saveButton"
             style="?android:attr/buttonBarButtonStyle"
-            android:focusable="true"
-            android:text="Save"/>
+            android:text="@string/dialog_set_button_save_text"/>
 
     </LinearLayout>
 

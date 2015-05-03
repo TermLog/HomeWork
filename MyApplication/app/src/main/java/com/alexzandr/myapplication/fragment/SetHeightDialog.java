@@ -17,6 +17,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.alexzandr.myapplication.R;
+import com.alexzandr.myapplication.Singleton;
 
 /**
  * Created by anekrasov on 29.04.15.
@@ -34,18 +35,18 @@ public class SetHeightDialog extends DialogFragment implements SeekBar.OnSeekBar
     private static final int SEEK_BAR_MIN_VALUE = 18;
     private static final double PERCENT_OF_WIDTH = 0.8;
     private static final double PERCENT_OF_HEIGHT = 0.3;
-    private static final int DEFAULT_HEIGHT = 80;
 
     public static final String KEY_FOR_TYPE = "type";
-    public static final int HEAD_LINE_HEIGHT = 1;
-    public static final int SECTION_HEIGHT = 2;
+    public static final int DIALOG_TYPE_HEADLINE_HEIGHT = 1;
+    public static final int DIALOG_TYPE_SECTION_HEIGHT = 2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
         float dpWidth = displayMetrics.widthPixels;
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)(PERCENT_OF_WIDTH * dpWidth), ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)(PERCENT_OF_WIDTH * dpWidth),
+                ViewGroup.LayoutParams.WRAP_CONTENT);
 
         View view = inflater.inflate(R.layout.dialog_set_height, null);
 
@@ -58,7 +59,6 @@ public class SetHeightDialog extends DialogFragment implements SeekBar.OnSeekBar
         mSeekBar = (SeekBar) view.findViewById(R.id.dialog_set_height_seekBar);
         mSeekBar.setOnSeekBarChangeListener(this);
         mSeekBar.setLayoutParams(params);
-        mSeekBar.setMinimumWidth((int)(PERCENT_OF_WIDTH * dpWidth));
         mSeekBar.setMax((int) (PERCENT_OF_HEIGHT * dpHeight));
 
         mEditText = (EditText) view.findViewById(R.id.dialog_set_height_editText);
@@ -67,7 +67,7 @@ public class SetHeightDialog extends DialogFragment implements SeekBar.OnSeekBar
         mEditText.setOnKeyListener(this);
         mEditText.setText(Integer.toString(mSeekBar.getProgress()));
 
-        mSettings = getActivity().getSharedPreferences(getString(R.string.preference_name), Context.MODE_PRIVATE);
+        mSettings = Singleton.getContext().getSharedPreferences(getString(R.string.preference_name), Context.MODE_PRIVATE);
 
         return view;
     }
@@ -78,19 +78,16 @@ public class SetHeightDialog extends DialogFragment implements SeekBar.OnSeekBar
 
         mType = getArguments().getInt(KEY_FOR_TYPE);
 
-        if (mType == HEAD_LINE_HEIGHT){
+        if (mType == DIALOG_TYPE_HEADLINE_HEIGHT){
             getDialog().setTitle(R.string.dialog_set_height_headLine_title);
-        } else {
-            getDialog().setTitle(R.string.dialog_set_height_section_title);
-        }
-
-        if (mType == SECTION_HEIGHT){
             mPreferenceKey = getString(R.string.preference_headLine_height);
         } else {
+            getDialog().setTitle(R.string.dialog_set_height_section_title);
             mPreferenceKey = getString(R.string.preference_section_height);
         }
 
-        setSeekBarProgress(mSettings.getInt(mPreferenceKey, DEFAULT_HEIGHT));
+        setSeekBarProgress(mSettings.getInt(mPreferenceKey,
+                mType == DIALOG_TYPE_HEADLINE_HEIGHT ? Singleton.getDefaultHeadlineHeightDp() : Singleton.getDefaultSectionHeightDp()));
     }
 
     @Override
@@ -155,12 +152,11 @@ public class SetHeightDialog extends DialogFragment implements SeekBar.OnSeekBar
 
     @Override
     public void onClick (View v){
-        switch (v.getId()) {
-            case R.id.dialog_set_height_saveButton:
-                SharedPreferences.Editor editor = mSettings.edit();
-                editor.putInt(mPreferenceKey, mSeekBar.getProgress());
-                editor.apply();
-                break;
+        if (v.getId() == R.id.dialog_set_height_saveButton){
+            setSeekBarProgress(mEditText.getText());
+            SharedPreferences.Editor editor = mSettings.edit();
+            editor.putInt(mPreferenceKey, mSeekBar.getProgress());
+            editor.apply();
         }
         dismiss();
     }

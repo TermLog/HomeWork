@@ -43,7 +43,7 @@ public class LevelHandler implements AdapterItemHandler {
     }
 
     @Override
-    public String getTextForButton() {
+    public String getTextForView() {
         return mLevel != REFRESH_BUTTON ? PREFIX_FOR_TEXT + mLevel : Singleton.getContext().getResources().getString(R.string.lock_buttonRefresh);
     }
 
