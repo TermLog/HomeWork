@@ -23,6 +23,7 @@
     <string name="title_activity_update_document">Обновить документ</string>
     <string name="title_activity_delete_document">Удалить апостроф </string>
     <string name="title_activity_lock_unlock">Блокировка зон</string>
+    <string name="title_activity_setting">Настройки</string>
 
     <string name="mainMenu_buttonRefresh">Обновить документ</string>
     <string name="mainMenu_buttonDelete">Удалить апостроф</string>
@@ -64,7 +65,7 @@
     <string name="title_activity_test_menu">TestMenuActivity</string>
 
     <string name="login_menu_forget">Забыть мои данные</string>
-    <string name="login_menu_section_color">Цвет секций</string>
+    <string name="login_menu_settings">Настройки</string>
     <string name="login_menu_headLine_height">Высота заголовка</string>
     <string name="login_menu_section_height">Высота секций</string>
 
@@ -74,9 +75,73 @@
     <string name="dialog_set_button_cancel_text">Отмена</string>
     <string name="dialog_set_button_save_text">Сохранить</string>
 
-    <string name="preference_name">"com.alexzandr.myapplication.SAVED_SETTINGS"</string>
-    <string name="preference_headLine_height">"com.alexzandr.myapplication.HEADLINE_HEIGHT"</string>
-    <string name="preference_section_height">"com.alexzandr.myapplication.SECTION_HEIGHT"</string>
+    <string name="preference_prefix_name">"com.alexzandr.myapplication."</string>
+    <string name="preference_key_height_headLine">"com.alexzandr.myapplication.HEADLINE_HEIGHT"</string>
+    <string name="preference_key_height_section">"com.alexzandr.myapplication.SECTION_HEIGHT"</string>
+    <string name="preference_key_color_blocked">"com.alexzandr.myapplication.COLOR_BLOCKED"</string>
+    <string name="preference_key_color_unblocked">"com.alexzandr.myapplication.COLOR_UNBLOCKED"</string>
+    <string name="preference_key_color_both">"com.alexzandr.myapplication.COLOR_BOTH"</string>
+    <string name="preference_key_color_notExists">"com.alexzandr.myapplication.COLOR_NOT_EXISTS"</string>
 
+    <string name="default_color_blocked">#F44336</string>
+    <string name="default_color_unblocked">#4CAF50</string>
+    <string name="default_color_both">#FFEB3B</string>
+    <string name="default_color_notExists">#9E9E9E</string>
+    <integer name="default_height_headline">30</integer>
+    <integer name="default_height_section">30</integer>
+
+    <string name="color_preference_summary_text">".\nВыбор фонового цвета для секции."</string>
+    <string name="color_preference_section_color">Настройки цвета</string>
+    <string name="color_preference_section_height">Настройка высоты</string>
+    <string name="color_preference_title_blocked">Цвет заблокированной секции</string>
+    <string name="color_preference_title_unblocked">Цвет разблокированной секции</string>
+    <string name="color_preference_title_both">Цвет смешанной секции</string>
+    <string name="color_preference_title_notExists">Цвет отсутствующей секции</string>
+
+    <string name="height_preference_title_headline">"Высота заголовка - "</string>
+    <string name="height_preference_title_section">"Высота секции - "</string>
+
+    <string-array name="color_preference_array_entry">
+        <item>Красный</item>
+        <item>Розовый</item>
+        <item>Сиренивый</item>
+        <item>Индиго</item>
+        <item>Cyan</item>
+        <item>Teal</item>
+        <item>Светло зеленый</item>
+        <item>Лайм</item>
+        <item>Amber</item>
+        <item>Deep Orange</item>
+        <item>Коричневый</item>
+        <item>Оранжевый</item>
+        <item>Желтый</item>
+        <item>Зеленый</item>
+        <item>Голубой</item>
+        <item>Синий</item>
+        <item>Фиолетовый</item>
+        <item>Серый</item>
+        <item>Blue Grey</item>
+    </string-array>
+    <string-array name="color_preference_array_values">
+        <item>#F44336</item>
+        <item>#E91E63</item>
+        <item>#673AB7</item>
+        <item>#3F51B5</item>
+        <item>#00BCD4</item>
+        <item>#009688</item>
+        <item>#8BC34A</item>
+        <item>#CDDC39</item>
+        <item>#FFC107</item>
+        <item>#FF5722</item>
+        <item>#795548</item>
+        <item>#FF9800</item>
+        <item>#FFEB3B</item>
+        <item>#4CAF50</item>
+        <item>#03A9F4</item>
+        <item>#2196F3</item>
+        <item>#9C27B0</item>
+        <item>#9E9E9E</item>
+        <item>#607D8B</item>
+    </string-array>
 
 </resources>

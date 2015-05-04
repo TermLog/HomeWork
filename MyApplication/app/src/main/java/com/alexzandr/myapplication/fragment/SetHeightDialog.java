@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -22,19 +22,21 @@ import com.alexzandr.myapplication.Singleton;
 /**
  * Created by anekrasov on 29.04.15.
  */
-public class SetHeightDialog extends DialogFragment implements SeekBar.OnSeekBarChangeListener, TextView.OnEditorActionListener,
-        View.OnFocusChangeListener, View.OnKeyListener, View.OnClickListener {
+public class SetHeightDialog extends DialogFragment implements
+        SeekBar.OnSeekBarChangeListener,
+        TextView.OnEditorActionListener,
+        View.OnFocusChangeListener,
+        View.OnClickListener {
 
     private int mType;
+    private int mMinValue;
     private SeekBar mSeekBar;
     private EditText mEditText;
     private Button mSaveButton;
     private Button mCancelButton;
     private String mPreferenceKey;
     private SharedPreferences mSettings;
-    private static final int SEEK_BAR_MIN_VALUE = 18;
     private static final double PERCENT_OF_WIDTH = 0.8;
-    private static final double PERCENT_OF_HEIGHT = 0.3;
 
     public static final String KEY_FOR_TYPE = "type";
     public static final int DIALOG_TYPE_HEADLINE_HEIGHT = 1;
@@ -43,10 +45,8 @@ public class SetHeightDialog extends DialogFragment implements SeekBar.OnSeekBar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-        float dpWidth = displayMetrics.widthPixels;
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)(PERCENT_OF_WIDTH * dpWidth),
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        int dpWidth = (int) (PERCENT_OF_WIDTH * displayMetrics.widthPixels);
+        LayoutParams params = new LayoutParams(dpWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         View view = inflater.inflate(R.layout.dialog_set_height, null);
 
@@ -59,15 +59,14 @@ public class SetHeightDialog extends DialogFragment implements SeekBar.OnSeekBar
         mSeekBar = (SeekBar) view.findViewById(R.id.dialog_set_height_seekBar);
         mSeekBar.setOnSeekBarChangeListener(this);
         mSeekBar.setLayoutParams(params);
-        mSeekBar.setMax((int) (PERCENT_OF_HEIGHT * dpHeight));
+        mSeekBar.setMax(Singleton.getSeekBarMax());
 
         mEditText = (EditText) view.findViewById(R.id.dialog_set_height_editText);
         mEditText.setOnEditorActionListener(this);
         mEditText.setOnFocusChangeListener(this);
-        mEditText.setOnKeyListener(this);
         mEditText.setText(Integer.toString(mSeekBar.getProgress()));
 
-        mSettings = Singleton.getContext().getSharedPreferences(getString(R.string.preference_name), Context.MODE_PRIVATE);
+        mSettings = Singleton.getContext().getSharedPreferences(Singleton.getPreferencesName(), Context.MODE_PRIVATE);
 
         return view;
     }
@@ -77,30 +76,19 @@ public class SetHeightDialog extends DialogFragment implements SeekBar.OnSeekBar
         super.onStart();
 
         mType = getArguments().getInt(KEY_FOR_TYPE);
+        mMinValue = Singleton.getSeekBarMin();
 
         if (mType == DIALOG_TYPE_HEADLINE_HEIGHT){
             getDialog().setTitle(R.string.dialog_set_height_headLine_title);
-            mPreferenceKey = getString(R.string.preference_headLine_height);
-        } else {
+            mPreferenceKey = getString(R.string.preference_key_height_headLine);
+        }
+        if (mType == DIALOG_TYPE_SECTION_HEIGHT){
             getDialog().setTitle(R.string.dialog_set_height_section_title);
-            mPreferenceKey = getString(R.string.preference_section_height);
+            mPreferenceKey = getString(R.string.preference_key_height_section);
         }
 
         setSeekBarProgress(mSettings.getInt(mPreferenceKey,
                 mType == DIALOG_TYPE_HEADLINE_HEIGHT ? Singleton.getDefaultHeadlineHeightDp() : Singleton.getDefaultSectionHeightDp()));
-    }
-
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_UP){
-            if (!TextUtils.isEmpty(((EditText) v).getText())) {
-                int progress = Integer.parseInt(((EditText) v).getText().toString());
-                if (progress >= SEEK_BAR_MIN_VALUE) {
-                    setSeekBarProgress(progress);
-                }
-            }
-        }
-        return false;
     }
 
     @Override
@@ -133,15 +121,16 @@ public class SetHeightDialog extends DialogFragment implements SeekBar.OnSeekBar
 
     private void setSeekBarProgress(CharSequence progress){
         if (TextUtils.isEmpty(progress)) {
-            setSeekBarProgress(SEEK_BAR_MIN_VALUE);
+            setSeekBarProgress(mMinValue);
         } else {
             setSeekBarProgress(Integer.parseInt(progress.toString()));
         }
     }
     private void setSeekBarProgress(int progress){
-        if (progress < SEEK_BAR_MIN_VALUE){
-            progress = SEEK_BAR_MIN_VALUE;
-        } else if (progress > mSeekBar.getMax()){
+        if (progress < mMinValue){
+            progress = mMinValue;
+        }
+        if (progress > mSeekBar.getMax()){
             progress = mSeekBar.getMax();
         }
 

@@ -57,6 +57,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainMenuActivity" />
         </activity>
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/title_activity_lock_unlock"
+            android:parentActivityName=".activity.MainMenuActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainMenuActivity" />
+        </activity>
     </application>
 
 </manifest>

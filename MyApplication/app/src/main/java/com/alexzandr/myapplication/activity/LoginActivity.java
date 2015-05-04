@@ -32,12 +32,11 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
     private Button mChoiceServerButton;
     private DialogFragment mDialogOtherIp;
     private ProgressDialog mProgressDialog;
-    private SetHeightDialog mDialogSetHeight;
     private ErrorShowDialog mErrorDialog;
     private int mServerId = SERVER_DEFAULT;
     private String mServerIp;
 
-    public static final String HOME_IP = "192.168.1.105";
+    public static final String HOME_IP = "192.168.1.106";
     public static final String WORK_IP = "10.100.6.15";
     private static final int SERVER_DEFAULT = 0;
     private static final int SERVER_HOME = 1;
@@ -54,42 +53,44 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
         mChoiceServerButton = (Button) findViewById(R.id.login_buttonChoice);
         mDialogOtherIp = new EnterIpDialog();
         mErrorDialog = new ErrorShowDialog();
-        mDialogSetHeight = new SetHeightDialog();
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
         mProgressDialog.setCancelable(false);
-//        getSharedPreferences(getString(R.string.preference_name), Context.MODE_PRIVATE).edit().clear().commit();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_login, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        Bundle dialogType = new Bundle();
-
-        switch (itemId){
-            case R.id.login_menu_headLine_height:
-                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.DIALOG_TYPE_HEADLINE_HEIGHT);
-                mDialogSetHeight.setArguments(dialogType);
-                mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
-                break;
-            case R.id.login_menu_section_height:
-                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.DIALOG_TYPE_SECTION_HEIGHT);
-                mDialogSetHeight.setArguments(dialogType);
-                mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
-                break;
-            default: break;
-        }
-
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_login, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int itemId = item.getItemId();
+//        Bundle dialogType = new Bundle();
+//
+//        switch (itemId){
+//            case R.id.login_menu_section_color:
+//                Intent intent = new Intent(LoginActivity.this, SettingsActivity.class);
+//                startActivity(intent);
+//                break;
+//            case R.id.login_menu_headLine_height:
+//                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.DIALOG_TYPE_HEADLINE_HEIGHT);
+//                mDialogSetHeight.setArguments(dialogType);
+//                mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
+//                break;
+//            case R.id.login_menu_section_height:
+//                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.DIALOG_TYPE_SECTION_HEIGHT);
+//                mDialogSetHeight.setArguments(dialogType);
+//                mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
+//                break;
+//            default: break;
+//        }
+//
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     public void serverChoice(View view){
         PopupMenu popupMenu = new PopupMenu(this, mChoiceServerButton);
@@ -210,6 +211,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
 
             if (exception == null){
 
+                Singleton.setPreferencesName(mEditTextUser.getText().toString());
                 Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
                 startActivity(intent);
                 LoginActivity.this.finish();

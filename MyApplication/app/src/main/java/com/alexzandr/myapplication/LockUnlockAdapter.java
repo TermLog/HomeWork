@@ -28,9 +28,9 @@ public class LockUnlockAdapter extends BaseAdapter {
         mContext = context;
         mHandlers = handlers;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        String mPreferenceName = mContext.getResources().getString(R.string.preference_name);
-        mKeyHeadlineHeight = mContext.getResources().getString(R.string.preference_headLine_height);
-        mKeySectionHeight = mContext.getResources().getString(R.string.preference_section_height);
+        String mPreferenceName = Singleton.getPreferencesName();
+        mKeyHeadlineHeight = mContext.getResources().getString(R.string.preference_key_height_headLine);
+        mKeySectionHeight = mContext.getResources().getString(R.string.preference_key_height_section);
         mSettings = mContext.getSharedPreferences(mPreferenceName, Context.MODE_PRIVATE);
 
     }

@@ -4,4 +4,9 @@
     <dimen name="activity_vertical_margin">10dp</dimen>
     <dimen name="mainMenu_buttonSpacing_bottom">15dp</dimen>
     <dimen name="button_text_size">25sp</dimen>
+
+    <dimen name="default_height_headline">30dp</dimen>
+    <dimen name="default_height_section">30dp</dimen>
+
+    <dimen name="height_preference_widget_width">36dp</dimen>
 </resources>

@@ -1,5 +1,9 @@
 package com.alexzandr.myapplication.handler;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.Singleton;
 
@@ -11,6 +15,7 @@ public class SectionHandler implements AdapterItemHandler {
     private int mZone;
     private int mLevel;
     private int mBlockedType;
+    private SharedPreferences mPreferences;
     private static final String PREFIX_FOR_TEXT = "P";
     private static final String SEPARATOR_FOR_TEXT = ", ";
     private static final String PREFIX_FOR_KEY = "P";
@@ -21,6 +26,7 @@ public class SectionHandler implements AdapterItemHandler {
         this.mLevel = level;
         this.mAvailability = true;
         this.mBlockedType = UNBLOCKED;
+        mPreferences = Singleton.getContext().getSharedPreferences(Singleton.getPreferencesName(), Context.MODE_PRIVATE);
     }
 
     @Override
@@ -40,17 +46,31 @@ public class SectionHandler implements AdapterItemHandler {
 
     @Override
     public int getBackgroundColor() {
+        String key, defaultValue, value;
+
         if (isAvailability()) {
             switch (getBlockedType()) {
                 case UNBLOCKED:
-                    return Singleton.getColor(R.color.lockUnlock_button_unblocked);
+                    key = Singleton.getContext().getResources().getString(R.string.preference_key_color_unblocked);
+                    defaultValue = Singleton.getContext().getResources().getString(R.string.default_color_unblocked);
+                    value = mPreferences.getString(key, defaultValue);
+                    return Color.parseColor(value);
                 case BLOCKED:
-                    return Singleton.getColor(R.color.lockUnlock_button_blocked);
+                    key = Singleton.getContext().getResources().getString(R.string.preference_key_color_blocked);
+                    defaultValue = Singleton.getContext().getResources().getString(R.string.default_color_blocked);
+                    value = mPreferences.getString(key, defaultValue);
+                    return Color.parseColor(value);
                 case BOTH:
-                    return Singleton.getColor(R.color.lockUnlock_button_both);
+                    key = Singleton.getContext().getResources().getString(R.string.preference_key_color_both);
+                    defaultValue = Singleton.getContext().getResources().getString(R.string.default_color_both);
+                    value = mPreferences.getString(key, defaultValue);
+                    return Color.parseColor(value);
             }
         } else {
-            return Singleton.getColor(R.color.background_grey);
+            key = Singleton.getContext().getResources().getString(R.string.preference_key_color_notExists);
+            defaultValue = Singleton.getContext().getResources().getString(R.string.default_color_notExists);
+            value = mPreferences.getString(key, defaultValue);
+            return Color.parseColor(value);
         }
         return 0;
     }

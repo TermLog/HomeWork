@@ -11,7 +11,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/login_menu_section_color"
-        android:title="@string/login_menu_section_color"
+        android:title="@string/login_menu_settings"
         android:orderInCategory="100"
         app:showAsAction="never" />
 
