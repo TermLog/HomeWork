@@ -1,6 +1,8 @@
 package com.alexzandr.myapplication.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -33,7 +35,11 @@ public class MainMenuActivity extends ActionBarActivity {
         Bundle dialogType = new Bundle();
 
         switch (itemId){
-            case R.id.login_menu_section_color:
+            case R.id.login_menu_forget_me:
+                SharedPreferences preferences = getSharedPreferences(getString(R.string.remember_preference_name), Context.MODE_PRIVATE);
+                preferences.edit().clear().apply();
+                break;
+            case R.id.login_menu_settings:
                 Intent intent = new Intent(MainMenuActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 break;

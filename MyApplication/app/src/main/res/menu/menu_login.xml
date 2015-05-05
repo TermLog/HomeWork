@@ -5,12 +5,12 @@
     tools:context="com.alexzandr.myapplication.activity.LoginActivity">
 
     <item
-        android:id="@+id/login_menu_forget"
+        android:id="@+id/login_menu_forget_me"
         android:title="@string/login_menu_forget"
         android:orderInCategory="100"
         app:showAsAction="never" />
     <item
-        android:id="@+id/login_menu_section_color"
+        android:id="@+id/login_menu_settings"
         android:title="@string/login_menu_settings"
         android:orderInCategory="100"
         app:showAsAction="never" />

@@ -108,11 +108,21 @@
                 android:onClick="serverChoice"/>
         </LinearLayout>
 
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="@string/login_textRemember"
+            android:textColor="@color/text_blue"
+            android:id="@+id/login_checkBox_remember"
+            android:onClick="onClickRemember"/>
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp">
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp">
 
             <com.alexzandr.myapplication.view.AnimatedButton
                 android:text="@string/login_buttonCancel"

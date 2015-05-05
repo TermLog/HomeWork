@@ -14,6 +14,7 @@
     <string name="login_textEnter">Вход</string>
     <string name="login_textPassword">Пароль:</string>
     <string name="login_textServer">Сервер:</string>
+    <string name="login_textRemember">Запомнить меня</string>
     <string name="login_editUser_hint">Имя пользователя</string>
     <string name="login_editPassword_hint">Пароль</string>
     <string name="login_buttonOk">Войти</string>
@@ -100,6 +101,11 @@
 
     <string name="height_preference_title_headline">"Высота заголовка - "</string>
     <string name="height_preference_title_section">"Высота секции - "</string>
+
+    <string name="remember_preference_name">"com.alexzandr.myapplication.REMEMBER"</string>
+    <string name="remember_preference_key_is_active">"com.alexzandr.myapplication.IS_ACTIVE"</string>
+    <string name="remember_preference_key_user">"com.alexzandr.myapplication.USER"</string>
+    <string name="remember_preference_key_password">"com.alexzandr.myapplication.PASSWORD"</string>
 
     <string-array name="color_preference_array_entry">
         <item>Красный</item>

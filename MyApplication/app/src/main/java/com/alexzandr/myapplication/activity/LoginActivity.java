@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 
@@ -33,6 +35,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
     private DialogFragment mDialogOtherIp;
     private ProgressDialog mProgressDialog;
     private ErrorShowDialog mErrorDialog;
+    private SharedPreferences mPreferences;
     private int mServerId = SERVER_DEFAULT;
     private String mServerIp;
 
@@ -42,6 +45,9 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
     private static final int SERVER_HOME = 1;
     private static final int SERVER_WORK = 2;
     private static final int SERVER_OTHER = 3;
+    private static final boolean REMEMBER_NOT_ACTIVE = false;
+    private static final boolean REMEMBER_IS_ACTIVE = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,40 +63,16 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
         mProgressDialog.setCancelable(false);
-    }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_login, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int itemId = item.getItemId();
-//        Bundle dialogType = new Bundle();
-//
-//        switch (itemId){
-//            case R.id.login_menu_section_color:
-//                Intent intent = new Intent(LoginActivity.this, SettingsActivity.class);
-//                startActivity(intent);
-//                break;
-//            case R.id.login_menu_headLine_height:
-//                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.DIALOG_TYPE_HEADLINE_HEIGHT);
-//                mDialogSetHeight.setArguments(dialogType);
-//                mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
-//                break;
-//            case R.id.login_menu_section_height:
-//                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.DIALOG_TYPE_SECTION_HEIGHT);
-//                mDialogSetHeight.setArguments(dialogType);
-//                mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
-//                break;
-//            default: break;
-//        }
-//
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+        mPreferences = getSharedPreferences(getString(R.string.remember_preference_name), Context.MODE_PRIVATE);
+        if (mPreferences.getBoolean(getString(R.string.remember_preference_key_is_active), REMEMBER_NOT_ACTIVE)){
+            mEditTextUser.setText(mPreferences.getString(getString(R.string.remember_preference_key_user), ""));
+            mEditTextPassword.setText(mPreferences.getString(getString(R.string.remember_preference_key_password), ""));
+            CheckBox cb = (CheckBox) findViewById(R.id.login_checkBox_remember);
+            cb.setChecked(true);
+        }
+
+    }
 
     public void serverChoice(View view){
         PopupMenu popupMenu = new PopupMenu(this, mChoiceServerButton);
@@ -197,6 +179,27 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
         task.execute(DataBaseTask.CHECK_CONNECTION);
     }
 
+    public void rememberMe() {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        if (mPreferences.getBoolean(getString(R.string.remember_preference_key_is_active), REMEMBER_NOT_ACTIVE)){
+            editor.putString(getString(R.string.remember_preference_key_user), mEditTextUser.getText().toString());
+            editor.putString(getString(R.string.remember_preference_key_password), mEditTextPassword.getText().toString());
+            editor.apply();
+        } else {
+            editor.clear().apply();
+        }
+    }
+
+    public void onClickRemember(View view) {
+        CheckBox cb = (CheckBox) view;
+        if (!cb.isChecked()){
+            mPreferences.edit().clear().apply();
+            mPreferences.edit().putBoolean(getString(R.string.remember_preference_key_is_active), REMEMBER_NOT_ACTIVE).apply();
+        } else {
+            mPreferences.edit().putBoolean(getString(R.string.remember_preference_key_is_active), REMEMBER_IS_ACTIVE).apply();
+        }
+    }
+
     private class InnerTask extends DataBaseTask{
 
         @Override
@@ -211,6 +214,7 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
 
             if (exception == null){
 
+                rememberMe();
                 Singleton.setPreferencesName(mEditTextUser.getText().toString());
                 Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
                 startActivity(intent);
