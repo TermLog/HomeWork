@@ -22,7 +22,7 @@
         android:layout_marginTop="6dip"
         android:layout_marginBottom="6dip">
 
-        <TextView android:id="@+id/title"
+        <TextView android:id="@+id/preference_color_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -34,8 +34,8 @@
         <TextView android:id="@+id/summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title"
-            android:layout_alignStart="@id/title"
+            android:layout_below="@id/preference_height_title"
+            android:layout_alignStart="@id/preference_height_title"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorSecondary"
             android:maxLines="4"

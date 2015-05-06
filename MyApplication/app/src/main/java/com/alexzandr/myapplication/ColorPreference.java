@@ -52,7 +52,7 @@ public class ColorPreference extends ListPreference {
 
     @Override
     protected void onBindView(View view) {
-        final TextView titleView = (TextView) view.findViewById(R.id.title);
+        final TextView titleView = (TextView) view.findViewById(R.id.preference_color_title);
         if (titleView != null) {
             final CharSequence title = getTitle();
             if (!TextUtils.isEmpty(title)) {

@@ -9,8 +9,6 @@ import android.os.Parcelable;
 import android.preference.Preference;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -31,12 +29,8 @@ public class HeightPreference extends Preference
             Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
-        TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.ProgressBar, defStyleAttr, defStyleRes);
         setMax(Singleton.getSeekBarMax());
-        a.recycle();
-
-        setLayoutResource(R.layout.preference_seekbar);
+        setLayoutResource(R.layout.preference_height);
 
     }
 
@@ -55,7 +49,7 @@ public class HeightPreference extends Preference
     @Override
     protected void onBindView(View view) {
 
-        mTitleView = (TextView) view.findViewById(R.id.title);
+        mTitleView = (TextView) view.findViewById(R.id.preference_height_title);
         if (mTitleView != null) {
             final CharSequence title = getTitle();
             if (!TextUtils.isEmpty(title)) {
@@ -66,22 +60,7 @@ public class HeightPreference extends Preference
             }
         }
 
-        final TextView summaryView = (TextView) view.findViewById(R.id.summary);
-        if (summaryView != null) {
-            final CharSequence summary = getSummary();
-            if (!TextUtils.isEmpty(summary)) {
-                summaryView.setText(summary);
-                summaryView.setVisibility(View.VISIBLE);
-            } else {
-                summaryView.setVisibility(View.GONE);
-            }
-        }
-
-        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        int dpHeight = (int) (displayMetrics.heightPixels / displayMetrics.density);
-
-        SeekBar seekBar = (SeekBar) view.findViewById(
-                R.id.seekBar);
+        SeekBar seekBar = (SeekBar) view.findViewById(R.id.preference_height_seekBar);
         seekBar.setOnSeekBarChangeListener(this);
         seekBar.setMax(mMax);
         seekBar.setProgress(mProgress);
@@ -89,13 +68,12 @@ public class HeightPreference extends Preference
     }
 
     @Override
-    public CharSequence getSummary() {
-        return null;
+    public CharSequence getTitle() {
+        return getTitle(getProgress());
     }
 
-    @Override
-    public CharSequence getTitle() {
-        return super.getTitle() + Integer.toString(getProgress());
+    public CharSequence getTitle(int progress) {
+        return super.getTitle() + Integer.toString(progress);
     }
 
     @Override
@@ -107,21 +85,6 @@ public class HeightPreference extends Preference
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
         return a.getInt(index, 0);
-    }
-
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (event.getAction() != KeyEvent.ACTION_UP) {
-            if (keyCode == KeyEvent.KEYCODE_PLUS
-                    || keyCode == KeyEvent.KEYCODE_EQUALS) {
-                setProgress(getProgress() + 1);
-                return true;
-            }
-            if (keyCode == KeyEvent.KEYCODE_MINUS) {
-                setProgress(getProgress() - 1);
-                return true;
-            }
-        }
-        return false;
     }
 
     public void setMax(int max) {
@@ -144,7 +107,7 @@ public class HeightPreference extends Preference
         }
         if (progress != mProgress) {
             mProgress = progress;
-            persistInt(progress);
+                persistInt(progress);
             if (notifyChanged) {
                 notifyChanged();
             }
@@ -175,15 +138,15 @@ public class HeightPreference extends Preference
             SeekBar seekBar, int progress, boolean fromUser) {
         if (fromUser && !mTrackingTouch) {
             syncProgress(seekBar);
-            if (mTitleView != null) {
-                mTitleView.setText(getTitle());
-            }
+        }
+        if (mTitleView != null) {
+            mTitleView.setText(getTitle(progress));
         }
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-        mTrackingTouch = false;
+        mTrackingTouch = true;
     }
 
     @Override
