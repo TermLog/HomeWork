@@ -1,7 +1,9 @@
 package com.alexzandr.myapplication.fragment;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.Singleton;
+import com.alexzandr.myapplication.activity.LockUnlockActivity;
 
 /**
  * Created by anekrasov on 29.04.15.
@@ -34,6 +37,7 @@ public class SetHeightDialog extends DialogFragment implements
     private EditText mEditText;
     private Button mSaveButton;
     private Button mCancelButton;
+    private OnAdapterChangedListener mActivity;
     private String mPreferenceKey;
     private SharedPreferences mSettings;
     private static final double PERCENT_OF_WIDTH = 0.8;
@@ -41,6 +45,14 @@ public class SetHeightDialog extends DialogFragment implements
     public static final String KEY_FOR_TYPE = "type";
     public static final int DIALOG_TYPE_HEADLINE_HEIGHT = 1;
     public static final int DIALOG_TYPE_SECTION_HEIGHT = 2;
+
+    @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        if (activity instanceof OnAdapterChangedListener){
+            mActivity = (OnAdapterChangedListener) activity;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -148,5 +160,15 @@ public class SetHeightDialog extends DialogFragment implements
             editor.apply();
         }
         dismiss();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        mActivity.onAdapterChanged();
+    }
+
+    public interface OnAdapterChangedListener {
+        void onAdapterChanged();
     }
 }

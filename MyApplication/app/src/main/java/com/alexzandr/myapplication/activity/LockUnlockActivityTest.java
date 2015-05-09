@@ -1,12 +1,18 @@
 package com.alexzandr.myapplication.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.alexzandr.myapplication.fragment.SetHeightDialog;
 import com.alexzandr.myapplication.handler.AdapterItemHandler;
 import com.alexzandr.myapplication.DataBaseTask;
 import com.alexzandr.myapplication.handler.LevelHandler;
@@ -21,7 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class LockUnlockActivityTest extends ActionBarActivity implements /*OnClickListener, */ErrorShowDialog.OnShowErrors {
+public class LockUnlockActivityTest extends ActionBarActivity implements ErrorShowDialog.OnShowErrors,
+        SetHeightDialog.OnAdapterChangedListener {
 
     private int mLevelsCount;
     private int mZonesCount;
@@ -32,10 +39,8 @@ public class LockUnlockActivityTest extends ActionBarActivity implements /*OnCli
     private ArrayList<AdapterItemHandler> mLevels;
     private GridView mGridViewLevel;
     private GridView mGridViewSection;
-//    private Button mRefreshButton;
+    private SetHeightDialog mDialogSetHeight;
     private ErrorShowDialog mErrorDialog;
-
-    private static int sRefreshCount;
 
     private final static String KEY_COUNT_OF_ZONES = "zoneCount";
     private final static String KEY_COUNT_OF_LEVELS = "levelCount";
@@ -46,10 +51,10 @@ public class LockUnlockActivityTest extends ActionBarActivity implements /*OnCli
         setContentView(R.layout.activity_lock_unlock_test);
 
         mGridViewLevel = (GridView) findViewById(R.id.lockUnlock_test_firstRow);
-//        mRefreshButton = (Button) findViewById(R.id.lockUnlock_test_buttonRefresh);
         mGridViewSection = (GridView) findViewById(R.id.lockUnlock_test_sections);
 
         mErrorDialog = new ErrorShowDialog();
+        mDialogSetHeight = new SetHeightDialog();
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
@@ -59,10 +64,49 @@ public class LockUnlockActivityTest extends ActionBarActivity implements /*OnCli
         task.execute(DataBaseTask.GET_ALL_DATA);
     }
 
-//    @Override
-//    public void onClick(View view) {
-//        levelClick((ZoneLevelButton) view);
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_login, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        Bundle dialogType = new Bundle();
+
+        switch (itemId){
+            case R.id.login_menu_forget_me:
+                SharedPreferences preferences = getSharedPreferences(getString(R.string.remember_preference_name), Context.MODE_PRIVATE);
+                preferences.edit().clear().apply();
+                break;
+            case R.id.login_menu_settings:
+                Intent intent = new Intent(LockUnlockActivityTest.this, SettingsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.login_menu_headLine_height:
+                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.DIALOG_TYPE_HEADLINE_HEIGHT);
+                mDialogSetHeight.setArguments(dialogType);
+                mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
+                break;
+            case R.id.login_menu_section_height:
+                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.DIALOG_TYPE_SECTION_HEIGHT);
+                mDialogSetHeight.setArguments(dialogType);
+                mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
+                break;
+            default: break;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        onAdapterChanged();
+    }
+
 
     void createTable(HashMap<String, Integer> map){
 
@@ -220,6 +264,17 @@ public class LockUnlockActivityTest extends ActionBarActivity implements /*OnCli
         mErrorDialog.setArguments(errorMassage);
         mErrorDialog.show(getFragmentManager(), "ErrorDialog");
     }
+
+    @Override
+    public void onAdapterChanged() {
+        if (mAdapterLevel != null) {
+            mAdapterLevel.notifyDataSetChanged();
+        }
+        if (mAdapterSection != null) {
+            mAdapterSection.notifyDataSetChanged();
+        }
+    }
+
 
     private class LockTask extends DataBaseTask{
 

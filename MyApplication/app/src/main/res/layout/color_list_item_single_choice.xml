@@ -21,4 +21,4 @@
     android:textAppearance="?android:attr/textAppearanceListItemSmall"
     android:gravity="center_vertical"
     android:checkMark="?android:attr/listChoiceIndicatorSingle"
-    android:paddingLeft="10dp"/>
+    android:padding="10dp"/>

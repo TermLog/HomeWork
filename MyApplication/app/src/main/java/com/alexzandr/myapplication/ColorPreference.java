@@ -1,7 +1,11 @@
 package com.alexzandr.myapplication;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -10,6 +14,7 @@ import android.preference.ListPreference;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -103,21 +108,18 @@ public class ColorPreference extends ListPreference {
                     public void onClick(DialogInterface dialog, int which) {
                         mClickedDialogEntryIndex = which;
 
-                        /*
-                         * Clicking on an item simulates the positive button
-                         * click, and dismisses the dialog.
-                         */
-                        ColorPreference.this.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
-                        dialog.dismiss();
+                        ViewGroup vg = (ViewGroup) ((Dialog) dialog).getWindow().getDecorView();
+                        View v = vg.getChildAt(0);
+                        int color = Color.parseColor(getEntryValues()[which].toString());
+                        ValueAnimator colorAnim = ObjectAnimator.ofInt(v, "backgroundColor", Color.WHITE, color);
+                        colorAnim.setDuration(500);
+                        colorAnim.setEvaluator(new ArgbEvaluator());
+                        colorAnim.setRepeatCount(1);
+                        colorAnim.setRepeatMode(ValueAnimator.REVERSE);
+                        colorAnim.start();
                     }
                 });
-
-        /*
-         * The typical interaction for list-based dialogs is to have
-         * click-on-an-item dismiss the dialog instead of the user having to
-         * press 'Ok'.
-         */
-        builder.setPositiveButton(null, null);
+        builder.setPositiveButton(getContext().getResources().getString(R.string.color_preference_positiveButton_text), this);
     }
 
     @Override

@@ -98,6 +98,7 @@
     <string name="color_preference_title_unblocked">Цвет разблокированной секции</string>
     <string name="color_preference_title_both">Цвет смешанной секции</string>
     <string name="color_preference_title_notExists">Цвет отсутствующей секции</string>
+    <string name="color_preference_positiveButton_text">Выбрать</string>
 
     <string name="height_preference_title_headline">"Высота заголовка - "</string>
     <string name="height_preference_title_section">"Высота секции - "</string>
