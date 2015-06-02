@@ -14,6 +14,8 @@ public class Singleton {
     private static String sPreferencesName;
     private static QueryToServer sQueryToServer;
     private static Animation sScaleAnimationForButton;
+    private static boolean sTabletModeDetermined = false;
+    private static boolean sTabletMode = false;
     private static final int SEEK_BAR_MIN_VALUE = 18;
     private static final float PERCENT_OF_DISPLAY_HEIGHT = 0.3f;
     private static final int DEFAULT_SECTION_HEIGHT_DP = getContext().getResources().getInteger(R.integer.default_height_section);
@@ -68,6 +70,16 @@ public class Singleton {
 
     public static String getPreferencesName(){
         return sPreferencesName;
+    }
+
+    public static boolean isTablet() {
+        if (!sTabletModeDetermined) {
+            if (sContext.getResources().getConfiguration().smallestScreenWidthDp>= 600) {
+                sTabletMode = true;
+            }
+            sTabletModeDetermined = true;
+        }
+        return sTabletMode;
     }
 
 }

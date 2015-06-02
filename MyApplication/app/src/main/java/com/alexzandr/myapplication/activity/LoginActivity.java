@@ -5,11 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.text.TextUtils;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +23,6 @@ import com.alexzandr.myapplication.fragment.ErrorShowDialog;
 import com.alexzandr.myapplication.QueryToServer;
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.Singleton;
-import com.alexzandr.myapplication.fragment.SetHeightDialog;
 
 import java.util.HashMap;
 
@@ -54,6 +53,12 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+//        if (Singleton.isTablet()){
+//            Intent tabletIntent = new Intent(LoginActivity.this, TabletActivity.class);
+//            startActivity(tabletIntent);
+//        }
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mEditTextUser = (EditText) findViewById(R.id.login_editUser);
         mEditTextPassword = (EditText) findViewById(R.id.login_editPassword);
         mChoiceServerButton = (Button) findViewById(R.id.login_buttonChoice);

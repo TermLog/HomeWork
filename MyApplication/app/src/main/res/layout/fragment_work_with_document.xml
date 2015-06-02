@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.alexzandr.myapplication.fragment.tablet.WorkWithDocumentFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:background="@color/background_blue">
+
+        <TextView
+            android:text="@string/doc_textView_text"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:id="@+id/doc_textView"
+            android:textSize="20sp"
+            android:textColor="@color/text_white"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/doc_editText"
+            android:hint="@string/doc_editText_hint"
+            android:imeActionLabel="Готово"
+            android:textColorHint="@color/main_EditHint_Default"
+            android:selectAllOnFocus="true"
+            android:height="100dp"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp">
+
+            <com.alexzandr.myapplication.view.AnimatedButton
+                android:text="@string/doc_buttonBack"
+                android:id="@+id/doc_buttonBack"
+                android:onClick="onClick"
+                style="@style/buttonStyle" />
+
+            <com.alexzandr.myapplication.view.AnimatedButton
+                android:text="@string/doc_buttonUpdate"
+                android:id="@+id/doc_buttonAction"
+                android:onClick="onClick"
+                style="@style/buttonStyle" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>
