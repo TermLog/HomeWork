@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.alexzandr.myapplication.fragment.SetHeightDialog;
+import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
 import com.alexzandr.myapplication.handler.AdapterItemHandler;
 import com.alexzandr.myapplication.DataBaseTask;
 import com.alexzandr.myapplication.handler.LevelHandler;
@@ -20,7 +20,7 @@ import com.alexzandr.myapplication.LockUnlockAdapter;
 import com.alexzandr.myapplication.handler.SectionHandler;
 import com.alexzandr.myapplication.Singleton;
 import com.alexzandr.myapplication.handler.ZoneHandler;
-import com.alexzandr.myapplication.fragment.ErrorShowDialog;
+import com.alexzandr.myapplication.fragment.dialog.ErrorShowDialog;
 import com.alexzandr.myapplication.R;
 
 import java.util.ArrayList;

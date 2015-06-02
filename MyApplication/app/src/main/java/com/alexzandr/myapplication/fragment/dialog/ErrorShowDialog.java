@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication.fragment;
+package com.alexzandr.myapplication.fragment.dialog;
 
 import android.app.Activity;
 import android.app.AlertDialog;

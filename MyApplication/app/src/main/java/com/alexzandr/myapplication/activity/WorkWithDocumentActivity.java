@@ -4,15 +4,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alexzandr.myapplication.DataBaseTask;
-import com.alexzandr.myapplication.fragment.ErrorShowDialog;
+import com.alexzandr.myapplication.fragment.dialog.ErrorShowDialog;
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.Singleton;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -18,8 +18,8 @@ import android.widget.EditText;
 import android.widget.PopupMenu;
 
 import com.alexzandr.myapplication.DataBaseTask;
-import com.alexzandr.myapplication.fragment.EnterIpDialog;
-import com.alexzandr.myapplication.fragment.ErrorShowDialog;
+import com.alexzandr.myapplication.fragment.dialog.EnterIpDialog;
+import com.alexzandr.myapplication.fragment.dialog.ErrorShowDialog;
 import com.alexzandr.myapplication.QueryToServer;
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.Singleton;
@@ -53,12 +53,6 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        if (Singleton.isTablet()){
-//            Intent tabletIntent = new Intent(LoginActivity.this, TabletActivity.class);
-//            startActivity(tabletIntent);
-//        }
-
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mEditTextUser = (EditText) findViewById(R.id.login_editUser);
         mEditTextPassword = (EditText) findViewById(R.id.login_editPassword);
         mChoiceServerButton = (Button) findViewById(R.id.login_buttonChoice);
@@ -77,6 +71,18 @@ public class LoginActivity extends ActionBarActivity implements EnterIpDialog.En
             cb.setChecked(true);
         }
 
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        if (Singleton.isTablet()){
+            Intent tabletIntent = new Intent(LoginActivity.this, TabletActivity.class);
+            startActivity(tabletIntent);
+        }
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     public void serverChoice(View view){

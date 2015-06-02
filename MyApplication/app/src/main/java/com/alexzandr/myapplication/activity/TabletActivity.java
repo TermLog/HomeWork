@@ -3,6 +3,7 @@ package com.alexzandr.myapplication.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,18 +11,53 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.fragment.SetHeightDialog;
+import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
 import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment;
 
 public class TabletActivity extends ActionBarActivity implements WarehouseFragment.OnFragmentInteractionListener {
 
     private SetHeightDialog mDialogSetHeight;
+    private boolean mIsBegin = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tablet);
         mDialogSetHeight = new SetHeightDialog();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setVisibleByOrientation();
+        mIsBegin = false;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setVisibleByOrientation(newConfig.orientation);
+    }
+
+    public void setVisibleByOrientation(){
+        setVisibleByOrientation(getResources().getConfiguration().orientation);
+    }
+
+    public void setVisibleByOrientation(int orientation){
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            findViewById(R.id.tablet_details).setVisibility(View.VISIBLE);
+            findViewById(R.id.tablet_main_menu).setVisibility(View.VISIBLE);
+
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            if (mIsBegin) {
+                findViewById(R.id.tablet_details).setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.tablet_main_menu).setVisibility(View.GONE);
+            }
+
+        }
     }
 
     @Override

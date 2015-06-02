@@ -9,9 +9,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import com.alexzandr.myapplication.DataBaseTask;
-import com.alexzandr.myapplication.fragment.ErrorShowDialog;
+import com.alexzandr.myapplication.fragment.dialog.ErrorShowDialog;
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.Singleton;
 import com.alexzandr.myapplication.view.SectionButton;
 import com.alexzandr.myapplication.view.ZoneLevelButton;
 

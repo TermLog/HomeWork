@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.fragment.SetHeightDialog;
+import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
 
 public class MainMenuActivity extends ActionBarActivity {
 
