@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -29,7 +31,8 @@ import java.util.HashMap;
  * Created by anekrasov on 03.06.15.
  */
 public class LoginDialog extends DialogFragment implements OnClickListener,
-        EnterIpDialog.EnterIpDialogInteractionListener, ErrorShowDialog.OnShowErrors{
+        EnterIpDialog.EnterIpDialogInteractionListener, ErrorShowDialog.OnShowErrors,
+        Parcelable{
 
     private LoginDialogInteractionListener mListener;
     private Activity mActivity;
@@ -43,7 +46,7 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     private int mServerId = SERVER_DEFAULT;
     private String mServerIp;
 
-    public static final String HOME_IP = "192.168.1.106";
+    public static final String HOME_IP = "192.168.1.105";
     public static final String WORK_IP = "10.100.6.15";
     private static final int SERVER_DEFAULT = 0;
     private static final int SERVER_HOME = 1;
@@ -55,7 +58,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     @Override
     public void onAttach(Activity activity){
         super.onAttach(activity);
-        System.out.println("ATTACH NEW LOGIN DIALOG");
 
         mActivity = activity;
         try {
@@ -73,8 +75,7 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog);
-
-        System.out.println("CREATE NEW LOGIN DIALOG");
+        setRetainInstance(true);
 
         mDialogOtherIp = new EnterIpDialog();
         mErrorDialog = new ErrorShowDialog();
@@ -107,17 +108,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        System.out.println("START NEW LOGIN DIALOG");
-    }
-
-    @Override
-    public void onDetach(){
-        super.onDetach();
-        System.out.println("DETACH NEW LOGIN DIALOG");
-    }
 
     public void serverChoice(){
         PopupMenu popupMenu = new PopupMenu(mActivity, mChoiceServerButton);
@@ -258,6 +248,20 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
         }
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
+
+    public String getUserString(){
+        return mEditTextUser.getText().toString();
+    }
+
     private class InnerTask extends DataBaseTask{
 
         @Override
@@ -274,7 +278,7 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
 
                 rememberMe();
                 Singleton.setPreferencesName(mEditTextUser.getText().toString());
-                mListener.onLogIn();
+                mListener.logIn();
                 LoginDialog.this.dismiss();
 
             } else {
@@ -300,6 +304,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     }
 
     public interface LoginDialogInteractionListener {
-        public void onLogIn();
+        public void logIn();
     }
 }

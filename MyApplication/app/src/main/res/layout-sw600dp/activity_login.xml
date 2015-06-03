@@ -49,7 +49,8 @@
                 android:textColorHint="@color/main_EditHint_Default"
                 android:drawableStart="@mipmap/ic_user"
                 android:selectAllOnFocus="true"
-                android:paddingBottom="10dp"/>
+                android:paddingBottom="10dp"
+                android:freezesText="true"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -72,7 +73,8 @@
                 android:textColorHint="@color/main_EditHint_Default"
                 android:drawableStart="@mipmap/ic_password"
                 android:selectAllOnFocus="true"
-                android:paddingBottom="10dp" />
+                android:paddingBottom="10dp"
+                android:freezesText="true"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -99,7 +101,8 @@
                     android:id="@+id/login_buttonChoice"
                     android:textColor="@color/login_buttonServer"
                     android:gravity="center"
-                    android:onClick="serverChoice"/>
+                    android:onClick="serverChoice"
+                    android:freezesText="true"/>
             </LinearLayout>
 
             <CheckBox

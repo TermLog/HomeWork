@@ -41,6 +41,7 @@ public class WarehouseFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction();
+        public void logOut();
     }
 
 }

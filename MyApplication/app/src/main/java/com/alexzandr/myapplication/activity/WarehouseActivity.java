@@ -1,55 +1,73 @@
 package com.alexzandr.myapplication.activity;
 
+import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.fragment.dialog.EnterIpDialog;
-import com.alexzandr.myapplication.fragment.dialog.ErrorShowDialog;
+import com.alexzandr.myapplication.fragment.dialog.EnterIpDialog.EnterIpDialogInteractionListener;
 import com.alexzandr.myapplication.fragment.dialog.LoginDialog;
-import com.alexzandr.myapplication.fragment.dialog.LoginDialog.LoginDialogInteractionListener;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
+import com.alexzandr.myapplication.fragment.tablet.BlankFragment;
 import com.alexzandr.myapplication.fragment.tablet.MainMenuFragment;
-import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment;
 import com.alexzandr.myapplication.fragment.tablet.WorkWithDocumentFragment;
 
-public class WarehouseActivity extends ActionBarActivity implements LoginDialogInteractionListener,
-        ErrorShowDialog.OnShowErrors,
-        EnterIpDialog.EnterIpDialogInteractionListener,
-        WarehouseFragment.OnFragmentInteractionListener {
+public class WarehouseActivity extends TabletActivity implements EnterIpDialogInteractionListener {
 
     private LoginDialog mLoginDialog;
     private SetHeightDialog mDialogSetHeight;
     private Fragment mMenuFragment;
     private Fragment mDetailFragment;
-    private boolean isLaunched = false;
+    private Fragment mBlankFragment;
+    private boolean mIsLogged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_warehouse);
-        System.out.println("CREATE A NEW WarehouseActivity");
 
-        if (!isLaunched) {
-            if (mLoginDialog == null) {
-                System.out.println("SET mLoginDialog");
-                mLoginDialog = new LoginDialog();
-            }
-            showLoginForm("FROM onCreate");
-        }
         mDialogSetHeight = new SetHeightDialog();
 
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        showLoginForm();
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        System.out.println("ON STOP_STOP_STOP_STOP. IS LOGGED " + mIsLogged);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        try {
+            mLoginDialog.dismiss();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        super.onSaveInstanceState(outState);
+
+        if (mLoginDialog != null)
+            outState.putParcelable("loginDialog", mLoginDialog);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mLoginDialog = savedInstanceState.getParcelable("loginDialog");
     }
 
     @Override
@@ -90,61 +108,49 @@ public class WarehouseActivity extends ActionBarActivity implements LoginDialogI
     }
 
     @Override
-    public void onLogIn() {
-        FragmentManager fragManager = getFragmentManager();
-        FragmentTransaction fragTransaction = fragManager.beginTransaction();
+    public void logIn() {
+        FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
 
         if (mMenuFragment == null) {
             mMenuFragment = new MainMenuFragment();
-            fragTransaction.add(R.id.warehouse_menuFrame, mMenuFragment);
-        } else {
-            mMenuFragment = new MainMenuFragment();
-            fragTransaction.replace(R.id.warehouse_menuFrame, mMenuFragment);
         }
+        fragTransaction.replace(R.id.warehouse_menuFrame, mMenuFragment);
 
         if (!isPortOrientation()) {
-            fragTransaction.add(R.id.warehouse_detailFrame, new LoginDialog());
+            if (mDetailFragment == null) {
+                mDetailFragment = new BlankFragment();
+            }
+            fragTransaction.replace(R.id.warehouse_detailFrame, mDetailFragment);
         }
 
         fragTransaction.commit();
 
-        isLaunched = true;
+        mIsLogged = true;
+        mLoginDialog = null;
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig){
-        super.onConfigurationChanged(newConfig);
-        showLoginForm("FROM onConfigurationChanged");
-    }
 
-    public void showLoginForm(String fromWhat) {
-        System.out.println(fromWhat);
-        if (!isLaunched) {
-            if (isPortOrientation()) {
-                FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
-                System.out.println("PORT REMOVE mLoginDialog");
+    public void showLoginForm() {
+        FragmentTransaction fragTransaction;
+
+        if (!mIsLogged) {
+
+            if (mLoginDialog == null) {
+                mLoginDialog = new LoginDialog();
+            } else {
+                fragTransaction = getFragmentManager().beginTransaction();
                 fragTransaction.remove(mLoginDialog);
                 fragTransaction.commit();
+            }
 
+            if (isPortOrientation()) {
                 fragTransaction = getFragmentManager().beginTransaction();
                 fragTransaction.add(R.id.warehouse_menuFrame, mLoginDialog);
                 fragTransaction.commit();
-                System.out.println("PORT END COMMIT ADD mLoginDialog");
             } else {
-                FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
-                System.out.println("LANDSCAPE REMOVE mLoginDialog");
-                fragTransaction.remove(mLoginDialog);
-                System.out.println("COMMIT REMOVE mLoginDialog");
-                fragTransaction.commit();
-                System.out.println("SHOW mLoginDialog");
                 mLoginDialog.show(getFragmentManager(), "LoginDialog");
             }
         }
-    }
-
-    @Override
-    public void showError(String errorText) {
-
     }
 
     @Override
@@ -152,13 +158,25 @@ public class WarehouseActivity extends ActionBarActivity implements LoginDialogI
         mLoginDialog.onServerChosen(serverIp);
     }
 
+
     @Override
-    public void onFragmentInteraction() {
+    public void logOut(){
+        mIsLogged = false;
 
+        FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
+        if (!isPortOrientation()) {
+            fragTransaction.remove(mDetailFragment);
+        }
+        fragTransaction.remove(mMenuFragment);
+        fragTransaction.commit();
+
+        showLoginForm();
     }
 
-    public boolean isPortOrientation() {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        return displayMetrics.widthPixels < displayMetrics.heightPixels;
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        mIsLogged = false;
     }
+
 }

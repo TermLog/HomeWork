@@ -71,8 +71,7 @@
         </activity>
         <activity
             android:name=".activity.WarehouseActivity"
-            android:label="@string/title_activity_warehouse"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:label="@string/title_activity_warehouse">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

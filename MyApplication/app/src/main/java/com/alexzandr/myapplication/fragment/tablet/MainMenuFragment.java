@@ -2,6 +2,7 @@ package com.alexzandr.myapplication.fragment.tablet;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,9 @@ import com.alexzandr.myapplication.activity.WorkWithDocumentActivity;
  * Created by anekrasov on 02.06.15.
  */
 public class MainMenuFragment extends WarehouseFragment implements View.OnClickListener{
+
+    public MainMenuFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,10 +83,6 @@ public class MainMenuFragment extends WarehouseFragment implements View.OnClickL
     }
 
     public void exitClick() {
-        Intent intent = new Intent((Activity)mListener, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        ((Activity)mListener).finish();
+        mListener.logOut();
     }
 }
