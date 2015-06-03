@@ -79,7 +79,6 @@ public class Singleton {
             }
             sTabletModeDetermined = true;
         }
-        System.out.println("WIDTH IS " + sContext.getResources().getConfiguration().smallestScreenWidthDp);
         return sTabletMode;
     }
 

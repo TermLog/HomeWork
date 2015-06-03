@@ -14,11 +14,6 @@
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.MainMenuActivity"
@@ -67,12 +62,22 @@
         </activity>
         <activity
             android:name=".activity.TabletActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
-            android:parentActivityName=".activity.LoginActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:parentActivityName=".activity.LoginActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.LoginActivity" />
+        </activity>
+        <activity
+            android:name=".activity.WarehouseActivity"
+            android:label="@string/title_activity_warehouse"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

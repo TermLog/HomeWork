@@ -1,35 +1,38 @@
-package com.alexzandr.myapplication.activity;
+package com.alexzandr.myapplication.fragment.dialog;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View.OnClickListener;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 
 import com.alexzandr.myapplication.DataBaseTask;
-import com.alexzandr.myapplication.fragment.dialog.EnterIpDialog;
-import com.alexzandr.myapplication.fragment.dialog.ErrorShowDialog;
 import com.alexzandr.myapplication.QueryToServer;
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.Singleton;
-import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment;
 
 import java.util.HashMap;
 
-public class LoginActivity extends ActionBarActivity implements
-        EnterIpDialog.EnterIpDialogInteractionListener, ErrorShowDialog.OnShowErrors {
-	
+/**
+ * Created by anekrasov on 03.06.15.
+ */
+public class LoginDialog extends DialogFragment implements OnClickListener,
+        EnterIpDialog.EnterIpDialogInteractionListener, ErrorShowDialog.OnShowErrors{
+
+    private LoginDialogInteractionListener mListener;
+    private Activity mActivity;
     private EditText mEditTextUser;
     private EditText mEditTextPassword;
     private Button mChoiceServerButton;
@@ -49,46 +52,75 @@ public class LoginActivity extends ActionBarActivity implements
     private static final boolean REMEMBER_NOT_ACTIVE = false;
     private static final boolean REMEMBER_IS_ACTIVE = true;
 
+    @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        System.out.println("ATTACH NEW LOGIN DIALOG");
+
+        mActivity = activity;
+        try {
+            mListener = (LoginDialogInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement " + LoginDialogInteractionListener.class.getName());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog);
 
-        mEditTextUser = (EditText) findViewById(R.id.login_editUser);
-        mEditTextPassword = (EditText) findViewById(R.id.login_editPassword);
-        mChoiceServerButton = (Button) findViewById(R.id.login_buttonChoice);
+        System.out.println("CREATE NEW LOGIN DIALOG");
+
         mDialogOtherIp = new EnterIpDialog();
         mErrorDialog = new ErrorShowDialog();
-        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog = new ProgressDialog(mActivity);
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
         mProgressDialog.setCancelable(false);
-
-        mPreferences = getSharedPreferences(getString(R.string.remember_preference_name), Context.MODE_PRIVATE);
-        if (mPreferences.getBoolean(getString(R.string.remember_preference_key_is_active), REMEMBER_NOT_ACTIVE)){
-            mEditTextUser.setText(mPreferences.getString(getString(R.string.remember_preference_key_user), ""));
-            mEditTextPassword.setText(mPreferences.getString(getString(R.string.remember_preference_key_password), ""));
-            CheckBox cb = (CheckBox) findViewById(R.id.login_checkBox_remember);
-            cb.setChecked(true);
-        }
-
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
-        boolean isLandOrientation = getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-        if (Singleton.isTablet()){
-            Intent tabletIntent = new Intent(LoginActivity.this, WarehouseActivity.class);
-            startActivity(tabletIntent);
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_login, null);
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        mEditTextUser = (EditText) view.findViewById(R.id.login_editUser);
+        mEditTextPassword = (EditText) view.findViewById(R.id.login_editPassword);
+        mChoiceServerButton = (Button) view.findViewById(R.id.login_buttonChoice);
+        mChoiceServerButton.setOnClickListener(this);
+
+        view.findViewById(R.id.login_buttonOk).setOnClickListener(this);
+        view.findViewById(R.id.login_buttonCancel).setOnClickListener(this);
+        view.findViewById(R.id.login_checkBox_remember).setOnClickListener(this);
+
+        mPreferences = mActivity.getSharedPreferences(getString(R.string.remember_preference_name), Context.MODE_PRIVATE);
+        if (mPreferences.getBoolean(getString(R.string.remember_preference_key_is_active), REMEMBER_NOT_ACTIVE)){
+            mEditTextUser.setText(mPreferences.getString(getString(R.string.remember_preference_key_user), ""));
+            mEditTextPassword.setText(mPreferences.getString(getString(R.string.remember_preference_key_password), ""));
+            CheckBox cb = (CheckBox) view.findViewById(R.id.login_checkBox_remember);
+            cb.setChecked(true);
+        }
+        return view;
     }
 
-    public void serverChoice(View view){
-        PopupMenu popupMenu = new PopupMenu(this, mChoiceServerButton);
+    @Override
+    public void onStart() {
+        super.onStart();
+        System.out.println("START NEW LOGIN DIALOG");
+    }
+
+    @Override
+    public void onDetach(){
+        super.onDetach();
+        System.out.println("DETACH NEW LOGIN DIALOG");
+    }
+
+    public void serverChoice(){
+        PopupMenu popupMenu = new PopupMenu(mActivity, mChoiceServerButton);
         popupMenu.inflate(R.menu.popup_menu_login);
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -117,7 +149,7 @@ public class LoginActivity extends ActionBarActivity implements
         onServerChosen(SERVER_OTHER, serverIp);
     }
 
-    void onServerChosen(int serverId, String serverIp){
+    public void onServerChosen(int serverId, String serverIp){
         switch (serverId){
             case SERVER_HOME:
                 mChoiceServerButton.setText(R.string.serverName_home);
@@ -135,12 +167,24 @@ public class LoginActivity extends ActionBarActivity implements
         mChoiceServerButton.setTextColor(getResources().getColor(R.color.text_blue));
     }
 
-    public void enterClick(View view) {
-        showMainMenu();
-    }
-
-    public void cancelClick(View view){
-        this.finish();
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.login_buttonOk:
+                showMainMenu();
+                break;
+            case R.id.login_buttonCancel:
+                this.dismiss();
+                mActivity.finish();
+                break;
+            case R.id.login_checkBox_remember:
+                onClickRemember(v);
+                break;
+            case R.id.login_buttonChoice:
+                serverChoice();
+                break;
+            default: break;
+        }
     }
 
     void showMainMenu(){
@@ -176,6 +220,7 @@ public class LoginActivity extends ActionBarActivity implements
 
         return false;
     }
+
 
     @Override
     public void showError(String errorText) {
@@ -229,9 +274,8 @@ public class LoginActivity extends ActionBarActivity implements
 
                 rememberMe();
                 Singleton.setPreferencesName(mEditTextUser.getText().toString());
-                Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
-                startActivity(intent);
-                LoginActivity.this.finish();
+                mListener.onLogIn();
+                LoginDialog.this.dismiss();
 
             } else {
 
@@ -253,5 +297,9 @@ public class LoginActivity extends ActionBarActivity implements
                 showError(errorMassage);
             }
         }
+    }
+
+    public interface LoginDialogInteractionListener {
+        public void onLogIn();
     }
 }
