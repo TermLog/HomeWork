@@ -110,6 +110,9 @@
 
     <string name="blankFragment_text">"Ни один из элементов не был выбран! \n Выберите эелемент"</string>
 
+    <string name="transfer_fragment_key">fragment</string>
+    <string name="transfer_work_with_doc_type_key">type</string>
+
     <string-array name="color_preference_array_entry">
         <item>Красный</item>
         <item>Розовый</item>
@@ -160,5 +163,6 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_warehouse">WarehouseActivity</string>
+    <string name="title_activity_detail">DetailActivity</string>
 
 </resources>

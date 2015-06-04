@@ -26,6 +26,9 @@ abstract class TabletActivity extends ActionBarActivity implements LoginDialogIn
     @Override
     public void logOut(){}
 
+    @Override
+    public void logIn() {}
+
     public boolean isPortOrientation() {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         return displayMetrics.widthPixels < displayMetrics.heightPixels;

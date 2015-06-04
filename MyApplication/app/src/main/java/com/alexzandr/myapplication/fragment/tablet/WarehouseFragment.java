@@ -1,18 +1,18 @@
 package com.alexzandr.myapplication.fragment.tablet;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.view.LayoutInflater;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 
-import com.alexzandr.myapplication.R;
-
-public class WarehouseFragment extends Fragment {
+public class WarehouseFragment extends Fragment implements OnClickListener {
 
     protected OnFragmentInteractionListener mListener;
+    protected Activity mActivity;
 
     public WarehouseFragment() {
     }
@@ -27,6 +27,7 @@ public class WarehouseFragment extends Fragment {
         super.onAttach(activity);
         try {
             mListener = (OnFragmentInteractionListener) activity;
+            mActivity = activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -39,9 +40,22 @@ public class WarehouseFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onClick(View v) {
+    }
+
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction();
         public void logOut();
+    }
+
+    public boolean isPortOrientation() {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        return displayMetrics.widthPixels < displayMetrics.heightPixels;
+    }
+
+    public String getTitle() {
+        return "";
     }
 
 }

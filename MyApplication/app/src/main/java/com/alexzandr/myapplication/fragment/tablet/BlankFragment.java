@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.alexzandr.myapplication.R;
 
-public class BlankFragment extends Fragment {
+public class BlankFragment extends WarehouseFragment {
 
     public BlankFragment() {
     }

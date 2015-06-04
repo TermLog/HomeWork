@@ -1,26 +1,22 @@
 package com.alexzandr.myapplication.fragment.tablet;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.alexzandr.myapplication.R;
+import com.alexzandr.myapplication.activity.DetailActivity;
 import com.alexzandr.myapplication.activity.LockUnlockActivityTest;
-import com.alexzandr.myapplication.activity.LoginActivity;
 import com.alexzandr.myapplication.activity.WorkWithDocumentActivity;
 
 /**
  * Created by anekrasov on 02.06.15.
  */
-public class MainMenuFragment extends WarehouseFragment implements View.OnClickListener{
-
-    public MainMenuFragment() {
-    }
+public class MainMenuFragment extends WarehouseFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,21 +26,16 @@ public class MainMenuFragment extends WarehouseFragment implements View.OnClickL
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_main_menu, container, false);
-        Button button = (Button) v.findViewById(R.id.mainMenu_buttonUpdate);
-        button.setOnClickListener(this);
-        button = (Button) v.findViewById(R.id.mainMenu_buttonDelete);
-        button.setOnClickListener(this);
-        button = (Button) v.findViewById(R.id.mainMenu_buttonDelete);
-        button.setOnClickListener(this);
-        button = (Button) v.findViewById(R.id.mainMenu_buttonLockUnlock);
-        button.setOnClickListener(this);
-        button = (Button) v.findViewById(R.id.mainMenu_buttonExit);
-        button.setOnClickListener(this);
+        View view = inflater.inflate(R.layout.fragment_main_menu, container, false);
+        view.findViewById(R.id.mainMenu_buttonUpdate).setOnClickListener(this);
+        view.findViewById(R.id.mainMenu_buttonDelete).setOnClickListener(this);
+        view.findViewById(R.id.mainMenu_buttonLockUnlock).setOnClickListener(this);
+        view.findViewById(R.id.mainMenu_buttonExit).setOnClickListener(this);
 
-        return v;
+        return view;
     }
 
+    @Override
     public void onClick (View view) {
         switch (view.getId()) {
             case R.id.mainMenu_buttonUpdate:
@@ -65,15 +56,29 @@ public class MainMenuFragment extends WarehouseFragment implements View.OnClickL
     }
 
     public void showUpdate() {
-        Intent intent = new Intent((Activity)mListener, WorkWithDocumentActivity.class);
-        intent.putExtra(WorkWithDocumentActivity.MAP_KEY, WorkWithDocumentActivity.UPDATE_ACTIVITY);
-        startActivity(intent);
+        if (isPortOrientation()) {
+            Intent intent = new Intent((Activity) mListener, DetailActivity.class);
+            intent.putExtra(getString(R.string.transfer_fragment_key), WorkWithDocumentFragment.UPDATE_ACTIVITY);
+            startActivity(intent);
+        } else {
+            WorkWithDocumentFragment fragment =  WorkWithDocumentFragment.newInstance(WorkWithDocumentFragment.UPDATE_ACTIVITY);
+            FragmentTransaction fragTransaction = mActivity.getFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.warehouse_detailFrame, fragment);
+            fragTransaction.commit();
+        }
     }
 
     public void showDelete() {
-        Intent intent = new Intent((Activity)mListener, WorkWithDocumentActivity.class);
-        intent.putExtra(WorkWithDocumentActivity.MAP_KEY, WorkWithDocumentActivity.DELETE_ACTIVITY);
-        startActivity(intent);
+        if (isPortOrientation()) {
+            Intent intent = new Intent((Activity) mListener, DetailActivity.class);
+            intent.putExtra(getString(R.string.transfer_fragment_key), WorkWithDocumentFragment.DELETE_ACTIVITY);
+            startActivity(intent);
+        } else {
+            WorkWithDocumentFragment fragment =  WorkWithDocumentFragment.newInstance(WorkWithDocumentFragment.DELETE_ACTIVITY);
+            FragmentTransaction fragTransaction = mActivity.getFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.warehouse_detailFrame, fragment);
+            fragTransaction.commit();
+        }
     }
 
     public void showLockUnlock() {

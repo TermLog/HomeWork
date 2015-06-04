@@ -76,6 +76,7 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog);
         setRetainInstance(true);
+        setCancelable(false);
 
         mDialogOtherIp = new EnterIpDialog();
         mErrorDialog = new ErrorShowDialog();
@@ -256,10 +257,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     @Override
     public void writeToParcel(Parcel dest, int flags) {
 
-    }
-
-    public String getUserString(){
-        return mEditTextUser.getText().toString();
     }
 
     private class InnerTask extends DataBaseTask{

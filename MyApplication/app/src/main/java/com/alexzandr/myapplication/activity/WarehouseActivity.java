@@ -1,16 +1,13 @@
 package com.alexzandr.myapplication.activity;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.fragment.dialog.EnterIpDialog.EnterIpDialogInteractionListener;
@@ -18,7 +15,6 @@ import com.alexzandr.myapplication.fragment.dialog.LoginDialog;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
 import com.alexzandr.myapplication.fragment.tablet.BlankFragment;
 import com.alexzandr.myapplication.fragment.tablet.MainMenuFragment;
-import com.alexzandr.myapplication.fragment.tablet.WorkWithDocumentFragment;
 
 public class WarehouseActivity extends TabletActivity implements EnterIpDialogInteractionListener {
 
@@ -26,8 +22,10 @@ public class WarehouseActivity extends TabletActivity implements EnterIpDialogIn
     private SetHeightDialog mDialogSetHeight;
     private Fragment mMenuFragment;
     private Fragment mDetailFragment;
-    private Fragment mBlankFragment;
     private boolean mIsLogged;
+
+    private static final String SAVE_LOGIN_DIALOG_KEY = "loginDialog";
+    private static final String SAVE_IS_LOGGED_KEY = "isLogged";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,19 +33,12 @@ public class WarehouseActivity extends TabletActivity implements EnterIpDialogIn
         setContentView(R.layout.activity_warehouse);
 
         mDialogSetHeight = new SetHeightDialog();
-
     }
 
     @Override
     public void onResume(){
         super.onResume();
         showLoginForm();
-    }
-
-    @Override
-    public void onStop(){
-        super.onStop();
-        System.out.println("ON STOP_STOP_STOP_STOP. IS LOGGED " + mIsLogged);
     }
 
     @Override
@@ -60,14 +51,17 @@ public class WarehouseActivity extends TabletActivity implements EnterIpDialogIn
 
         super.onSaveInstanceState(outState);
 
-        if (mLoginDialog != null)
-            outState.putParcelable("loginDialog", mLoginDialog);
+        if (mLoginDialog != null) {
+            outState.putParcelable(SAVE_LOGIN_DIALOG_KEY, mLoginDialog);
+        }
+        outState.putBoolean(SAVE_IS_LOGGED_KEY, mIsLogged);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mLoginDialog = savedInstanceState.getParcelable("loginDialog");
+        mLoginDialog = savedInstanceState.getParcelable(SAVE_LOGIN_DIALOG_KEY);
+        mIsLogged = savedInstanceState.getBoolean(SAVE_IS_LOGGED_KEY, false);
     }
 
     @Override
@@ -102,8 +96,6 @@ public class WarehouseActivity extends TabletActivity implements EnterIpDialogIn
                 break;
             default: break;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 

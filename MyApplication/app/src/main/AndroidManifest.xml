@@ -71,12 +71,20 @@
         </activity>
         <activity
             android:name=".activity.WarehouseActivity"
-            android:label="@string/title_activity_warehouse">
+            android:label="@string/title_activity_warehouse" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".activity.WarehouseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.alexzandr.myapplication.activity.WarehouseActivity" />
         </activity>
     </application>
 
