@@ -1,25 +1,26 @@
 package com.alexzandr.myapplication.activity;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
+import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog.OnAdapterChangedListener;
 import com.alexzandr.myapplication.fragment.tablet.BlankFragment;
+import com.alexzandr.myapplication.fragment.tablet.LockUnlockFragment;
 import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment;
 import com.alexzandr.myapplication.fragment.tablet.WorkWithDocumentFragment;
 
-public class DetailActivity extends TabletActivity {
+public class DetailActivity extends TabletActivity implements OnAdapterChangedListener {
 
     private SetHeightDialog mDialogSetHeight;
     private WarehouseFragment mFragment;
+    private static final int DEFAULT_FRAGMENT_TYPE = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +28,12 @@ public class DetailActivity extends TabletActivity {
         setContentView(R.layout.activity_detail);
 
         mDialogSetHeight = new SetHeightDialog();
-        int fragType = getIntent().getIntExtra(getString(R.string.transfer_fragment_key), 0);
-        mFragment = WorkWithDocumentFragment.newInstance(fragType);
+        int fragType = getIntent().getIntExtra(getString(R.string.transfer_fragment_key), DEFAULT_FRAGMENT_TYPE);
+        if (fragType == DEFAULT_FRAGMENT_TYPE) {
+            mFragment = new LockUnlockFragment();
+        } else {
+            mFragment = WorkWithDocumentFragment.newInstance(fragType);
+        }
         FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
         if (mFragment != null) {
             fragTransaction.add(R.id.detailFrame_fragmentPlace, mFragment);
@@ -77,5 +82,10 @@ public class DetailActivity extends TabletActivity {
             default: break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onAdapterChanged() {
+        mFragment.onAdapterChanged();
     }
 }

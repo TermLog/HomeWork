@@ -3,13 +3,14 @@ package com.alexzandr.myapplication.fragment.tablet;
 import android.app.Activity;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class WarehouseFragment extends Fragment implements OnClickListener {
+import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
+
+public class WarehouseFragment extends Fragment implements OnClickListener,
+        SetHeightDialog.OnAdapterChangedListener {
 
     protected OnFragmentInteractionListener mListener;
     protected Activity mActivity;
@@ -38,10 +39,15 @@ public class WarehouseFragment extends Fragment implements OnClickListener {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mActivity = null;
     }
 
     @Override
     public void onClick(View v) {
+    }
+
+    @Override
+    public void onAdapterChanged() {
     }
 
     public interface OnFragmentInteractionListener {

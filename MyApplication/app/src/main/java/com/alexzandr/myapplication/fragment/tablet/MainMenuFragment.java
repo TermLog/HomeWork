@@ -82,9 +82,15 @@ public class MainMenuFragment extends WarehouseFragment {
     }
 
     public void showLockUnlock() {
-//        Intent intent = new Intent(MainMenuActivity.this, LockUnlockActivity.class);
-        Intent intent = new Intent((Activity)mListener, LockUnlockActivityTest.class);
-        startActivity(intent);
+        if (isPortOrientation()) {
+            Intent intent = new Intent((Activity) mListener, DetailActivity.class);
+            startActivity(intent);
+        } else {
+            LockUnlockFragment fragment =  new LockUnlockFragment();
+            FragmentTransaction fragTransaction = mActivity.getFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.warehouse_detailFrame, fragment);
+            fragTransaction.commit();
+        }
     }
 
     public void exitClick() {

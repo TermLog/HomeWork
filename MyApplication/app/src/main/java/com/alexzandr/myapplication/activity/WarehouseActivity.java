@@ -1,6 +1,5 @@
 package com.alexzandr.myapplication.activity;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -13,15 +12,18 @@ import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.fragment.dialog.EnterIpDialog.EnterIpDialogInteractionListener;
 import com.alexzandr.myapplication.fragment.dialog.LoginDialog;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
+import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog.OnAdapterChangedListener;
 import com.alexzandr.myapplication.fragment.tablet.BlankFragment;
 import com.alexzandr.myapplication.fragment.tablet.MainMenuFragment;
+import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment;
 
-public class WarehouseActivity extends TabletActivity implements EnterIpDialogInteractionListener {
+public class WarehouseActivity extends TabletActivity implements
+        EnterIpDialogInteractionListener, OnAdapterChangedListener {
 
     private LoginDialog mLoginDialog;
     private SetHeightDialog mDialogSetHeight;
-    private Fragment mMenuFragment;
-    private Fragment mDetailFragment;
+    private WarehouseFragment mMenuFragment;
+    private WarehouseFragment mDetailFragment;
     private boolean mIsLogged;
 
     private static final String SAVE_LOGIN_DIALOG_KEY = "loginDialog";
@@ -171,4 +173,9 @@ public class WarehouseActivity extends TabletActivity implements EnterIpDialogIn
         mIsLogged = false;
     }
 
+    @Override
+    public void onAdapterChanged() {
+        OnAdapterChangedListener listener = (OnAdapterChangedListener) getFragmentManager().findFragmentById(R.id.warehouse_detailFrame);
+        listener.onAdapterChanged();
+    }
 }
