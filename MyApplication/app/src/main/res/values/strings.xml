@@ -113,6 +113,8 @@
     <string name="transfer_fragment_key">fragment</string>
     <string name="transfer_work_with_doc_type_key">type</string>
 
+    <!--<string name="singleton_saved_fragment_key">"com.alexzandr.myapplication.SAVED_FRAGMENT"</string>-->
+
     <string-array name="color_preference_array_entry">
         <item>Красный</item>
         <item>Розовый</item>

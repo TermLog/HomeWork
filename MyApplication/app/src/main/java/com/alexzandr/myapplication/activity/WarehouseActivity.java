@@ -1,5 +1,8 @@
 package com.alexzandr.myapplication.activity;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -7,15 +10,19 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.alexzandr.myapplication.R;
+import com.alexzandr.myapplication.Singleton;
 import com.alexzandr.myapplication.fragment.dialog.EnterIpDialog.EnterIpDialogInteractionListener;
 import com.alexzandr.myapplication.fragment.dialog.LoginDialog;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog.OnAdapterChangedListener;
 import com.alexzandr.myapplication.fragment.tablet.BlankFragment;
+import com.alexzandr.myapplication.fragment.tablet.LockUnlockFragment;
 import com.alexzandr.myapplication.fragment.tablet.MainMenuFragment;
 import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment;
+import com.alexzandr.myapplication.fragment.tablet.WorkWithDocumentFragment;
 
 public class WarehouseActivity extends TabletActivity implements
         EnterIpDialogInteractionListener, OnAdapterChangedListener {
@@ -45,8 +52,20 @@ public class WarehouseActivity extends TabletActivity implements
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        boolean toStartNewActivity = false;
+        WarehouseFragment fragment = (WarehouseFragment) getFragmentManager().findFragmentById(R.id.warehouse_detailFrame);
+        FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
+
+        if (isPortOrientation() && !isBlankDetailFrame()) {
+            fragTransaction.remove(fragment);
+            fragTransaction.commit();
+            toStartNewActivity = true;
+        }
+
         try {
-            mLoginDialog.dismiss();
+            if (mLoginDialog != null) {
+                mLoginDialog.dismiss();
+            }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -57,6 +76,18 @@ public class WarehouseActivity extends TabletActivity implements
             outState.putParcelable(SAVE_LOGIN_DIALOG_KEY, mLoginDialog);
         }
         outState.putBoolean(SAVE_IS_LOGGED_KEY, mIsLogged);
+
+        if (toStartNewActivity) {
+            if (fragment instanceof LockUnlockFragment) {
+                fragment = null;
+                System.out.println("FRAGMENT IS LockUnlockFragment");
+            }
+            Singleton.saveFragment(fragment);
+
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra(getString(R.string.transfer_fragment_key), DetailActivity.GET_FRAGMENT_FROM_SINGLETON);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -177,5 +208,10 @@ public class WarehouseActivity extends TabletActivity implements
     public void onAdapterChanged() {
         OnAdapterChangedListener listener = (OnAdapterChangedListener) getFragmentManager().findFragmentById(R.id.warehouse_detailFrame);
         listener.onAdapterChanged();
+    }
+
+    public boolean isBlankDetailFrame() {
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.warehouse_detailFrame);
+        return fragment instanceof BlankFragment || fragment == null;
     }
 }

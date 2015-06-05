@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.alexzandr.myapplication.R;
+import com.alexzandr.myapplication.Singleton;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog.OnAdapterChangedListener;
 import com.alexzandr.myapplication.fragment.tablet.BlankFragment;
@@ -21,6 +22,7 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
     private SetHeightDialog mDialogSetHeight;
     private WarehouseFragment mFragment;
     private static final int DEFAULT_FRAGMENT_TYPE = -1;
+    public static final int GET_FRAGMENT_FROM_SINGLETON = -2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +31,29 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
 
         mDialogSetHeight = new SetHeightDialog();
         int fragType = getIntent().getIntExtra(getString(R.string.transfer_fragment_key), DEFAULT_FRAGMENT_TYPE);
-        if (fragType == DEFAULT_FRAGMENT_TYPE) {
-            mFragment = new LockUnlockFragment();
-        } else {
-            mFragment = WorkWithDocumentFragment.newInstance(fragType);
+        switch (fragType){
+            case DEFAULT_FRAGMENT_TYPE:
+                mFragment = new LockUnlockFragment();
+                System.out.println("DETAIL ACTIVITY DEFAULT_FRAGMENT_TYPE");
+                break;
+            case GET_FRAGMENT_FROM_SINGLETON:
+                mFragment = Singleton.getSavedFragment();
+                if (mFragment == null){
+                    mFragment = new LockUnlockFragment();
+                    System.out.println("DETAIL ACTIVITY SINGLETON SAVED FRAGMENT IS NULL");
+                }
+                System.out.println("DETAIL ACTIVITY GET_FRAGMENT_FROM_SINGLETON");
+                break;
+            default:
+                mFragment = WorkWithDocumentFragment.newInstance(fragType);
+                System.out.println("DETAIL ACTIVITY DEFAULT");
+                break;
         }
+//        if (fragType == DEFAULT_FRAGMENT_TYPE) {
+//            mFragment = new LockUnlockFragment();
+//        } else {
+//            mFragment = WorkWithDocumentFragment.newInstance(fragType);
+//        }
         FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
         if (mFragment != null) {
             fragTransaction.add(R.id.detailFrame_fragmentPlace, mFragment);

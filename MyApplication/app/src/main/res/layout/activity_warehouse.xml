@@ -19,11 +19,17 @@
         android:orientation="horizontal"
         android:id="@+id/warehouse_linearLayout">
         <FrameLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:id="@+id/warehouse_menuFrame"/>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:id="@+id/warehouse_detailFrame"/>
     </LinearLayout>
 
 </FrameLayout>

@@ -33,6 +33,7 @@ public class WarehouseFragment extends Fragment implements OnClickListener,
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+        setRetainInstance(true);
     }
 
     @Override

@@ -5,12 +5,18 @@ import android.util.DisplayMetrics;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.alexzandr.myapplication.fragment.tablet.BlankFragment;
+import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment;
+
+import java.util.List;
+
 /**
  * Created by anekrasov on 15.04.15.
  */
 public class Singleton {
     private static final Singleton INSTANCE = new Singleton();
     private static Context sContext;
+    private static WarehouseFragment mSavedFragment;
     private static String sPreferencesName;
     private static QueryToServer sQueryToServer;
     private static Animation sScaleAnimationForButton;
@@ -80,6 +86,16 @@ public class Singleton {
             sTabletModeDetermined = true;
         }
         return sTabletMode;
+    }
+
+    public static void saveFragment(WarehouseFragment fragment){
+        mSavedFragment = fragment;
+    }
+
+    public static WarehouseFragment getSavedFragment(){
+        WarehouseFragment result = mSavedFragment;
+        mSavedFragment = null;
+        return result;
     }
 
 }

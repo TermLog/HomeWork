@@ -57,6 +57,7 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
         mProgressDialog.setCancelable(false);
+        System.out.println("LOCK UNLOCK FRAGMENT ON CREATE");
     }
 
     @Override
@@ -68,6 +69,7 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
 
         LockTask task = new LockTask();
         task.execute(DataBaseTask.GET_ALL_DATA);
+        System.out.println("LOCK UNLOCK FRAGMENT ON CREATE VIEW");
         return view;
     }
 
@@ -75,6 +77,7 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
     public void onResume() {
         super.onResume();
         onAdapterChanged();
+        System.out.println("LOCK UNLOCK FRAGMENT ON RESUME");
     }
 
     void createTable(HashMap<String, Integer> map){
