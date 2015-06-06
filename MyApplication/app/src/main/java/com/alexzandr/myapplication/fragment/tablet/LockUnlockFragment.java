@@ -80,6 +80,14 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
         System.out.println("LOCK UNLOCK FRAGMENT ON RESUME");
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+    }
+
     void createTable(HashMap<String, Integer> map){
 
         mZonesCount = map.get(KEY_COUNT_OF_ZONES);

@@ -21,7 +21,7 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
 
     private SetHeightDialog mDialogSetHeight;
     private WarehouseFragment mFragment;
-    private static final int DEFAULT_FRAGMENT_TYPE = -1;
+    public static final int DEFAULT_FRAGMENT_TYPE = -1;
     public static final int GET_FRAGMENT_FROM_SINGLETON = -2;
 
     @Override
@@ -49,11 +49,7 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
                 System.out.println("DETAIL ACTIVITY DEFAULT");
                 break;
         }
-//        if (fragType == DEFAULT_FRAGMENT_TYPE) {
-//            mFragment = new LockUnlockFragment();
-//        } else {
-//            mFragment = WorkWithDocumentFragment.newInstance(fragType);
-//        }
+
         FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
         if (mFragment != null) {
             fragTransaction.add(R.id.detailFrame_fragmentPlace, mFragment);

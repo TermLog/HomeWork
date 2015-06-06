@@ -45,49 +45,56 @@ public class WarehouseActivity extends TabletActivity implements
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         showLoginForm();
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        boolean toStartNewActivity = false;
-        WarehouseFragment fragment = (WarehouseFragment) getFragmentManager().findFragmentById(R.id.warehouse_detailFrame);
-        FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
+    public void onPause() {
+        super.onPause();
 
-        if (isPortOrientation() && !isBlankDetailFrame()) {
+        if (isPortOrientation() && !isBlankDetailFrame()){
+            WarehouseFragment fragment = (WarehouseFragment) getFragmentManager().findFragmentById(R.id.warehouse_detailFrame);
+            FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
             fragTransaction.remove(fragment);
             fragTransaction.commit();
-            toStartNewActivity = true;
-        }
 
-        try {
-            if (mLoginDialog != null) {
-                mLoginDialog.dismiss();
+            Intent intent = new Intent(WarehouseActivity.this, DetailActivity.class);
+            if (!(fragment instanceof LockUnlockFragment)) {
+                Singleton.saveFragment(fragment);
+                intent.putExtra(getString(R.string.transfer_fragment_key), DetailActivity.GET_FRAGMENT_FROM_SINGLETON);
             }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+
+            startActivity(intent);
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mLoginDialog != null) {
+            mLoginDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+//        try {
+//            if (mLoginDialog != null) {
+//                mLoginDialog.dismiss();
+//            }
+//        } catch (NullPointerException e) {
+//            e.printStackTrace();
+//        }
 
         super.onSaveInstanceState(outState);
 
         if (mLoginDialog != null) {
             outState.putParcelable(SAVE_LOGIN_DIALOG_KEY, mLoginDialog);
         }
+
         outState.putBoolean(SAVE_IS_LOGGED_KEY, mIsLogged);
-
-        if (toStartNewActivity) {
-            if (fragment instanceof LockUnlockFragment) {
-                fragment = null;
-                System.out.println("FRAGMENT IS LockUnlockFragment");
-            }
-            Singleton.saveFragment(fragment);
-
-            Intent intent = new Intent(this, DetailActivity.class);
-            intent.putExtra(getString(R.string.transfer_fragment_key), DetailActivity.GET_FRAGMENT_FROM_SINGLETON);
-            startActivity(intent);
-        }
     }
 
     @Override
