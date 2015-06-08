@@ -93,9 +93,11 @@ public class Singleton {
     }
 
     public static WarehouseFragment getSavedFragment(){
-        WarehouseFragment result = mSavedFragment;
+        return mSavedFragment;
+    }
+
+    public static void clearSavedFragment() {
         mSavedFragment = null;
-        return result;
     }
 
 }

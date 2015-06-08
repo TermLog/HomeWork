@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.Singleton;
@@ -22,7 +21,8 @@ import com.alexzandr.myapplication.fragment.tablet.BlankFragment;
 import com.alexzandr.myapplication.fragment.tablet.LockUnlockFragment;
 import com.alexzandr.myapplication.fragment.tablet.MainMenuFragment;
 import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment;
-import com.alexzandr.myapplication.fragment.tablet.WorkWithDocumentFragment;
+
+import java.sql.SQLOutput;
 
 public class WarehouseActivity extends TabletActivity implements
         EnterIpDialogInteractionListener, OnAdapterChangedListener {
@@ -47,7 +47,17 @@ public class WarehouseActivity extends TabletActivity implements
     @Override
     public void onResume() {
         super.onResume();
+        System.out.println("BEFORE SHOW LOGIN FORM");
         showLoginForm();
+        System.out.println("AFTER  SHOW LOGIN FORM");
+        if (Singleton.getSavedFragment() != null && !isPortOrientation()) {
+            FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
+            fragTransaction.add(R.id.warehouse_detailFrame, Singleton.getSavedFragment());
+            System.out.println("WAREHOUSE BEFORE COMMIT");
+            fragTransaction.commit();
+            System.out.println("WAREHOUSE AFTER COMMIT");
+            Singleton.clearSavedFragment();
+        }
     }
 
     @Override
@@ -61,7 +71,9 @@ public class WarehouseActivity extends TabletActivity implements
             fragTransaction.commit();
 
             Intent intent = new Intent(WarehouseActivity.this, DetailActivity.class);
+            System.out.println("FRAGMENT CLASS IS " + fragment.getClass().toString());
             if (!(fragment instanceof LockUnlockFragment)) {
+                System.out.println("FRAGMENT IS NOT LOCK UNLOCK");
                 Singleton.saveFragment(fragment);
                 intent.putExtra(getString(R.string.transfer_fragment_key), DetailActivity.GET_FRAGMENT_FROM_SINGLETON);
             }
@@ -71,22 +83,14 @@ public class WarehouseActivity extends TabletActivity implements
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if (mLoginDialog != null) {
-            mLoginDialog.dismiss();
-        }
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
-//        try {
-//            if (mLoginDialog != null) {
-//                mLoginDialog.dismiss();
-//            }
-//        } catch (NullPointerException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            if (mLoginDialog != null) {
+                mLoginDialog.dismiss();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
         super.onSaveInstanceState(outState);
 
