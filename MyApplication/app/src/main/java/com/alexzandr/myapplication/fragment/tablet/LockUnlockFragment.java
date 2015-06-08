@@ -38,16 +38,6 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
     private final static String KEY_COUNT_OF_ZONES = "zoneCount";
     private final static String KEY_COUNT_OF_LEVELS = "levelCount";
 
-//    public static LockUnlockFragment newInstance(String param1, String param2) {
-//        LockUnlockFragment fragment = new LockUnlockFragment();
-//        Bundle args = new Bundle();
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-
-//    public LockUnlockFragment() {
-//    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +47,6 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
         mProgressDialog.setTitle(R.string.progressBar_title);
         mProgressDialog.setMessage(getText(R.string.progressBar_massage));
         mProgressDialog.setCancelable(false);
-        System.out.println("LOCK UNLOCK FRAGMENT ON CREATE");
     }
 
     @Override
@@ -69,7 +58,10 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
 
         LockTask task = new LockTask();
         task.execute(DataBaseTask.GET_ALL_DATA);
-        System.out.println("LOCK UNLOCK FRAGMENT ON CREATE VIEW");
+
+        if (isPortOrientation()) {
+            mActivity.setTitle(R.string.title_activity_lock_unlock);
+        }
         return view;
     }
 
@@ -77,7 +69,6 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
     public void onResume() {
         super.onResume();
         onAdapterChanged();
-        System.out.println("LOCK UNLOCK FRAGMENT ON RESUME");
     }
 
     @Override

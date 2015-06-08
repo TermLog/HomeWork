@@ -21,57 +21,46 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
 
     private SetHeightDialog mDialogSetHeight;
     private WarehouseFragment mFragment;
-    private boolean isStarted;
+    private boolean mIsStarted;
+    private boolean mIsFinished;
     public static final int DEFAULT_FRAGMENT_TYPE = -1;
     public static final int GET_FRAGMENT_FROM_SINGLETON = -2;
+    public static final String KEY_FOR_STARTED = "start";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        if (savedInstanceState != null){
+            mIsStarted = savedInstanceState.getBoolean(KEY_FOR_STARTED, false);
+        }
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        System.out.println("IS_STARTED (onResume) = " + isStarted);
-        if (!isPortOrientation()) {
-            WarehouseFragment fragment = (WarehouseFragment) getFragmentManager().findFragmentById(R.id.detailFrame_fragmentPlace);
-            FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
-            fragTransaction.remove(fragment);
-            fragTransaction.commit();
 
-            if (fragment == null)
-                System.out.println("FRAGMENT IS NULL");
-//            Singleton.saveFragment(mFragment);
-//            getFragmentManager().beginTransaction().remove(mFragment).commit();
-            fragTransaction = getFragmentManager().beginTransaction();
-            fragTransaction.add(R.id.detailFrame_fragmentPlace, fragment);
-            fragTransaction.commit();
-//            getFragmentManager().beginTransaction().add(R.id.detailFrame_fragmentPlace, fragment).commit();
-//            finish();
-//            return;
+        if (!isPortOrientation()) {
+            mIsFinished = true;
+            finish();
+            return;
         }
 
-        if (!isStarted) {
+        if (!mIsStarted) {
             mDialogSetHeight = new SetHeightDialog();
             int fragType = getIntent().getIntExtra(getString(R.string.transfer_fragment_key), DEFAULT_FRAGMENT_TYPE);
             switch (fragType) {
                 case DEFAULT_FRAGMENT_TYPE:
                     mFragment = new LockUnlockFragment();
-                    System.out.println("DETAIL ACTIVITY DEFAULT_FRAGMENT_TYPE");
                     break;
                 case GET_FRAGMENT_FROM_SINGLETON:
                     mFragment = Singleton.getSavedFragment();
                     if (mFragment == null) {
                         mFragment = new LockUnlockFragment();
-                        System.out.println("DETAIL ACTIVITY SINGLETON SAVED FRAGMENT IS NULL");
                     }
-                    System.out.println("DETAIL ACTIVITY GET_FRAGMENT_FROM_SINGLETON");
                     break;
                 default:
                     mFragment = WorkWithDocumentFragment.newInstance(fragType);
-                    System.out.println("DETAIL ACTIVITY DEFAULT");
                     break;
             }
 
@@ -82,28 +71,26 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
                 fragTransaction.add(R.id.detailFrame_fragmentPlace, new BlankFragment());
             }
             fragTransaction.commit();
-            isStarted = true;
+            mIsStarted = true;
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("start", isStarted);
-        System.out.println("IS_STARTED (onSaveInstanceState) = " + isStarted);
+        outState.putBoolean(KEY_FOR_STARTED, mIsStarted);
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        isStarted = savedInstanceState.getBoolean("start", false);
-        System.out.println("IS_STARTED (onRestoreInstanceState) = " + isStarted);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
+    public void onPause() {
+        super.onPause();
+        if (mIsFinished) {
+            mFragment = (WarehouseFragment) getFragmentManager().findFragmentById(R.id.detailFrame_fragmentPlace);
+            Singleton.saveFragment(mFragment);
+            FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
+            fragTransaction.remove(mFragment);
+            fragTransaction.commit();
+        }
     }
 
     @Override

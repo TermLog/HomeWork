@@ -47,15 +47,20 @@ public class WarehouseActivity extends TabletActivity implements
     @Override
     public void onResume() {
         super.onResume();
-        System.out.println("BEFORE SHOW LOGIN FORM");
         showLoginForm();
-        System.out.println("AFTER  SHOW LOGIN FORM");
+
         if (Singleton.getSavedFragment() != null && !isPortOrientation()) {
-            FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
-            fragTransaction.add(R.id.warehouse_detailFrame, Singleton.getSavedFragment());
-            System.out.println("WAREHOUSE BEFORE COMMIT");
-            fragTransaction.commit();
-            System.out.println("WAREHOUSE AFTER COMMIT");
+            if (Singleton.getSavedFragment() instanceof LockUnlockFragment) {
+                getFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.warehouse_detailFrame, new LockUnlockFragment())
+                        .commit();
+            } else {
+                getFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.warehouse_detailFrame, Singleton.getSavedFragment())
+                        .commit();
+            }
             Singleton.clearSavedFragment();
         }
     }
@@ -66,18 +71,13 @@ public class WarehouseActivity extends TabletActivity implements
 
         if (isPortOrientation() && !isBlankDetailFrame()){
             WarehouseFragment fragment = (WarehouseFragment) getFragmentManager().findFragmentById(R.id.warehouse_detailFrame);
-            FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
-            fragTransaction.remove(fragment);
-            fragTransaction.commit();
+            getFragmentManager().beginTransaction().remove(fragment).commit();
 
             Intent intent = new Intent(WarehouseActivity.this, DetailActivity.class);
-            System.out.println("FRAGMENT CLASS IS " + fragment.getClass().toString());
             if (!(fragment instanceof LockUnlockFragment)) {
-                System.out.println("FRAGMENT IS NOT LOCK UNLOCK");
                 Singleton.saveFragment(fragment);
                 intent.putExtra(getString(R.string.transfer_fragment_key), DetailActivity.GET_FRAGMENT_FROM_SINGLETON);
             }
-
             startActivity(intent);
         }
     }
@@ -145,21 +145,24 @@ public class WarehouseActivity extends TabletActivity implements
 
     @Override
     public void logIn() {
-        FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
 
         if (mMenuFragment == null) {
             mMenuFragment = new MainMenuFragment();
         }
-        fragTransaction.replace(R.id.warehouse_menuFrame, mMenuFragment);
+        getFragmentManager().beginTransaction()
+                .replace(R.id.warehouse_menuFrame, mMenuFragment)
+                .addToBackStack(null)
+                .commit();
+
 
         if (!isPortOrientation()) {
             if (mDetailFragment == null) {
                 mDetailFragment = new BlankFragment();
             }
-            fragTransaction.replace(R.id.warehouse_detailFrame, mDetailFragment);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.warehouse_detailFrame, mDetailFragment)
+                    .commit();
         }
-
-        fragTransaction.commit();
 
         mIsLogged = true;
         mLoginDialog = null;

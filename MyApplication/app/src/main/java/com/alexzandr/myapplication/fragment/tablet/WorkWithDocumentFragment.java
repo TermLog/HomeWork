@@ -1,8 +1,7 @@
 package com.alexzandr.myapplication.fragment.tablet;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +29,7 @@ public class WorkWithDocumentFragment extends WarehouseFragment {
     public static final String ARG_TYPE_KEY = "type";
 
     private EditText mEditTextDocList;
+    private CharSequence mEditTextValue;
     private TextView mTextViewLabel;
     private Button mButtonAction;
     private int mType;
@@ -44,6 +44,14 @@ public class WorkWithDocumentFragment extends WarehouseFragment {
         args.putInt(ARG_TYPE_KEY, type);
         instance.setArguments(args);
         return instance;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (mEditTextDocList != null) {
+            mEditTextValue = mEditTextDocList.getText();
+        }
     }
 
     @Override
@@ -81,6 +89,16 @@ public class WorkWithDocumentFragment extends WarehouseFragment {
         }
         doAction();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mEditTextDocList != null) {
+            if (TextUtils.isEmpty(mEditTextDocList.getText()) && !TextUtils.isEmpty(mEditTextValue)) {
+                mEditTextDocList.setText(mEditTextValue);
+            }
+        }
     }
 
     @Override
