@@ -10,9 +10,6 @@ import com.alexzandr.myapplication.R;
 
 public class BlankFragment extends WarehouseFragment {
 
-    public BlankFragment() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -26,7 +26,7 @@ abstract class TabletActivity extends ActionBarActivity implements LoginDialogIn
     public void showError(String errorText) {}
 
     @Override
-    public void onFragmentInteraction() {}
+    public void onFragmentInteraction(int buttonId) {}
 
     @Override
     public void logOut(){}

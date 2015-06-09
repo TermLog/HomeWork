@@ -215,10 +215,12 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
 
     @Override
     public void showError(String errorText) {
-        Bundle errorMassage = new Bundle();
-        errorMassage.putString(ErrorShowDialog.KEY_FOR_ERROR, errorText);
-        mErrorDialog.setArguments(errorMassage);
-        mErrorDialog.show(getFragmentManager(), "ErrorDialog");
+        if (!mErrorDialog.isAdded()) {
+            Bundle errorMassage = new Bundle();
+            errorMassage.putString(ErrorShowDialog.KEY_FOR_ERROR, errorText);
+            mErrorDialog.setArguments(errorMassage);
+            mErrorDialog.show(getFragmentManager(), "ErrorDialog");
+        }
     }
 
     private void createConnection(){

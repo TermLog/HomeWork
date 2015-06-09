@@ -4,7 +4,7 @@
     tools:context="com.alexzandr.myapplication.activity.WarehouseActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_blue">
+    android:background="@color/background_main_menu_landscape_deepBlue">
 
     <ImageView
         android:layout_width="wrap_content"

@@ -6,6 +6,4 @@
     android:layout_height="match_parent"
     android:background="@color/background_blue"
     android:layout_gravity="center"
-    android:id="@+id/detailFrame_fragmentPlace">
-
-</FrameLayout>
+    android:id="@+id/detailFrame_fragmentPlace"/>

@@ -1,8 +1,6 @@
 package com.alexzandr.myapplication.activity;
 
-import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -22,19 +20,17 @@ import com.alexzandr.myapplication.fragment.tablet.LockUnlockFragment;
 import com.alexzandr.myapplication.fragment.tablet.MainMenuFragment;
 import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment;
 
-import java.sql.SQLOutput;
-
 public class WarehouseActivity extends TabletActivity implements
         EnterIpDialogInteractionListener, OnAdapterChangedListener {
 
     private LoginDialog mLoginDialog;
     private SetHeightDialog mDialogSetHeight;
-    private WarehouseFragment mMenuFragment;
-    private WarehouseFragment mDetailFragment;
     private boolean mIsLogged;
+    private int mSelectedMainMenuButtonId;
 
-    private static final String SAVE_LOGIN_DIALOG_KEY = "loginDialog";
-    private static final String SAVE_IS_LOGGED_KEY = "isLogged";
+    private static final String KEY_LOGIN_DIALOG = "loginDialog";
+    private static final String KEY_IS_LOGGED = "isLogged";
+    private static final String KEY_SELECTED_MAIN_MENU_BUTTON_ID = "buttonId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +57,7 @@ public class WarehouseActivity extends TabletActivity implements
                         .add(R.id.warehouse_detailFrame, Singleton.getSavedFragment())
                         .commit();
             }
+            onFragmentInteraction(mSelectedMainMenuButtonId);
             Singleton.clearSavedFragment();
         }
     }
@@ -95,17 +92,19 @@ public class WarehouseActivity extends TabletActivity implements
         super.onSaveInstanceState(outState);
 
         if (mLoginDialog != null) {
-            outState.putParcelable(SAVE_LOGIN_DIALOG_KEY, mLoginDialog);
+            outState.putParcelable(KEY_LOGIN_DIALOG, mLoginDialog);
         }
 
-        outState.putBoolean(SAVE_IS_LOGGED_KEY, mIsLogged);
+        outState.putBoolean(KEY_IS_LOGGED, mIsLogged);
+        outState.putInt(KEY_SELECTED_MAIN_MENU_BUTTON_ID, mSelectedMainMenuButtonId);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mLoginDialog = savedInstanceState.getParcelable(SAVE_LOGIN_DIALOG_KEY);
-        mIsLogged = savedInstanceState.getBoolean(SAVE_IS_LOGGED_KEY, false);
+        mLoginDialog = savedInstanceState.getParcelable(KEY_LOGIN_DIALOG);
+        mIsLogged = savedInstanceState.getBoolean(KEY_IS_LOGGED, false);
+        mSelectedMainMenuButtonId = savedInstanceState.getInt(KEY_SELECTED_MAIN_MENU_BUTTON_ID);
     }
 
     @Override
@@ -146,23 +145,14 @@ public class WarehouseActivity extends TabletActivity implements
     @Override
     public void logIn() {
 
-        if (mMenuFragment == null) {
-            mMenuFragment = new MainMenuFragment();
-        }
         getFragmentManager().beginTransaction()
-                .replace(R.id.warehouse_menuFrame, mMenuFragment)
+                .replace(R.id.warehouse_menuFrame, new MainMenuFragment())
                 .addToBackStack(null)
                 .commit();
 
-
-        if (!isPortOrientation()) {
-            if (mDetailFragment == null) {
-                mDetailFragment = new BlankFragment();
-            }
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.warehouse_detailFrame, mDetailFragment)
-                    .commit();
-        }
+        getFragmentManager().beginTransaction()
+                .replace(R.id.warehouse_detailFrame, new BlankFragment())
+                .commit();
 
         mIsLogged = true;
         mLoginDialog = null;
@@ -204,9 +194,9 @@ public class WarehouseActivity extends TabletActivity implements
 
         FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
         if (!isPortOrientation()) {
-            fragTransaction.remove(mDetailFragment);
+            fragTransaction.remove(getFragmentManager().findFragmentById(R.id.warehouse_detailFrame));
         }
-        fragTransaction.remove(mMenuFragment);
+        fragTransaction.remove(getFragmentManager().findFragmentById(R.id.warehouse_menuFrame));
         fragTransaction.commit();
 
         showLoginForm();
@@ -227,5 +217,17 @@ public class WarehouseActivity extends TabletActivity implements
     public boolean isBlankDetailFrame() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.warehouse_detailFrame);
         return fragment instanceof BlankFragment || fragment == null;
+    }
+
+    @Override
+    public void onFragmentInteraction(int buttonId) {
+
+        if (!isPortOrientation()) {
+            ((MainMenuFragment) getFragmentManager().findFragmentById(R.id.warehouse_menuFrame))
+                    .selectButton(mSelectedMainMenuButtonId, buttonId);
+        }
+
+        mSelectedMainMenuButtonId = buttonId;
+
     }
 }

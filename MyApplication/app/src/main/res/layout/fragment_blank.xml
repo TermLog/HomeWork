@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_blue"
+    android:background="@android:color/transparent"
     tools:context="com.alexzandr.myapplication.fragment.tablet.BlankFragment">
 
     <TextView
@@ -13,5 +13,6 @@
         android:id="@+id/blankFragment_textView"
         android:layout_gravity="center"
         android:gravity="center"
-        style="@style/buttonStyle.MainMenu"/>
+        style="@style/buttonStyle.MainMenu"
+        android:background="@android:color/transparent"/>
 </FrameLayout>

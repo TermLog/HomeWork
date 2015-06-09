@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background_blue">#3691BE</color>
+    <color name="background_main_menu_landscape_deepBlue">#ff2c6f96</color>
     <color name="background_grey">#ff717171</color>
     <color name="background_white">#fff</color>
     <color name="background_server">#ffff8a35</color>

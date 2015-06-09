@@ -72,8 +72,6 @@ public class WorkWithDocumentFragment extends WarehouseFragment {
 
         if (isPortOrientation()) {
             view.findViewById(R.id.doc_buttonBack).setOnClickListener(this);
-        } else {
-            view.findViewById(R.id.doc_buttonBack).setVisibility(View.GONE);
         }
 
         mEditTextDocList = (EditText) view.findViewById(R.id.doc_editText);
@@ -157,7 +155,7 @@ public class WorkWithDocumentFragment extends WarehouseFragment {
         mButtonAction.setText(R.string.doc_buttonRepeat);
         mEditTextDocList.setVisibility(View.GONE);
         DataBaseTask task = new DataBaseTask();
-        HashMap<String, Integer> resultMap = null;
+        HashMap<String, Integer> resultMap;
         task.procedureParamDocList = stringInOneLine(mEditTextDocList.getText().toString());
         try {
             task.execute(type);

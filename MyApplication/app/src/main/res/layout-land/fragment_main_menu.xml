@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_blue"
+    android:background="@color/background_main_menu_landscape_deepBlue"
     tools:context="com.alexzandr.myapplication.fragment.tablet.MainMenuFragment">
 
     <LinearLayout
@@ -11,28 +11,29 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/background_blue">
+        android:background="@color/background_main_menu_landscape_deepBlue">
 
 
-        <com.alexzandr.myapplication.view.AnimatedButton
+        <Button
             android:text="@string/mainMenu_buttonRefresh"
             android:id="@+id/mainMenu_buttonUpdate"
-            style="@style/buttonStyle.MainMenu"/>
+            style="@style/mainMenuButtonLand"/>
 
-        <com.alexzandr.myapplication.view.AnimatedButton
+        <Button
             android:text="@string/mainMenu_buttonDelete"
             android:id="@+id/mainMenu_buttonDelete"
-            style="@style/buttonStyle.MainMenu"/>
+            style="@style/mainMenuButtonLand"/>
 
-        <com.alexzandr.myapplication.view.AnimatedButton
+        <Button
             android:text="@string/mainMenu_buttonLockUnlock"
             android:id="@+id/mainMenu_buttonLockUnlock"
-            style="@style/buttonStyle.MainMenu"/>
+            style="@style/mainMenuButtonLand"/>
 
-        <com.alexzandr.myapplication.view.AnimatedButton
+        <Button
             android:text="@string/mainMenu_buttonExit"
             android:id="@+id/mainMenu_buttonExit"
-            style="@style/buttonStyle.MainMenu"/>
+            style="@style/mainMenuButtonLand"/>
+
     </LinearLayout>
 
 

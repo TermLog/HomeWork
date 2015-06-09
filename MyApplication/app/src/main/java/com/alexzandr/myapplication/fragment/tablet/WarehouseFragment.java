@@ -52,7 +52,7 @@ public class WarehouseFragment extends Fragment implements OnClickListener,
     }
 
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction();
+        public void onFragmentInteraction(int buttonId);
         public void logOut();
     }
 
