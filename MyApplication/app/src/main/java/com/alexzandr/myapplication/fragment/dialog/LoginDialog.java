@@ -88,7 +88,7 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_login, null);
+        View view = inflater.inflate(R.layout.dialog_login, null);
 
         mEditTextUser = (EditText) view.findViewById(R.id.login_editUser);
         mEditTextPassword = (EditText) view.findViewById(R.id.login_editPassword);

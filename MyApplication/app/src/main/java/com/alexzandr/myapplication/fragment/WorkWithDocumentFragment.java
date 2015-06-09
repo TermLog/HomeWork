@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication.fragment.tablet;
+package com.alexzandr.myapplication.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -207,16 +207,5 @@ public class WorkWithDocumentFragment extends WarehouseFragment {
         errorMassage.putString(ErrorShowDialog.KEY_FOR_ERROR, errorText);
         mErrorShowDialog.setArguments(errorMassage);
         mErrorShowDialog.show(getFragmentManager(), "ErrorDialog");
-    }
-
-    @Override
-    public String getTitle(){
-        String result;
-        if (mType == DELETE_ACTIVITY){
-            result = getString(R.string.title_activity_delete_document);
-        } else {
-            result = getString(R.string.title_activity_update_document);
-        }
-        return result;
     }
 }

@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication.fragment.tablet;
+package com.alexzandr.myapplication.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -52,7 +52,7 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_lock_unlock_test, container, false);
+        View view = inflater.inflate(R.layout.fragment_lock_unlock, container, false);
         mGridViewLevel = (GridView) view.findViewById(R.id.lockUnlock_test_firstRow);
         mGridViewSection = (GridView) view.findViewById(R.id.lockUnlock_test_sections);
 
@@ -245,12 +245,6 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
             mAdapterSection.notifyDataSetChanged();
         }
     }
-
-    @Override
-    public String getTitle() {
-        return getString(R.string.title_activity_lock_unlock);
-    }
-
 
     private class LockTask extends DataBaseTask{
 

@@ -12,79 +12,24 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activity.LoginActivity"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name=".activity.MainMenuActivity"
-            android:label="@string/title_activity_main_menu"
-            android:parentActivityName=".activity.LoginActivity"
-            android:screenOrientation="portrait" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.LoginActivity" />
-        </activity>
-        <activity
-            android:name=".activity.WorkWithDocumentActivity"
-            android:label="@string/title_activity_update_document"
-            android:parentActivityName=".activity.MainMenuActivity"
-            android:screenOrientation="portrait" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainMenuActivity" />
-        </activity>
-        <activity
-            android:name=".activity.LockUnlockActivity"
-            android:label="@string/title_activity_lock_unlock"
-            android:parentActivityName=".activity.MainMenuActivity"
-            android:screenOrientation="portrait" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainMenuActivity" />
-        </activity>
-        <activity
-            android:name=".activity.LockUnlockActivityTest"
-            android:label="@string/title_activity_lock_unlock"
-            android:parentActivityName=".activity.MainMenuActivity"
-            android:screenOrientation="portrait" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainMenuActivity" />
-        </activity>
-        <activity
             android:name=".activity.SettingsActivity"
-            android:label="@string/title_activity_lock_unlock"
-            android:parentActivityName=".activity.MainMenuActivity"
-            android:screenOrientation="portrait" >
+            android:label="@string/title_activity_setting"
+            android:parentActivityName=".activity.WarehouseActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainMenuActivity" />
-        </activity>
-        <activity
-            android:name=".activity.TabletActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/app_name"
-            android:parentActivityName=".activity.LoginActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.LoginActivity" />
+                android:value=".activity.WarehouseActivity" />
         </activity>
         <activity
             android:name=".activity.WarehouseActivity"
             android:label="@string/title_activity_warehouse" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.DetailActivity"
-            android:label="@string/title_activity_detail"
-            android:parentActivityName=".activity.WarehouseActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.alexzandr.myapplication.activity.WarehouseActivity" />
+            android:label="@string/title_activity_detail">
         </activity>
     </application>
 

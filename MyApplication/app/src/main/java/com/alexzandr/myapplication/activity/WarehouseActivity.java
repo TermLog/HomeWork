@@ -15,10 +15,10 @@ import com.alexzandr.myapplication.fragment.dialog.EnterIpDialog.EnterIpDialogIn
 import com.alexzandr.myapplication.fragment.dialog.LoginDialog;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog.OnAdapterChangedListener;
-import com.alexzandr.myapplication.fragment.tablet.BlankFragment;
-import com.alexzandr.myapplication.fragment.tablet.LockUnlockFragment;
-import com.alexzandr.myapplication.fragment.tablet.MainMenuFragment;
-import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment;
+import com.alexzandr.myapplication.fragment.BlankFragment;
+import com.alexzandr.myapplication.fragment.LockUnlockFragment;
+import com.alexzandr.myapplication.fragment.MainMenuFragment;
+import com.alexzandr.myapplication.fragment.WarehouseFragment;
 
 public class WarehouseActivity extends TabletActivity implements
         EnterIpDialogInteractionListener, OnAdapterChangedListener {
@@ -43,22 +43,33 @@ public class WarehouseActivity extends TabletActivity implements
     @Override
     public void onResume() {
         super.onResume();
-        showLoginForm();
 
-        if (Singleton.getSavedFragment() != null && !isPortOrientation()) {
-            if (Singleton.getSavedFragment() instanceof LockUnlockFragment) {
-                getFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.warehouse_detailFrame, new LockUnlockFragment())
-                        .commit();
-            } else {
-                getFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.warehouse_detailFrame, Singleton.getSavedFragment())
-                        .commit();
+        if (mIsLogged) {
+            if (!isPortOrientation()) {
+                WarehouseFragment fragment = Singleton.getSavedFragment();
+                if (Singleton.getSavedFragment() != null) {
+                    if (Singleton.getSavedFragment() instanceof LockUnlockFragment) {
+                        getFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.warehouse_detailFrame, new LockUnlockFragment())
+                                .commit();
+                    } else {
+                        getFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.warehouse_detailFrame, Singleton.getSavedFragment())
+                                .commit();
+                    }
+                    onFragmentInteraction(mSelectedMainMenuButtonId);
+                    Singleton.clearSavedFragment();
+                } else {
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.warehouse_detailFrame, new BlankFragment())
+                            .commit();
+                }
             }
-            onFragmentInteraction(mSelectedMainMenuButtonId);
-            Singleton.clearSavedFragment();
+        } else {
+            showLoginForm();
         }
     }
 
@@ -109,7 +120,7 @@ public class WarehouseActivity extends TabletActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_login, menu);
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
         return true;
     }
 
@@ -147,7 +158,7 @@ public class WarehouseActivity extends TabletActivity implements
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.warehouse_menuFrame, new MainMenuFragment())
-                .addToBackStack(null)
+//                .addToBackStack(null)
                 .commit();
 
         getFragmentManager().beginTransaction()
@@ -228,6 +239,5 @@ public class WarehouseActivity extends TabletActivity implements
         }
 
         mSelectedMainMenuButtonId = buttonId;
-
     }
 }

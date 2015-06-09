@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_main_menu_landscape_deepBlue"
-    tools:context="com.alexzandr.myapplication.fragment.tablet.MainMenuFragment">
+    tools:context="com.alexzandr.myapplication.fragment.MainMenuFragment">
 
     <LinearLayout
         android:orientation="vertical"

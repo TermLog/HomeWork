@@ -25,6 +25,9 @@
     <string name="title_activity_delete_document">Удалить апостроф </string>
     <string name="title_activity_lock_unlock">Блокировка зон</string>
     <string name="title_activity_setting">Настройки</string>
+    <string name="title_activity_warehouse">Склад</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_table">Tablet</string>
 
     <string name="mainMenu_buttonRefresh">Обновить документ</string>
     <string name="mainMenu_buttonDelete">Удалить апостроф</string>
@@ -63,7 +66,6 @@
 
     <string name="progressBar_title">Соединение…</string>
     <string name="progressBar_massage">Подождите, выполняется соединение с сервером</string>
-    <string name="title_activity_test_menu">TestMenuActivity</string>
 
     <string name="login_menu_forget">Забыть мои данные</string>
     <string name="login_menu_settings">Настройки</string>
@@ -113,8 +115,6 @@
     <string name="transfer_fragment_key">fragment</string>
     <string name="transfer_work_with_doc_type_key">type</string>
 
-    <!--<string name="singleton_saved_fragment_key">"com.alexzandr.myapplication.SAVED_FRAGMENT"</string>-->
-
     <string-array name="color_preference_array_entry">
         <item>Красный</item>
         <item>Розовый</item>
@@ -136,6 +136,7 @@
         <item>Серый</item>
         <item>Blue Grey</item>
     </string-array>
+
     <string-array name="color_preference_array_values">
         <item>#F44336</item>
         <item>#E91E63</item>
@@ -157,14 +158,5 @@
         <item>#9E9E9E</item>
         <item>#607D8B</item>
     </string-array>
-    <string name="title_activity_table">Warehouse</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_warehouse">WarehouseActivity</string>
-    <string name="title_activity_detail">DetailActivity</string>
 
 </resources>

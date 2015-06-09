@@ -12,10 +12,10 @@ import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.Singleton;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog.OnAdapterChangedListener;
-import com.alexzandr.myapplication.fragment.tablet.BlankFragment;
-import com.alexzandr.myapplication.fragment.tablet.LockUnlockFragment;
-import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment;
-import com.alexzandr.myapplication.fragment.tablet.WorkWithDocumentFragment;
+import com.alexzandr.myapplication.fragment.BlankFragment;
+import com.alexzandr.myapplication.fragment.LockUnlockFragment;
+import com.alexzandr.myapplication.fragment.WarehouseFragment;
+import com.alexzandr.myapplication.fragment.WorkWithDocumentFragment;
 
 public class DetailActivity extends TabletActivity implements OnAdapterChangedListener {
 
@@ -43,7 +43,6 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
         if (!isPortOrientation()) {
             mIsFinished = true;
             finish();
-            return;
         }
 
         if (!mIsStarted) {
@@ -55,6 +54,7 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
                     break;
                 case GET_FRAGMENT_FROM_SINGLETON:
                     mFragment = Singleton.getSavedFragment();
+
                     if (mFragment == null) {
                         mFragment = new LockUnlockFragment();
                     }
@@ -71,6 +71,8 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
                 fragTransaction.add(R.id.detailFrame_fragmentPlace, new BlankFragment());
             }
             fragTransaction.commit();
+
+            Singleton.clearSavedFragment();
             mIsStarted = true;
         }
     }
@@ -95,7 +97,7 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_login, menu);
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
         return true;
     }
 

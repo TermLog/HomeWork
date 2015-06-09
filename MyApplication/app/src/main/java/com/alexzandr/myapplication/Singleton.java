@@ -5,10 +5,7 @@ import android.util.DisplayMetrics;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.alexzandr.myapplication.fragment.tablet.BlankFragment;
-import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment;
-
-import java.util.List;
+import com.alexzandr.myapplication.fragment.WarehouseFragment;
 
 /**
  * Created by anekrasov on 15.04.15.

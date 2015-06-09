@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.Singleton;
-import com.alexzandr.myapplication.activity.LockUnlockActivity;
 
 /**
  * Created by anekrasov on 29.04.15.

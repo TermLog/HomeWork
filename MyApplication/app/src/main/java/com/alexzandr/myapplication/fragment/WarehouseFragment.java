@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication.fragment.tablet;
+package com.alexzandr.myapplication.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -59,10 +59,6 @@ public class WarehouseFragment extends Fragment implements OnClickListener,
     public boolean isPortOrientation() {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         return displayMetrics.widthPixels < displayMetrics.heightPixels;
-    }
-
-    public String getTitle() {
-        return "";
     }
 
 }

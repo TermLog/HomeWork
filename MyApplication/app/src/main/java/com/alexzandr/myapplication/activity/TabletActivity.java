@@ -8,7 +8,7 @@ import android.util.DisplayMetrics;
 import com.alexzandr.myapplication.Singleton;
 import com.alexzandr.myapplication.fragment.dialog.ErrorShowDialog.OnShowErrors;
 import com.alexzandr.myapplication.fragment.dialog.LoginDialog.LoginDialogInteractionListener;
-import com.alexzandr.myapplication.fragment.tablet.WarehouseFragment.OnFragmentInteractionListener;
+import com.alexzandr.myapplication.fragment.WarehouseFragment.OnFragmentInteractionListener;
 
 abstract class TabletActivity extends ActionBarActivity implements LoginDialogInteractionListener,
         OnShowErrors, OnFragmentInteractionListener {

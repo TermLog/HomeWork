@@ -1,7 +1,6 @@
-package com.alexzandr.myapplication.fragment.tablet;
+package com.alexzandr.myapplication.fragment;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
