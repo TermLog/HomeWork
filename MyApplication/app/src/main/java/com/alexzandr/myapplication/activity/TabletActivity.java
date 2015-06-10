@@ -13,10 +13,12 @@ import com.alexzandr.myapplication.fragment.WarehouseFragment.OnFragmentInteract
 abstract class TabletActivity extends ActionBarActivity implements LoginDialogInteractionListener,
         OnShowErrors, OnFragmentInteractionListener {
 
+    boolean isTablet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if  (!Singleton.isTablet()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }

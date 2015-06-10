@@ -22,17 +22,35 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
     private SetHeightDialog mDialogSetHeight;
     private WarehouseFragment mFragment;
     private boolean mIsStarted;
-    private boolean mIsFinished;
+    private boolean mIsTablet;
+
     public static final int DEFAULT_FRAGMENT_TYPE = -1;
     public static final int GET_FRAGMENT_FROM_SINGLETON = -2;
     public static final String KEY_FOR_STARTED = "start";
+
+    private static final boolean DELETE_FRAGMENT_FROM_SINGLETON = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+
+        mIsTablet = Singleton.isTablet();
         if (savedInstanceState != null){
             mIsStarted = savedInstanceState.getBoolean(KEY_FOR_STARTED, false);
+        }
+
+        if (!isPortOrientation() && mIsTablet) {
+            if (mIsStarted) {
+                mFragment = (WarehouseFragment) getFragmentManager().findFragmentById(R.id.detailFrame_fragmentPlace);
+                Singleton.saveFragment(mFragment);
+                getFragmentManager()
+                        .beginTransaction()
+                        .remove(mFragment)
+                        .commit();
+            }
+            finish();
         }
     }
 
@@ -40,40 +58,14 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
     public void onResume(){
         super.onResume();
 
-        if (!isPortOrientation()) {
-            mIsFinished = true;
-            finish();
-        }
+        mDialogSetHeight = new SetHeightDialog();
 
-        if (!mIsStarted) {
-            mDialogSetHeight = new SetHeightDialog();
-            int fragType = getIntent().getIntExtra(getString(R.string.transfer_fragment_key), DEFAULT_FRAGMENT_TYPE);
-            switch (fragType) {
-                case DEFAULT_FRAGMENT_TYPE:
-                    mFragment = new LockUnlockFragment();
-                    break;
-                case GET_FRAGMENT_FROM_SINGLETON:
-                    mFragment = Singleton.getSavedFragment();
-
-                    if (mFragment == null) {
-                        mFragment = new LockUnlockFragment();
-                    }
-                    break;
-                default:
-                    mFragment = WorkWithDocumentFragment.newInstance(fragType);
-                    break;
+        if (mIsTablet) {
+            if (!mIsStarted) {
+                addFragment(DELETE_FRAGMENT_FROM_SINGLETON);
             }
-
-            FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
-            if (mFragment != null) {
-                fragTransaction.add(R.id.detailFrame_fragmentPlace, mFragment);
-            } else {
-                fragTransaction.add(R.id.detailFrame_fragmentPlace, new BlankFragment());
-            }
-            fragTransaction.commit();
-
-            Singleton.clearSavedFragment();
-            mIsStarted = true;
+        } else if (isPortOrientation()) {
+            addFragment();
         }
     }
 
@@ -81,18 +73,6 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_FOR_STARTED, mIsStarted);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mIsFinished) {
-            mFragment = (WarehouseFragment) getFragmentManager().findFragmentById(R.id.detailFrame_fragmentPlace);
-            Singleton.saveFragment(mFragment);
-            FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
-            fragTransaction.remove(mFragment);
-            fragTransaction.commit();
-        }
     }
 
     @Override
@@ -134,4 +114,43 @@ public class DetailActivity extends TabletActivity implements OnAdapterChangedLi
     public void onAdapterChanged() {
         mFragment.onAdapterChanged();
     }
+
+    private void addFragment() {
+        addFragment(false);
+    }
+
+    private void addFragment(boolean deleteFromSingleton) {
+        int type = getIntent().getIntExtra(getString(R.string.transfer_fragment_key), DEFAULT_FRAGMENT_TYPE);
+        switch (type) {
+            case DEFAULT_FRAGMENT_TYPE:
+                mFragment = new LockUnlockFragment();
+                break;
+            case GET_FRAGMENT_FROM_SINGLETON:
+                mFragment = Singleton.getSavedFragment();
+
+                if (mFragment == null) {
+                    mFragment = new LockUnlockFragment();
+                }
+                break;
+            default:
+                mFragment = WorkWithDocumentFragment.newInstance(type);
+                break;
+        }
+
+        FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
+        if (mFragment != null) {
+            fragTransaction.add(R.id.detailFrame_fragmentPlace, mFragment);
+        } else {
+            fragTransaction.add(R.id.detailFrame_fragmentPlace, new BlankFragment());
+        }
+        fragTransaction.commit();
+
+        if (deleteFromSingleton) {
+            Singleton.clearSavedFragment();
+        }
+
+        mIsStarted = true;
+    }
+
+
 }

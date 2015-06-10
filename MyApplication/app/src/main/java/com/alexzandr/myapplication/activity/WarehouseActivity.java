@@ -31,6 +31,7 @@ public class WarehouseActivity extends TabletActivity implements
     private static final String KEY_LOGIN_DIALOG = "loginDialog";
     private static final String KEY_IS_LOGGED = "isLogged";
     private static final String KEY_SELECTED_MAIN_MENU_BUTTON_ID = "buttonId";
+    private static final int DESELECT_ALL_MAIN_MENU_BUTTON = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +48,8 @@ public class WarehouseActivity extends TabletActivity implements
         if (mIsLogged) {
             if (!isPortOrientation()) {
                 WarehouseFragment fragment = Singleton.getSavedFragment();
-                if (Singleton.getSavedFragment() != null) {
-                    if (Singleton.getSavedFragment() instanceof LockUnlockFragment) {
+                if (fragment != null) {
+                    if (fragment instanceof LockUnlockFragment) {
                         getFragmentManager()
                                 .beginTransaction()
                                 .replace(R.id.warehouse_detailFrame, new LockUnlockFragment())
@@ -56,7 +57,7 @@ public class WarehouseActivity extends TabletActivity implements
                     } else {
                         getFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.warehouse_detailFrame, Singleton.getSavedFragment())
+                                .replace(R.id.warehouse_detailFrame, fragment)
                                 .commit();
                     }
                     onFragmentInteraction(mSelectedMainMenuButtonId);
@@ -66,6 +67,8 @@ public class WarehouseActivity extends TabletActivity implements
                             .beginTransaction()
                             .replace(R.id.warehouse_detailFrame, new BlankFragment())
                             .commit();
+
+                    onFragmentInteraction(DESELECT_ALL_MAIN_MENU_BUTTON);
                 }
             }
         } else {
@@ -158,7 +161,6 @@ public class WarehouseActivity extends TabletActivity implements
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.warehouse_menuFrame, new MainMenuFragment())
-//                .addToBackStack(null)
                 .commit();
 
         getFragmentManager().beginTransaction()
@@ -232,10 +234,16 @@ public class WarehouseActivity extends TabletActivity implements
 
     @Override
     public void onFragmentInteraction(int buttonId) {
+        MainMenuFragment fragment = (MainMenuFragment)
+                getFragmentManager().findFragmentById(R.id.warehouse_menuFrame);
 
-        if (!isPortOrientation()) {
-            ((MainMenuFragment) getFragmentManager().findFragmentById(R.id.warehouse_menuFrame))
-                    .selectButton(mSelectedMainMenuButtonId, buttonId);
+        if (buttonId == DESELECT_ALL_MAIN_MENU_BUTTON) {
+
+            fragment.deselectAllButton(mSelectedMainMenuButtonId, true);
+
+        } else if (!isPortOrientation()) {
+
+            fragment.selectButton(mSelectedMainMenuButtonId, buttonId);
         }
 
         mSelectedMainMenuButtonId = buttonId;

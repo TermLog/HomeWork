@@ -18,6 +18,7 @@ public class MainMenuFragment extends WarehouseFragment {
     private View mView;
     private int mSelectFragmentId;
 
+    private static final int NULL_FRAGMENT_ID = 0;
     private static final int UPDATE_FRAGMENT_ID = 1;
     private static final int DELETE_FRAGMENT_ID = 2;
     private static final int LOCK_UNLOCK_FRAGMENT_ID = 3;
@@ -118,16 +119,30 @@ public class MainMenuFragment extends WarehouseFragment {
 
     public void selectButton(int oldId, int newId){
         int selectedColor = getResources().getColor(R.color.background_blue);
+
+        deselectAllButton(oldId, false);
+        try {
+            mView.findViewById(newId).setBackgroundColor(selectedColor);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deselectAllButton(int oldId, boolean deselectFragment) {
         int unSelectedColor = getResources().getColor(R.color.background_main_menu_landscape_deepBlue);
 
         try {
             if (mView.findViewById(oldId) != null) {
                 mView.findViewById(oldId).setBackgroundColor(unSelectedColor);
             }
-            mView.findViewById(newId).setBackgroundColor(selectedColor);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+
+        if (deselectFragment) {
+            mSelectFragmentId = NULL_FRAGMENT_ID;
+        }
+
     }
 
     public void exitClick() {
