@@ -4,26 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.alexzandr.myapplication.activity.WarehouseActivity">
 
-    <item
-        android:id="@+id/login_menu_forget_me"
-        android:title="@string/login_menu_forget"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/login_menu_settings"
-        android:title="@string/login_menu_settings"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+    <group
+        android:id="@+id/menu_setting_group">
+        <item
+            android:id="@+id/login_menu_forget_me"
+            android:title="@string/login_menu_forget"
+            android:orderInCategory="100"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/login_menu_settings"
+            android:title="@string/login_menu_settings"
+            android:orderInCategory="100"
+            app:showAsAction="never" />
 
-    <item
-        android:id="@+id/login_menu_headLine_height"
-        android:title="@string/login_menu_headLine_height"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+        <item
+            android:id="@+id/login_menu_headLine_height"
+            android:title="@string/login_menu_headLine_height"
+            android:orderInCategory="100"
+            app:showAsAction="never" />
 
-    <item
-        android:id="@+id/login_menu_section_height"
-        android:title="@string/login_menu_section_height"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+        <item
+            android:id="@+id/login_menu_section_height"
+            android:title="@string/login_menu_section_height"
+            android:orderInCategory="100"
+            app:showAsAction="never" />
+    </group>
 </menu>

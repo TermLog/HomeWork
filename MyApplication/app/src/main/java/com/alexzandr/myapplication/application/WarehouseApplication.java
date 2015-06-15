@@ -1,12 +1,13 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.application;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.DisplayMetrics;
 
 /**
  * Created by AlexZandR on 07.04.2015.
  */
-public class GlobalAccess extends Application {
+public class WarehouseApplication extends Application {
     public static Context sContext;
 
     @Override

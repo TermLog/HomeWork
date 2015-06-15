@@ -1,10 +1,12 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.application;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.alexzandr.myapplication.sql.QueryToServer;
+import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.fragment.WarehouseFragment;
 
 /**
@@ -25,20 +27,8 @@ public class Singleton {
     private static final int DEFAULT_HEADLINE_HEIGHT_DP = getContext().getResources().getInteger(R.integer.default_height_headline);
 
     private Singleton(){
-        sContext =  GlobalAccess.getApp();
+        sContext =  WarehouseApplication.getApp();
         sScaleAnimationForButton = AnimationUtils.loadAnimation(sContext, R.anim.button_scale_animation);
-    }
-
-    public static void setQuery(QueryToServer query){
-        sQueryToServer = query;
-    }
-
-    public static Context getContext(){
-       return sContext;
-    }
-
-    public static QueryToServer getQueryToServer(){
-        return sQueryToServer;
     }
 
     public static Animation getAnimation () {
@@ -49,30 +39,57 @@ public class Singleton {
         return getContext().getResources().getColor(color);
     }
 
+    public static int getDefaultHeadlineHeightDp(){
+        return DEFAULT_HEADLINE_HEIGHT_DP;
+    }
+
     public static int getDefaultSectionHeightDp(){
         return DEFAULT_SECTION_HEIGHT_DP;
     }
 
-    public static int getDefaultHeadlineHeightDp(){
-        return DEFAULT_HEADLINE_HEIGHT_DP;
+    private static DisplayMetrics getDisplayMetrics() {
+        return getContext().getResources().getDisplayMetrics();
+    }
+
+    public static Context getContext(){
+        return sContext;
+    }
+
+    public static String getPreferencesName(){
+        return sPreferencesName;
+    }
+
+    public static WarehouseFragment getSavedFragment(){
+        return mSavedFragment;
+    }
+
+    public static int getSeekBarMax(){
+        float dpHeight = getDisplayMetrics().heightPixels / getDisplayMetrics().density;
+        return (int) (PERCENT_OF_DISPLAY_HEIGHT * dpHeight);
     }
 
     public static int getSeekBarMin(){
         return SEEK_BAR_MIN_VALUE;
     }
 
-    public static int getSeekBarMax(){
-        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-        return (int) (PERCENT_OF_DISPLAY_HEIGHT * dpHeight);
+    public static QueryToServer getQueryToServer(){
+        return sQueryToServer;
     }
 
     public static void setPreferencesName(String name){
         sPreferencesName = getContext().getResources().getString(R.string.preference_prefix_name) + name;
     }
 
-    public static String getPreferencesName(){
-        return sPreferencesName;
+    public static void setQuery(QueryToServer query){
+        sQueryToServer = query;
+    }
+
+    public static void saveFragment(WarehouseFragment fragment){
+        mSavedFragment = fragment;
+    }
+
+    public static void clearSavedFragment() {
+        mSavedFragment = null;
     }
 
     public static boolean isTablet() {
@@ -85,16 +102,7 @@ public class Singleton {
         return sTabletMode;
     }
 
-    public static void saveFragment(WarehouseFragment fragment){
-        mSavedFragment = fragment;
+    public static boolean isPortOrientation() {
+        return getDisplayMetrics().widthPixels < getDisplayMetrics().heightPixels;
     }
-
-    public static WarehouseFragment getSavedFragment(){
-        return mSavedFragment;
-    }
-
-    public static void clearSavedFragment() {
-        mSavedFragment = null;
-    }
-
 }

@@ -1,6 +1,11 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.sql;
 
 import android.os.AsyncTask;
+
+import com.alexzandr.myapplication.R;
+import com.alexzandr.myapplication.application.Singleton;
+import com.alexzandr.myapplication.exception.CheckConnectionException;
+import com.alexzandr.myapplication.exception.NullQueryException;
 
 import java.util.HashMap;
 
@@ -25,8 +30,13 @@ public class DataBaseTask extends AsyncTask<Integer, Void, HashMap<String, Integ
     @Override
     protected HashMap<String, Integer> doInBackground(Integer... params) {
         int intParams = params[0];
-        QueryToServer serverData = Singleton.getQueryToServer();
         mapResult = null;
+        QueryToServer serverData = Singleton.getQueryToServer();
+        if (serverData == null) {
+            String msg = Singleton.getContext().getResources().getString(R.string.error_msg_null_query);
+            exception = new NullQueryException(msg);
+            return mapResult;
+        }
         try {
             switch (intParams){
                 case GET_ALL_DATA:

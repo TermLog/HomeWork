@@ -10,9 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.alexzandr.myapplication.DataBaseTask;
+import com.alexzandr.myapplication.sql.DataBaseTask;
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.fragment.dialog.ErrorShowDialog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +32,6 @@ public class WorkWithDocumentFragment extends WarehouseFragment {
     private TextView mTextViewLabel;
     private Button mButtonAction;
     private int mType;
-    private ErrorShowDialog mErrorShowDialog;
 
     public WorkWithDocumentFragment(){
     }
@@ -76,7 +74,6 @@ public class WorkWithDocumentFragment extends WarehouseFragment {
 
         mEditTextDocList = (EditText) view.findViewById(R.id.doc_editText);
         mTextViewLabel = (TextView) view.findViewById(R.id.doc_textView);
-        mErrorShowDialog = new ErrorShowDialog();
 
         if (isPortOrientation()) {
             if (mType == DELETE_ACTIVITY) {
@@ -140,72 +137,55 @@ public class WorkWithDocumentFragment extends WarehouseFragment {
     }
 
     private void doAction(int actionType){
+        mButtonAction.setText(R.string.doc_buttonRepeat);
+        mEditTextDocList.setVisibility(View.GONE);
+        WorkWithDocTask task = new WorkWithDocTask();
+        task.procedureParamDocList = stringInOneLine(mEditTextDocList.getText().toString());
+
         switch (actionType){
             case UPDATE_ACTIVITY:
-                workWithDoc(DataBaseTask.UPDATE_IN_DOC);
+                task.execute(DataBaseTask.UPDATE_IN_DOC);
                 break;
             case DELETE_ACTIVITY:
-                workWithDoc(DataBaseTask.DELETE_IN_DOC);
+                task.execute(DataBaseTask.DELETE_IN_DOC);
                 break;
             default:break;
         }
     }
 
-    private void workWithDoc(int type){
-        mButtonAction.setText(R.string.doc_buttonRepeat);
-        mEditTextDocList.setVisibility(View.GONE);
-        DataBaseTask task = new DataBaseTask();
-        HashMap<String, Integer> resultMap;
-        task.procedureParamDocList = stringInOneLine(mEditTextDocList.getText().toString());
-        try {
-            task.execute(type);
-            resultMap = task.get();
+    private void showResultOfWork(HashMap<String, Integer> resultMap) {
+        StringBuilder stringBuilder = new StringBuilder("");
 
-            if (task.exception != null){
-                throw task.exception;
+        for (Map.Entry<String, Integer> entry : resultMap.entrySet()) {
+            String docStatus = "";
+            switch (entry.getValue()){
+                case DOC_NOT_EXISTS:
+                    docStatus = getString(R.string.doc_editText_wrong_docNumber);
+                    break;
+                case UPDATE_ACTIVITY:
+                    docStatus = getString(R.string.doc_editText_update_docNumber);
+                    break;
+                case DELETE_ACTIVITY:
+                    docStatus = getString(R.string.doc_editText_delete_docNumber);
+                    break;
+                default:break;
             }
-
-            if (resultMap != null) {
-                StringBuilder stringBuilder = new StringBuilder("");
-
-                for (Map.Entry<String, Integer> entry : resultMap.entrySet()) {
-                    String docStatus = "";
-                    switch (entry.getValue()){
-                        case DOC_NOT_EXISTS:
-                            docStatus = getString(R.string.doc_editText_wrong_docNumber);
-                            break;
-                        case UPDATE_ACTIVITY:
-                            docStatus = getString(R.string.doc_editText_update_docNumber);
-                            break;
-                        case DELETE_ACTIVITY:
-                            docStatus = getString(R.string.doc_editText_delete_docNumber);
-                            break;
-                        default:break;
-                    }
-                    stringBuilder.append(entry.getKey());
-                    stringBuilder.append(docStatus);
-                    stringBuilder.append("\n");
-                }
-
-                mTextViewLabel.setText(stringBuilder);
-
-            } else {
-                mTextViewLabel.setText(R.string.doc_textView_error_in_DB);
-            }
-        }catch (Exception e){
-            showError(e.getMessage());
+            stringBuilder.append(entry.getKey());
+            stringBuilder.append(docStatus);
+            stringBuilder.append("\n");
         }
 
+        mTextViewLabel.setText(stringBuilder);
     }
 
     private String stringInOneLine(String resultString){
         return resultString.replace("\n", ",").replace(" ", "");
     }
 
-    public void showError(String errorText) {
-        Bundle errorMassage = new Bundle();
-        errorMassage.putString(ErrorShowDialog.KEY_FOR_ERROR, errorText);
-        mErrorShowDialog.setArguments(errorMassage);
-        mErrorShowDialog.show(getFragmentManager(), "ErrorDialog");
+    private class WorkWithDocTask extends WarehouseTask {
+        @Override
+        void processResult(HashMap<String, Integer> result){
+            showResultOfWork(result);
+        }
     }
 }

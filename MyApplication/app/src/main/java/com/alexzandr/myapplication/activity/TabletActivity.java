@@ -3,17 +3,18 @@ package com.alexzandr.myapplication.activity;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 
-import com.alexzandr.myapplication.Singleton;
-import com.alexzandr.myapplication.fragment.dialog.ErrorShowDialog.OnShowErrors;
-import com.alexzandr.myapplication.fragment.dialog.LoginDialog.LoginDialogInteractionListener;
-import com.alexzandr.myapplication.fragment.WarehouseFragment.OnFragmentInteractionListener;
+import com.alexzandr.myapplication.application.Singleton;
+import com.alexzandr.myapplication.fragment.dialog.ErrorShowDialog;
+import com.alexzandr.myapplication.fragment.dialog.LoginDialog;
+import com.alexzandr.myapplication.fragment.WarehouseFragment;
 
-abstract class TabletActivity extends ActionBarActivity implements LoginDialogInteractionListener,
-        OnShowErrors, OnFragmentInteractionListener {
+public abstract class TabletActivity extends ActionBarActivity implements
+        ErrorShowDialog.OnShowErrors,
+        LoginDialog.LoginDialogInteractionListener,
+        WarehouseFragment.OnFragmentInteractionListener {
 
-    boolean isTablet;
+    protected ErrorShowDialog mErrorShowDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +23,17 @@ abstract class TabletActivity extends ActionBarActivity implements LoginDialogIn
         if  (!Singleton.isTablet()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+
+        mErrorShowDialog = new ErrorShowDialog();
     }
 
     @Override
-    public void showError(String errorText) {}
+    public void showError(String errorText) {
+        Bundle errorMassage = new Bundle();
+        errorMassage.putString(ErrorShowDialog.KEY_FOR_ERROR, errorText);
+        mErrorShowDialog.setArguments(errorMassage);
+        mErrorShowDialog.show(getFragmentManager(), "ErrorDialog");
+    }
 
     @Override
     public void onFragmentInteraction(int buttonId) {}
@@ -37,7 +45,6 @@ abstract class TabletActivity extends ActionBarActivity implements LoginDialogIn
     public void logIn() {}
 
     public boolean isPortOrientation() {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        return displayMetrics.widthPixels < displayMetrics.heightPixels;
+        return Singleton.isPortOrientation();
     }
 }

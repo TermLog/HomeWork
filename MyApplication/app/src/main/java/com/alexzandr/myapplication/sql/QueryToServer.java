@@ -1,6 +1,10 @@
-package com.alexzandr.myapplication;
+package com.alexzandr.myapplication.sql;
 
 import android.content.Context;
+
+import com.alexzandr.myapplication.R;
+import com.alexzandr.myapplication.application.Singleton;
+import com.alexzandr.myapplication.exception.CheckConnectionException;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

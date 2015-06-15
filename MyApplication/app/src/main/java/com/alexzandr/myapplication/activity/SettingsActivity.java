@@ -7,7 +7,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.Singleton;
+import com.alexzandr.myapplication.application.Singleton;
 
 /**
  * Created by AlexZandR on 04.05.2015.

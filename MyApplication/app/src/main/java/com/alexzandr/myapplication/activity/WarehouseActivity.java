@@ -1,6 +1,7 @@
 package com.alexzandr.myapplication.activity;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.Singleton;
+import com.alexzandr.myapplication.application.Singleton;
 import com.alexzandr.myapplication.fragment.dialog.EnterIpDialog.EnterIpDialogInteractionListener;
 import com.alexzandr.myapplication.fragment.dialog.LoginDialog;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
@@ -27,11 +28,14 @@ public class WarehouseActivity extends TabletActivity implements
     private SetHeightDialog mDialogSetHeight;
     private boolean mIsLogged;
     private int mSelectedMainMenuButtonId;
+    private Menu mSettingMenu;
 
     private static final String KEY_LOGIN_DIALOG = "loginDialog";
     private static final String KEY_IS_LOGGED = "isLogged";
     private static final String KEY_SELECTED_MAIN_MENU_BUTTON_ID = "buttonId";
     private static final int DESELECT_ALL_MAIN_MENU_BUTTON = -1;
+    private static final boolean HIDE_SETTING_MENU = false;
+    private static final boolean SHOW_SETTING_MENU = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +66,7 @@ public class WarehouseActivity extends TabletActivity implements
                     }
                     onFragmentInteraction(mSelectedMainMenuButtonId);
                     Singleton.clearSavedFragment();
-                } else {
+                } else if (isBlankDetailFrame()) {
                     getFragmentManager()
                             .beginTransaction()
                             .replace(R.id.warehouse_detailFrame, new BlankFragment())
@@ -124,6 +128,10 @@ public class WarehouseActivity extends TabletActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_settings, menu);
+        mSettingMenu = menu;
+        if (!mIsLogged){
+            mSettingMenu.setGroupVisible(R.id.menu_setting_group, HIDE_SETTING_MENU);
+        }
         return true;
     }
 
@@ -167,6 +175,7 @@ public class WarehouseActivity extends TabletActivity implements
                 .replace(R.id.warehouse_detailFrame, new BlankFragment())
                 .commit();
 
+        mSettingMenu.setGroupVisible(R.id.menu_setting_group, SHOW_SETTING_MENU);
         mIsLogged = true;
         mLoginDialog = null;
     }
@@ -211,7 +220,7 @@ public class WarehouseActivity extends TabletActivity implements
         }
         fragTransaction.remove(getFragmentManager().findFragmentById(R.id.warehouse_menuFrame));
         fragTransaction.commit();
-
+        mSettingMenu.setGroupVisible(R.id.menu_setting_group, HIDE_SETTING_MENU);
         showLoginForm();
     }
 

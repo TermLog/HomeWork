@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.Singleton;
+import com.alexzandr.myapplication.application.Singleton;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog.OnAdapterChangedListener;
 import com.alexzandr.myapplication.fragment.BlankFragment;

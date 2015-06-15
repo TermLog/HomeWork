@@ -1,6 +1,5 @@
 package com.alexzandr.myapplication.fragment;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,12 +7,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.alexzandr.myapplication.DataBaseTask;
-import com.alexzandr.myapplication.LockUnlockAdapter;
+import com.alexzandr.myapplication.sql.DataBaseTask;
+import com.alexzandr.myapplication.adapter.LockUnlockAdapter;
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.Singleton;
-import com.alexzandr.myapplication.fragment.dialog.ErrorShowDialog;
-import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
+import com.alexzandr.myapplication.application.Singleton;
 import com.alexzandr.myapplication.handler.AdapterItemHandler;
 import com.alexzandr.myapplication.handler.LevelHandler;
 import com.alexzandr.myapplication.handler.SectionHandler;
@@ -22,18 +19,16 @@ import com.alexzandr.myapplication.handler.ZoneHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class LockUnlockFragment extends WarehouseFragment implements SetHeightDialog.OnAdapterChangedListener {
+public class LockUnlockFragment extends WarehouseFragment {
 
     private int mLevelsCount;
     private int mZonesCount;
     private LockUnlockAdapter mAdapterSection;
     private LockUnlockAdapter mAdapterLevel;
-    private ProgressDialog mProgressDialog;
     private ArrayList<AdapterItemHandler> mSections;
     private ArrayList<AdapterItemHandler> mLevels;
     private GridView mGridViewLevel;
     private GridView mGridViewSection;
-    private ErrorShowDialog mErrorDialog;
 
     private final static String KEY_COUNT_OF_ZONES = "zoneCount";
     private final static String KEY_COUNT_OF_LEVELS = "levelCount";
@@ -41,12 +36,6 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mErrorDialog = new ErrorShowDialog();
-        mProgressDialog = new ProgressDialog(mActivity);
-        mProgressDialog.setTitle(R.string.progressBar_title);
-        mProgressDialog.setMessage(getText(R.string.progressBar_massage));
-        mProgressDialog.setCancelable(false);
     }
 
     @Override
@@ -170,7 +159,6 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
     public void refresh(){
         LockTask task = new LockTask();
         task.execute(DataBaseTask.GET_ALL_DATA);
-//        mRefreshButton.setText("Ref_" + (++sRefreshCount));
     }
 
     private void sectionClick(SectionHandler handler){
@@ -228,14 +216,6 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
         mAdapterSection.notifyDataSetChanged();
     }
 
-//    @Override
-    public void showError(String errorText) {
-        Bundle errorMassage = new Bundle();
-        errorMassage.putString(ErrorShowDialog.KEY_FOR_ERROR, errorText);
-        mErrorDialog.setArguments(errorMassage);
-        mErrorDialog.show(getFragmentManager(), "ErrorDialog");
-    }
-
     @Override
     public void onAdapterChanged() {
         if (mAdapterLevel != null) {
@@ -246,9 +226,9 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
         }
     }
 
-    private class LockTask extends DataBaseTask{
+    private class LockTask extends WarehouseTask {
 
-        private final static int NO_INDEX = 0;
+        final static int NO_INDEX = 0;
         final static int CREATE_TABLE = 0;
         final static int SECTION_CHANGE = 1;
         final static int LEVEL_CHANGE = 2;
@@ -280,35 +260,21 @@ public class LockUnlockFragment extends WarehouseFragment implements SetHeightDi
         }
 
         @Override
-        protected void onPreExecute(){
-            mProgressDialog.show();
-        }
-
-        @Override
-        protected void onPostExecute(HashMap<String, Integer> result) {
-
-            mProgressDialog.dismiss();
-
-            if (exception != null){
-                showError(exception.getMessage());
-            } else if (result == null) {
-                showError(getString(R.string.no_data_in_query));
-            } else {
-                switch (queryType){
-                    case CREATE_TABLE:
-                        createTable(result);
-                        break;
-                    case SECTION_CHANGE:
-                        sectionChange((SectionHandler)itemHandler, result);
-                        break;
-                    case LEVEL_CHANGE:
-                        levelChange(itemIndex, result);
-                        break;
-                    case ZONE_CHANGE:
-                        zoneChange(itemIndex, result);
-                        break;
-                    default: break;
-                }
+        void processResult(HashMap<String, Integer> result){
+            switch (queryType){
+                case CREATE_TABLE:
+                    createTable(result);
+                    break;
+                case SECTION_CHANGE:
+                    sectionChange((SectionHandler)itemHandler, result);
+                    break;
+                case LEVEL_CHANGE:
+                    levelChange(itemIndex, result);
+                    break;
+                case ZONE_CHANGE:
+                    zoneChange(itemIndex, result);
+                    break;
+                default: break;
             }
         }
     }

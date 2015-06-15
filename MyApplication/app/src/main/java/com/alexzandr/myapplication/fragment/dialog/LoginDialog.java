@@ -20,10 +20,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 
-import com.alexzandr.myapplication.DataBaseTask;
-import com.alexzandr.myapplication.QueryToServer;
+import com.alexzandr.myapplication.sql.DataBaseTask;
+import com.alexzandr.myapplication.sql.QueryToServer;
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.Singleton;
+import com.alexzandr.myapplication.application.Singleton;
 
 import java.util.HashMap;
 
@@ -303,6 +303,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     }
 
     public interface LoginDialogInteractionListener {
-        public void logIn();
+        void logIn();
     }
 }

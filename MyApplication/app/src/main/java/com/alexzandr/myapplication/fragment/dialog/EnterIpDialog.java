@@ -100,6 +100,6 @@ public class EnterIpDialog extends DialogFragment implements OnClickListener {
 
 
     public interface EnterIpDialogInteractionListener {
-        public void onServerChosen(String serverIp);
+        void onServerChosen(String serverIp);
     }
 }

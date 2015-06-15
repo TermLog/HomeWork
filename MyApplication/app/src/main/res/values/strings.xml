@@ -27,7 +27,6 @@
     <string name="title_activity_setting">Настройки</string>
     <string name="title_activity_warehouse">Склад</string>
     <string name="title_activity_detail">DetailActivity</string>
-    <string name="title_activity_table">Tablet</string>
 
     <string name="mainMenu_buttonRefresh">Обновить документ</string>
     <string name="mainMenu_buttonDelete">Удалить апостроф</string>
@@ -114,6 +113,8 @@
 
     <string name="transfer_fragment_key">fragment</string>
     <string name="transfer_work_with_doc_type_key">type</string>
+
+    <string name="error_msg_null_query">"Произошел разрыв связи с базой данных.\nНеобходимо повторно войти."</string>
 
     <string-array name="color_preference_array_entry">
         <item>Красный</item>
