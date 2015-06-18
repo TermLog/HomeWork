@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication.adapter;
+package com.alexzandr.myapplication.adapter_new;
 
 import android.content.Context;
 import android.graphics.Color;

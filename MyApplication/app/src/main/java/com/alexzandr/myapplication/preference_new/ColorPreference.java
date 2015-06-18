@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication.preference;
+package com.alexzandr.myapplication.preference_new;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.alexzandr.myapplication.adapter.ColorListAdapter;
+import com.alexzandr.myapplication.adapter_new.ColorListAdapter;
 import com.alexzandr.myapplication.R;
 
 /**
