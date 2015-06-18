@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication.preference_new;
+package com.alexzandr.myapplication.preference;
 
 import android.annotation.TargetApi;
 import android.content.Context;

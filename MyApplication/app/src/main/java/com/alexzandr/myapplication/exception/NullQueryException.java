@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication.exception_new;
+package com.alexzandr.myapplication.exception;
 
 /**
  * Created by anekrasov on 15.06.15.

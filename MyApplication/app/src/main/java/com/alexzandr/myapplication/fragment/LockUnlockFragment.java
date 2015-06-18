@@ -8,7 +8,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.alexzandr.myapplication.sql.DataBaseTask;
-import com.alexzandr.myapplication.adapter_new.LockUnlockAdapter;
+import com.alexzandr.myapplication.adapter.LockUnlockAdapter;
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.application.Singleton;
 import com.alexzandr.myapplication.handler.AdapterItemHandler;

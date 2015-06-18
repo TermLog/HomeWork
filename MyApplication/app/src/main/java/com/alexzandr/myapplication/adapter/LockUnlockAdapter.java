@@ -1,4 +1,4 @@
-package com.alexzandr.myapplication.adapter_new;
+package com.alexzandr.myapplication.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -2,28 +2,28 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/color_preference_section_color">
 
-        <com.alexzandr.myapplication.preference_new.ColorPreference
+        <com.alexzandr.myapplication.preference.ColorPreference
             android:key="@string/preference_key_color_unblocked"
             android:title="@string/color_preference_title_unblocked"
             android:entries="@array/color_preference_array_entry"
             android:entryValues="@array/color_preference_array_values"
             android:defaultValue="@string/default_color_unblocked"/>
 
-        <com.alexzandr.myapplication.preference_new.ColorPreference
+        <com.alexzandr.myapplication.preference.ColorPreference
             android:key="@string/preference_key_color_blocked"
             android:title="@string/color_preference_title_blocked"
             android:entries="@array/color_preference_array_entry"
             android:entryValues="@array/color_preference_array_values"
             android:defaultValue="@string/default_color_blocked"/>
 
-        <com.alexzandr.myapplication.preference_new.ColorPreference
+        <com.alexzandr.myapplication.preference.ColorPreference
             android:key="@string/preference_key_color_both"
             android:title="@string/color_preference_title_both"
             android:entries="@array/color_preference_array_entry"
             android:entryValues="@array/color_preference_array_values"
             android:defaultValue="@string/default_color_both"/>
 
-        <com.alexzandr.myapplication.preference_new.ColorPreference
+        <com.alexzandr.myapplication.preference.ColorPreference
             android:key="@string/preference_key_color_notExists"
             android:title="@string/color_preference_title_notExists"
             android:entries="@array/color_preference_array_entry"
@@ -34,12 +34,12 @@
 
     <PreferenceCategory android:title="@string/color_preference_section_height">
 
-        <com.alexzandr.myapplication.preference_new.HeightPreference
+        <com.alexzandr.myapplication.preference.HeightPreference
             android:key="@string/preference_key_height_headLine"
             android:title="@string/height_preference_title_headline"
             android:defaultValue="@integer/default_height_headline"/>
 
-        <com.alexzandr.myapplication.preference_new.HeightPreference
+        <com.alexzandr.myapplication.preference.HeightPreference
             android:key="@string/preference_key_height_section"
             android:title="@string/height_preference_title_section"
             android:defaultValue="@integer/default_height_section"/>
