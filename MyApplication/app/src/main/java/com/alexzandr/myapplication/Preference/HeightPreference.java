@@ -31,22 +31,27 @@ public class HeightPreference extends Preference
     public HeightPreference(
             Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-
-        setMax(Singleton.getSeekBarMax());
-        setLayoutResource(R.layout.preference_height);
-
+        init();
     }
 
     public HeightPreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
+        init();
     }
 
     public HeightPreference(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.seekBarPreferenceStyle);
+        init();
     }
 
     public HeightPreference(Context context) {
         this(context, null);
+        init();
+    }
+
+    private void init(){
+        setMax(Singleton.getSeekBarMax());
+        setLayoutResource(R.layout.preference_height);
     }
 
     @Override
