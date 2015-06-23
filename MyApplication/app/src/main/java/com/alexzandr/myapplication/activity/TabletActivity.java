@@ -1,5 +1,6 @@
 package com.alexzandr.myapplication.activity;
 
+import android.app.FragmentManager;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ public abstract class TabletActivity extends ActionBarActivity implements
         WarehouseFragment.OnFragmentInteractionListener {
 
     protected ErrorShowDialog mErrorShowDialog;
+    protected boolean mIsErrorDialogShow = false;
+    public static final String TAG_FOR_ERROR_DIALOG = "ErrorDialog";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +27,17 @@ public abstract class TabletActivity extends ActionBarActivity implements
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
-        mErrorShowDialog = new ErrorShowDialog();
+        mErrorShowDialog = (ErrorShowDialog) getFragmentManager().findFragmentByTag(TAG_FOR_ERROR_DIALOG);
+        if (mErrorShowDialog == null) {
+            mErrorShowDialog = new ErrorShowDialog();
+        } else {
+            mIsErrorDialogShow = true;
+            if (!isPortOrientation()) {
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().remove(mErrorShowDialog).commit();
+                fragmentManager.executePendingTransactions();
+            }
+        }
     }
 
     @Override
@@ -32,7 +45,8 @@ public abstract class TabletActivity extends ActionBarActivity implements
         Bundle errorMassage = new Bundle();
         errorMassage.putString(ErrorShowDialog.KEY_FOR_ERROR, errorText);
         mErrorShowDialog.setArguments(errorMassage);
-        mErrorShowDialog.show(getFragmentManager(), "ErrorDialog");
+        mErrorShowDialog.show(getFragmentManager(), TAG_FOR_ERROR_DIALOG);
+        mIsErrorDialogShow = true;
     }
 
     @Override

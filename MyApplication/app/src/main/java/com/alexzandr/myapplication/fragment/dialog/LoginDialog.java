@@ -48,6 +48,8 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
 
     public static final String HOME_IP = "192.168.1.105";
     public static final String WORK_IP = "10.100.6.15";
+    public static final String KEY_FOR_SERVER_ID = "ServerId";
+    public static final String KEY_FOR_SERVER_IP = "ServerIp";
     private static final int SERVER_DEFAULT = 0;
     private static final int SERVER_HOME = 1;
     private static final int SERVER_WORK = 2;
@@ -75,8 +77,13 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog);
-        setRetainInstance(true);
+//        setRetainInstance(true);
         setCancelable(false);
+
+        if (savedInstanceState != null) {
+            mServerId = savedInstanceState.getInt(KEY_FOR_SERVER_ID);
+            mServerIp = savedInstanceState.getString(KEY_FOR_SERVER_IP);
+        }
 
         mDialogOtherIp = new EnterIpDialog();
         mErrorDialog = new ErrorShowDialog();
@@ -107,6 +114,13 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
             cb.setChecked(true);
         }
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_FOR_SERVER_ID, mServerId);
+        outState.putString(KEY_FOR_SERVER_IP, mServerIp);
     }
 
 

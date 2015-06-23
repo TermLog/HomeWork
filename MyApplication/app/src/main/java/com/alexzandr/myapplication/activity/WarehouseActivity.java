@@ -30,7 +30,7 @@ public class WarehouseActivity extends TabletActivity implements
     private int mSelectedMainMenuButtonId;
     private Menu mSettingMenu;
 
-    private static final String KEY_LOGIN_DIALOG = "loginDialog";
+    private static final String KEY_LOGIN_DIALOG = "LoginDialog";
     private static final String KEY_IS_LOGGED = "isLogged";
     private static final String KEY_SELECTED_MAIN_MENU_BUTTON_ID = "buttonId";
     private static final int DESELECT_ALL_MAIN_MENU_BUTTON = -1;
@@ -43,6 +43,12 @@ public class WarehouseActivity extends TabletActivity implements
         setContentView(R.layout.activity_warehouse);
 
         mDialogSetHeight = new SetHeightDialog();
+
+        if (savedInstanceState == null) {
+            mLoginDialog = new LoginDialog();
+            showLoginForm(mLoginDialog);
+        }
+
     }
 
     @Override
@@ -75,7 +81,7 @@ public class WarehouseActivity extends TabletActivity implements
                     onFragmentInteraction(DESELECT_ALL_MAIN_MENU_BUTTON);
                 }
             }
-        } else {
+        } else if (mLoginDialog == null) {
             showLoginForm();
         }
     }
@@ -99,20 +105,7 @@ public class WarehouseActivity extends TabletActivity implements
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        try {
-            if (mLoginDialog != null) {
-                mLoginDialog.dismiss();
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
         super.onSaveInstanceState(outState);
-
-        if (mLoginDialog != null) {
-            outState.putParcelable(KEY_LOGIN_DIALOG, mLoginDialog);
-        }
-
         outState.putBoolean(KEY_IS_LOGGED, mIsLogged);
         outState.putInt(KEY_SELECTED_MAIN_MENU_BUTTON_ID, mSelectedMainMenuButtonId);
     }
@@ -120,7 +113,6 @@ public class WarehouseActivity extends TabletActivity implements
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mLoginDialog = savedInstanceState.getParcelable(KEY_LOGIN_DIALOG);
         mIsLogged = savedInstanceState.getBoolean(KEY_IS_LOGGED, false);
         mSelectedMainMenuButtonId = savedInstanceState.getInt(KEY_SELECTED_MAIN_MENU_BUTTON_ID);
     }
@@ -182,24 +174,31 @@ public class WarehouseActivity extends TabletActivity implements
 
 
     public void showLoginForm() {
+        if (isPortOrientation()){
+            mLoginDialog = (LoginDialog) getFragmentManager().findFragmentByTag(KEY_LOGIN_DIALOG);
+        } else {
+            mLoginDialog = (LoginDialog) getFragmentManager().findFragmentById(R.id.warehouse_menuFrame);
+        }
+        FragmentManager manager = getFragmentManager();
+        manager.beginTransaction().remove(mLoginDialog).commit();
+        manager.executePendingTransactions();
+        showLoginForm(mLoginDialog);
+    }
+
+    public void showLoginForm(LoginDialog dialog) {
+
         FragmentTransaction fragTransaction;
 
         if (!mIsLogged) {
-
-            if (mLoginDialog == null) {
-                mLoginDialog = new LoginDialog();
-            } else {
-                fragTransaction = getFragmentManager().beginTransaction();
-                fragTransaction.remove(mLoginDialog);
-                fragTransaction.commit();
-            }
-
             if (isPortOrientation()) {
                 fragTransaction = getFragmentManager().beginTransaction();
-                fragTransaction.add(R.id.warehouse_menuFrame, mLoginDialog);
+                fragTransaction.add(R.id.warehouse_menuFrame, dialog, KEY_LOGIN_DIALOG);
                 fragTransaction.commit();
             } else {
-                mLoginDialog.show(getFragmentManager(), "LoginDialog");
+                dialog.show(getFragmentManager(), KEY_LOGIN_DIALOG);
+                if (mIsErrorDialogShow){
+                    mErrorShowDialog.show(getFragmentManager(), TAG_FOR_ERROR_DIALOG);
+                }
             }
         }
     }
@@ -221,7 +220,8 @@ public class WarehouseActivity extends TabletActivity implements
         fragTransaction.remove(getFragmentManager().findFragmentById(R.id.warehouse_menuFrame));
         fragTransaction.commit();
         mSettingMenu.setGroupVisible(R.id.menu_setting_group, HIDE_SETTING_MENU);
-        showLoginForm();
+        mLoginDialog = new LoginDialog();
+        showLoginForm(mLoginDialog);
     }
 
     @Override

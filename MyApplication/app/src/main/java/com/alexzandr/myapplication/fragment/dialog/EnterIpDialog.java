@@ -53,6 +53,7 @@ public class EnterIpDialog extends DialogFragment implements OnClickListener {
 
         mEditTextIp = (EditText) view.findViewById(R.id.dialog_editText);
         setCancelable(false);
+        setRetainInstance(true);
         return view;
     }
 
