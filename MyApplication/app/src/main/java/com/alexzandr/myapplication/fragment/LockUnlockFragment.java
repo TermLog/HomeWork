@@ -1,6 +1,9 @@
 package com.alexzandr.myapplication.fragment;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,8 @@ public class LockUnlockFragment extends WarehouseFragment {
 
     private int mLevelsCount;
     private int mZonesCount;
+    private boolean mStartOrientationIsPort;
+    private static int sNumberOfChanges;
     private LockUnlockAdapter mAdapterSection;
     private LockUnlockAdapter mAdapterLevel;
     private ArrayList<AdapterItemHandler> mSections;
@@ -32,10 +37,16 @@ public class LockUnlockFragment extends WarehouseFragment {
 
     private final static String KEY_COUNT_OF_ZONES = "zoneCount";
     private final static String KEY_COUNT_OF_LEVELS = "levelCount";
+    private final static int ID_FOR_NOTIFICATION = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (isPortOrientation()) {
+            mStartOrientationIsPort = true;
+        } else {
+            mStartOrientationIsPort = false;
+        }
     }
 
     @Override
@@ -65,6 +76,11 @@ public class LockUnlockFragment extends WarehouseFragment {
         super.onStop();
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
+        }
+        if (isPortOrientation() == mStartOrientationIsPort) {
+            System.out.println("NUMBER OF CHANGES IS " + sNumberOfChanges);
+            showNotification(sNumberOfChanges);
+            sNumberOfChanges = 0;
         }
     }
 
@@ -172,6 +188,7 @@ public class LockUnlockFragment extends WarehouseFragment {
         String key = handler.getStringForKey();
         handler.setBlockedType(map.get(key));
         mAdapterSection.notifyDataSetChanged();
+        sNumberOfChanges++;
     }
 
     private void zoneClick(ZoneHandler handler, int position){
@@ -193,6 +210,7 @@ public class LockUnlockFragment extends WarehouseFragment {
             }
         }
         mAdapterSection.notifyDataSetChanged();
+        sNumberOfChanges++;
     }
 
     private void levelClick(int level){
@@ -214,6 +232,7 @@ public class LockUnlockFragment extends WarehouseFragment {
             }
         }
         mAdapterSection.notifyDataSetChanged();
+        sNumberOfChanges++;
     }
 
     @Override
@@ -224,6 +243,26 @@ public class LockUnlockFragment extends WarehouseFragment {
         if (mAdapterSection != null) {
             mAdapterSection.notifyDataSetChanged();
         }
+    }
+
+    private void showNotification(int number) {
+        String messageText;
+        if (number > 0) {
+            messageText = getString(R.string.notification_text_prefix) + number;
+        } else {
+            messageText = getString(R.string.notification_no_changes);
+        }
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(mActivity)
+                .setSmallIcon(R.drawable.warehouse)
+                .setContentTitle(getString(R.string.title_notification))
+                .setContentText(messageText)
+                .setAutoCancel(true);
+
+        NotificationManager notificationManager =
+                (NotificationManager) mActivity.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(ID_FOR_NOTIFICATION /* ID of notification */, notificationBuilder.build());
     }
 
     private class LockTask extends WarehouseTask {

@@ -27,6 +27,7 @@
     <string name="title_activity_setting">Настройки</string>
     <string name="title_activity_warehouse">Склад</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_notification">Кол-во изменений</string>
 
     <string name="mainMenu_buttonRefresh">Обновить документ</string>
     <string name="mainMenu_buttonDelete">Удалить апостроф</string>
@@ -116,6 +117,13 @@
 
     <string name="error_msg_null_query">"Произошел разрыв связи с базой данных.\nНеобходимо повторно войти."</string>
 
+    <string name="notification_text_prefix">"Кол-во выполненных изменений - "</string>
+    <string name="notification_no_changes">"Изменения не были выполнены"</string>
+
+    <string name="token_error_message">An error occurred while either fetching the InstanceID token,
+        sending the fetched token to the server or subscribing to the PubSub topic. Please try
+        running the sample again.</string>
+
     <string-array name="color_preference_array_entry">
         <item>Красный</item>
         <item>Розовый</item>
@@ -159,5 +167,8 @@
         <item>#9E9E9E</item>
         <item>#607D8B</item>
     </string-array>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

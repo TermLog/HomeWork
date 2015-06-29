@@ -3,13 +3,19 @@ package com.alexzandr.myapplication.fragment.dialog;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View.OnClickListener;
@@ -19,11 +25,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 
+import com.alexzandr.myapplication.service.RegistrationIntentService;
 import com.alexzandr.myapplication.sql.DataBaseTask;
 import com.alexzandr.myapplication.sql.QueryToServer;
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.application.Singleton;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import java.util.HashMap;
 
@@ -31,8 +41,8 @@ import java.util.HashMap;
  * Created by anekrasov on 03.06.15.
  */
 public class LoginDialog extends DialogFragment implements OnClickListener,
-        EnterIpDialog.EnterIpDialogInteractionListener, ErrorShowDialog.OnShowErrors,
-        Parcelable{
+        EnterIpDialog.EnterIpDialogInteractionListener,
+        ErrorShowDialog.OnShowErrors {
 
     private LoginDialogInteractionListener mListener;
     private Activity mActivity;
@@ -45,6 +55,7 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     private SharedPreferences mPreferences;
     private int mServerId = SERVER_DEFAULT;
     private String mServerIp;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     public static final String HOME_IP = "192.168.1.105";
     public static final String WORK_IP = "10.100.6.15";
@@ -54,6 +65,7 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     private static final int SERVER_HOME = 1;
     private static final int SERVER_WORK = 2;
     private static final int SERVER_OTHER = 3;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final boolean REMEMBER_NOT_ACTIVE = false;
     private static final boolean REMEMBER_IS_ACTIVE = true;
 
@@ -84,6 +96,23 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
             mServerId = savedInstanceState.getInt(KEY_FOR_SERVER_ID);
             mServerIp = savedInstanceState.getString(KEY_FOR_SERVER_IP);
         }
+
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences
+                        .getBoolean(RegistrationIntentService.SENT_TOKEN_TO_SERVER, false);
+                if (sentToken) {
+                    InnerTask task = new InnerTask();
+                    task.execute(DataBaseTask.CHECK_CONNECTION);
+                } else {
+                    mProgressDialog.dismiss();
+                    showError(getString(R.string.token_error_message));
+                }
+            }
+        };
 
         mDialogOtherIp = new EnterIpDialog();
         mErrorDialog = new ErrorShowDialog();
@@ -121,6 +150,19 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_FOR_SERVER_ID, mServerId);
         outState.putString(KEY_FOR_SERVER_IP, mServerIp);
+    }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mRegistrationBroadcastReceiver,
+//                new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE));
+//    }
+
+    @Override
+    public void onPause() {
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
     }
 
 
@@ -240,8 +282,16 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     private void createConnection(){
         QueryToServer mQueryToServer = new QueryToServer(mServerIp, mEditTextUser.getText().toString(), mEditTextPassword.getText().toString());
         Singleton.setQuery(mQueryToServer);
-        InnerTask task = new InnerTask();
-        task.execute(DataBaseTask.CHECK_CONNECTION);
+        if (checkPlayServices()) {
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(mActivity, RegistrationIntentService.class);
+            mActivity.startService(intent);
+        }
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE));
+        mProgressDialog.show();
+//        InnerTask task = new InnerTask();
+//        task.execute(DataBaseTask.CHECK_CONNECTION);
     }
 
     public void rememberMe() {
@@ -255,6 +305,22 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
         }
     }
 
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, mActivity,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(mActivity.getClass().toString(), "This device is not supported.");
+                dismiss();
+                mActivity.finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
     public void onClickRemember(View view) {
         CheckBox cb = (CheckBox) view;
         if (!cb.isChecked()){
@@ -265,21 +331,11 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
         }
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-    }
-
     private class InnerTask extends DataBaseTask{
 
         @Override
         protected void onPreExecute(){
-            mProgressDialog.show();
+//            mProgressDialog.show();
         }
 
         @Override
@@ -291,7 +347,7 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
 
                 rememberMe();
                 Singleton.setPreferencesName(mEditTextUser.getText().toString());
-                mListener.logIn();
+                mListener.onLogIn();
                 LoginDialog.this.dismiss();
 
             } else {
@@ -317,6 +373,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     }
 
     public interface LoginDialogInteractionListener {
-        void logIn();
+        void onLogIn();
     }
 }

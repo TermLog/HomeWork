@@ -3,12 +3,9 @@ package com.alexzandr.myapplication.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.application.Singleton;
@@ -25,7 +22,6 @@ public class WarehouseActivity extends TabletActivity implements
         EnterIpDialogInteractionListener, OnAdapterChangedListener {
 
     private LoginDialog mLoginDialog;
-    private SetHeightDialog mDialogSetHeight;
     private boolean mIsLogged;
     private int mSelectedMainMenuButtonId;
     private Menu mSettingMenu;
@@ -47,8 +43,22 @@ public class WarehouseActivity extends TabletActivity implements
         if (savedInstanceState == null) {
             mLoginDialog = new LoginDialog();
             showLoginForm(mLoginDialog);
+        } else {
+            mIsLogged = savedInstanceState.getBoolean(KEY_IS_LOGGED, false);
+            mSelectedMainMenuButtonId = savedInstanceState.getInt(KEY_SELECTED_MAIN_MENU_BUTTON_ID);
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        mSettingMenu = menu;
+
+        if (!mIsLogged){
+            mSettingMenu.setGroupVisible(R.id.menu_setting_group, HIDE_SETTING_MENU);
+        }
+        return true;
     }
 
     @Override
@@ -111,53 +121,7 @@ public class WarehouseActivity extends TabletActivity implements
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mIsLogged = savedInstanceState.getBoolean(KEY_IS_LOGGED, false);
-        mSelectedMainMenuButtonId = savedInstanceState.getInt(KEY_SELECTED_MAIN_MENU_BUTTON_ID);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_settings, menu);
-        mSettingMenu = menu;
-        if (!mIsLogged){
-            mSettingMenu.setGroupVisible(R.id.menu_setting_group, HIDE_SETTING_MENU);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        Bundle dialogType = new Bundle();
-
-        switch (itemId){
-            case R.id.login_menu_forget_me:
-                SharedPreferences preferences = getSharedPreferences(getString(R.string.remember_preference_name), Context.MODE_PRIVATE);
-                preferences.edit().clear().apply();
-                break;
-            case R.id.login_menu_settings:
-                Intent intent = new Intent(WarehouseActivity.this, SettingsActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.login_menu_headLine_height:
-                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.DIALOG_TYPE_HEADLINE_HEIGHT);
-                mDialogSetHeight.setArguments(dialogType);
-                mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
-                break;
-            case R.id.login_menu_section_height:
-                dialogType.putInt(SetHeightDialog.KEY_FOR_TYPE, SetHeightDialog.DIALOG_TYPE_SECTION_HEIGHT);
-                mDialogSetHeight.setArguments(dialogType);
-                mDialogSetHeight.show(getFragmentManager(), "SetHeadLineHeightDialog");
-                break;
-            default: break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void logIn() {
+    public void onLogIn() {
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.warehouse_menuFrame, new MainMenuFragment())
