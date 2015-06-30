@@ -51,7 +51,7 @@
         </service>
 
         <service
-            android:name=".service.MyGcmListenerService"
+            android:name=".service.WarehouseGcmListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -59,7 +59,7 @@
         </service>
 
         <service
-            android:name=".service.MyInstanceIDListenerService"
+            android:name=".service.WarehouseInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID"/>

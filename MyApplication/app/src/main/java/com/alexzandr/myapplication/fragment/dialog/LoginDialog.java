@@ -152,13 +152,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
         outState.putString(KEY_FOR_SERVER_IP, mServerIp);
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mRegistrationBroadcastReceiver,
-//                new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE));
-//    }
-
     @Override
     public void onPause() {
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mRegistrationBroadcastReceiver);
@@ -282,13 +275,12 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     private void createConnection(){
         QueryToServer mQueryToServer = new QueryToServer(mServerIp, mEditTextUser.getText().toString(), mEditTextPassword.getText().toString());
         Singleton.setQuery(mQueryToServer);
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE));
         if (checkPlayServices()) {
-            // Start IntentService to register this application with GCM.
             Intent intent = new Intent(mActivity, RegistrationIntentService.class);
             mActivity.startService(intent);
         }
-        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE));
         mProgressDialog.show();
 //        InnerTask task = new InnerTask();
 //        task.execute(DataBaseTask.CHECK_CONNECTION);
