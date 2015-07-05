@@ -1,12 +1,13 @@
 package com.alexzandr.myapplication.activity;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.Singleton;
+import com.alexzandr.myapplication.application.Singleton;
 
 /**
  * Created by AlexZandR on 04.05.2015.
@@ -19,6 +20,10 @@ public class SettingsActivity extends PreferenceActivity {
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
+
+        if (!Singleton.isTablet()){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 
     public static class SettingsFragment extends PreferenceFragment {

@@ -25,6 +25,9 @@
     <string name="title_activity_delete_document">Удалить апостроф </string>
     <string name="title_activity_lock_unlock">Блокировка зон</string>
     <string name="title_activity_setting">Настройки</string>
+    <string name="title_activity_warehouse">Склад</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_notification">Кол-во изменений</string>
 
     <string name="mainMenu_buttonRefresh">Обновить документ</string>
     <string name="mainMenu_buttonDelete">Удалить апостроф</string>
@@ -63,7 +66,6 @@
 
     <string name="progressBar_title">Соединение…</string>
     <string name="progressBar_massage">Подождите, выполняется соединение с сервером</string>
-    <string name="title_activity_test_menu">TestMenuActivity</string>
 
     <string name="login_menu_forget">Забыть мои данные</string>
     <string name="login_menu_settings">Настройки</string>
@@ -108,6 +110,20 @@
     <string name="remember_preference_key_user">"com.alexzandr.myapplication.USER"</string>
     <string name="remember_preference_key_password">"com.alexzandr.myapplication.PASSWORD"</string>
 
+    <string name="blankFragment_text">"Ни один из элементов не был выбран! \n Выберите эелемент"</string>
+
+    <string name="transfer_fragment_key">fragment</string>
+    <string name="transfer_work_with_doc_type_key">type</string>
+
+    <string name="error_msg_null_query">"Произошел разрыв связи с базой данных.\nНеобходимо повторно войти."</string>
+
+    <string name="notification_text_prefix">"Кол-во выполненных изменений - "</string>
+    <string name="notification_no_changes">"Изменения не были выполнены"</string>
+
+    <string name="token_error_message">An error occurred while either fetching the InstanceID token,
+        sending the fetched token to the server or subscribing to the PubSub topic. Please try
+        running the sample again.</string>
+
     <string-array name="color_preference_array_entry">
         <item>Красный</item>
         <item>Розовый</item>
@@ -129,6 +145,7 @@
         <item>Серый</item>
         <item>Blue Grey</item>
     </string-array>
+
     <string-array name="color_preference_array_values">
         <item>#F44336</item>
         <item>#E91E63</item>
@@ -150,5 +167,8 @@
         <item>#9E9E9E</item>
         <item>#607D8B</item>
     </string-array>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

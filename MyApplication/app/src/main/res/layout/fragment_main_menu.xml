@@ -1,0 +1,39 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_blue"
+    tools:context="com.alexzandr.myapplication.fragment.MainMenuFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/background_blue">
+
+
+        <com.alexzandr.myapplication.view.AnimatedButton
+            android:text="@string/mainMenu_buttonRefresh"
+            android:id="@+id/mainMenu_buttonUpdate"
+            style="@style/buttonStyle.MainMenu"/>
+
+        <com.alexzandr.myapplication.view.AnimatedButton
+            android:text="@string/mainMenu_buttonDelete"
+            android:id="@+id/mainMenu_buttonDelete"
+            style="@style/buttonStyle.MainMenu"/>
+
+        <com.alexzandr.myapplication.view.AnimatedButton
+            android:text="@string/mainMenu_buttonLockUnlock"
+            android:id="@+id/mainMenu_buttonLockUnlock"
+            style="@style/buttonStyle.MainMenu"/>
+
+        <com.alexzandr.myapplication.view.AnimatedButton
+            android:text="@string/mainMenu_buttonExit"
+            android:id="@+id/mainMenu_buttonExit"
+            style="@style/buttonStyle.MainMenu"/>
+    </LinearLayout>
+
+
+</FrameLayout>

@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 
 import com.alexzandr.myapplication.R;
-import com.alexzandr.myapplication.Singleton;
+import com.alexzandr.myapplication.application.Singleton;
 
 /**
  * Created by anekrasov on 20.04.15.

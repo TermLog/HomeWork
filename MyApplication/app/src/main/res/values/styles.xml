@@ -6,7 +6,7 @@
     </style>
 
     <style name="buttonStyle">
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_weight">1</item>
@@ -24,6 +24,19 @@
         <item name="android:layout_marginRight">0dp</item>
         <item name="android:paddingTop">@dimen/mainMenu_buttonSpacing_bottom</item>
         <item name="android:paddingBottom">@dimen/mainMenu_buttonSpacing_bottom</item>
+    </style>
+    <style name="mainMenuButtonLand">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingTop">@dimen/mainMenu_buttonSpacing_bottom</item>
+        <item name="android:paddingBottom">@dimen/mainMenu_buttonSpacing_bottom</item>
+        <item name="android:background">@color/background_main_menu_landscape_deepBlue</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
 </resources>
