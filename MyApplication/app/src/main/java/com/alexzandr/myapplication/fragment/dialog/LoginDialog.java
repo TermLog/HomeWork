@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
@@ -25,9 +23,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 
 import com.alexzandr.myapplication.service.RegistrationIntentService;
+import com.alexzandr.myapplication.service.SqlQueryIntentService;
 import com.alexzandr.myapplication.sql.DataBaseTask;
 import com.alexzandr.myapplication.sql.QueryToServer;
 import com.alexzandr.myapplication.R;
@@ -52,15 +50,18 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     private DialogFragment mDialogOtherIp;
     private ProgressDialog mProgressDialog;
     private ErrorShowDialog mErrorDialog;
+    private BroadcastReceiver mReceiverSuccess;
+    private BroadcastReceiver mReceiverError;
     private SharedPreferences mPreferences;
     private int mServerId = SERVER_DEFAULT;
     private String mServerIp;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
-    public static final String HOME_IP = "192.168.1.105";
+    public static final String HOME_IP = "192.168.1.106";
     public static final String WORK_IP = "10.100.6.15";
     public static final String KEY_FOR_SERVER_ID = "ServerId";
     public static final String KEY_FOR_SERVER_IP = "ServerIp";
+
     private static final int SERVER_DEFAULT = 0;
     private static final int SERVER_HOME = 1;
     private static final int SERVER_WORK = 2;
@@ -104,13 +105,48 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
                         PreferenceManager.getDefaultSharedPreferences(context);
                 boolean sentToken = sharedPreferences
                         .getBoolean(RegistrationIntentService.SENT_TOKEN_TO_SERVER, false);
+
+                System.out.println("CATCH REGISTRATION");
                 if (sentToken) {
-                    InnerTask task = new InnerTask();
-                    task.execute(DataBaseTask.CHECK_CONNECTION);
+//                    InnerTask task = new InnerTask();
+//                    task.execute(DataBaseTask.CHECK_CONNECTION);
+                    IntentFilter filterSuccess = new IntentFilter(SqlQueryIntentService.QUERY_SUCCESSFUL);
+                    IntentFilter filterError = new IntentFilter(SqlQueryIntentService.QUERY_ERROR);
+                    LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverSuccess, filterSuccess);
+                    LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverError, filterError);
+                    SqlQueryIntentService.executeQuery(getActivity(), SqlQueryIntentService.CHECK_CONNECTION);
                 } else {
                     mProgressDialog.dismiss();
                     showError(getString(R.string.token_error_message));
                 }
+            }
+        };
+
+        mReceiverSuccess = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                System.out.println("CATCH SUCCESS");
+//                int queryType = intent.getIntExtra(SqlQueryIntentService.EXTRA_QUERY_TYPE, SqlQueryIntentService.CHECK_CONNECTION);
+//                HashMap<String, Integer> resultMap =
+//                        (HashMap<String, Integer>)intent.getSerializableExtra(SqlQueryIntentService.EXTRA_RESULT_MAP);
+
+                mProgressDialog.dismiss();
+                rememberMe();
+                Singleton.setPreferencesName(mEditTextUser.getText().toString());
+                mListener.onLogIn();
+                LoginDialog.this.dismiss();
+            }
+        };
+
+        mReceiverError = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                System.out.println("CATCH ERROR");
+//                int queryType = intent.getIntExtra(SqlQueryIntentService.EXTRA_QUERY_TYPE, SqlQueryIntentService.CHECK_CONNECTION);
+//                HashMap<String, Integer> resultMap =
+//                        (HashMap<String, Integer>)intent.getSerializableExtra(SqlQueryIntentService.EXTRA_RESULT_MAP);
+                mProgressDialog.dismiss();
+                showError(intent.getStringExtra(SqlQueryIntentService.EXTRA_ERROR_MESSAGE));
             }
         };
 
@@ -146,6 +182,15 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     }
 
     @Override
+    public void onResume() {
+//        IntentFilter filterSuccess = new IntentFilter(SqlQueryIntentService.QUERY_SUCCESSFUL);
+//        IntentFilter filterError = new IntentFilter(SqlQueryIntentService.QUERY_ERROR);
+//        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverSuccess, filterSuccess);
+//        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverError, filterError);
+        super.onResume();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_FOR_SERVER_ID, mServerId);
@@ -155,6 +200,8 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     @Override
     public void onPause() {
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mRegistrationBroadcastReceiver);
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mReceiverSuccess);
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mReceiverError);
         super.onPause();
     }
 
