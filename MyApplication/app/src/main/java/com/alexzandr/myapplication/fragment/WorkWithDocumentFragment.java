@@ -1,6 +1,9 @@
 package com.alexzandr.myapplication.fragment;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -10,7 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.alexzandr.myapplication.sql.DataBaseTask;
+import com.alexzandr.myapplication.service.SqlQueryIntentService;
 import com.alexzandr.myapplication.R;
 
 import java.util.HashMap;
@@ -82,6 +85,17 @@ public class WorkWithDocumentFragment extends WarehouseFragment {
                 mActivity.setTitle(R.string.title_activity_update_document);
             }
         }
+
+        mReceiverSuccess = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                System.out.println("CATCH SUCCESS");
+                mProgressDialog.dismiss();
+                HashMap<String, Integer> resultMap =
+                        (HashMap<String, Integer>) intent.getSerializableExtra(SqlQueryIntentService.EXTRA_RESULT_MAP);
+                showResultOfWork(resultMap);
+            }
+        };
         doAction();
         return view;
     }
@@ -139,15 +153,22 @@ public class WorkWithDocumentFragment extends WarehouseFragment {
     private void doAction(int actionType){
         mButtonAction.setText(R.string.doc_buttonRepeat);
         mEditTextDocList.setVisibility(View.GONE);
-        WorkWithDocTask task = new WorkWithDocTask();
-        task.procedureParamDocList = stringInOneLine(mEditTextDocList.getText().toString());
-
+        mProgressDialog.show();
+        String docList = stringInOneLine(mEditTextDocList.getText().toString());
         switch (actionType){
             case UPDATE_ACTIVITY:
-                task.execute(DataBaseTask.UPDATE_IN_DOC);
+                SqlQueryIntentService.executeQuery(
+                        mActivity,
+                        SqlQueryIntentService.UPDATE_IN_DOC,
+                        docList
+                );
                 break;
             case DELETE_ACTIVITY:
-                task.execute(DataBaseTask.DELETE_IN_DOC);
+                SqlQueryIntentService.executeQuery(
+                        mActivity,
+                        SqlQueryIntentService.DELETE_IN_DOC,
+                        docList
+                );
                 break;
             default:break;
         }
@@ -180,12 +201,5 @@ public class WorkWithDocumentFragment extends WarehouseFragment {
 
     private String stringInOneLine(String resultString){
         return resultString.replace("\n", ",").replace(" ", "");
-    }
-
-    private class WorkWithDocTask extends WarehouseTask {
-        @Override
-        void processResult(HashMap<String, Integer> result){
-            showResultOfWork(result);
-        }
     }
 }

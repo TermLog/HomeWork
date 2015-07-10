@@ -2,8 +2,13 @@ package com.alexzandr.myapplication.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -12,6 +17,7 @@ import com.alexzandr.myapplication.activity.TabletActivity;
 import com.alexzandr.myapplication.application.Singleton;
 import com.alexzandr.myapplication.fragment.dialog.SetHeightDialog;
 import com.alexzandr.myapplication.handler.AdapterItemHandler;
+import com.alexzandr.myapplication.service.SqlQueryIntentService;
 import com.alexzandr.myapplication.sql.DataBaseTask;
 
 import java.util.HashMap;
@@ -22,13 +28,10 @@ public class WarehouseFragment extends Fragment implements OnClickListener,
     protected OnFragmentInteractionListener mListener;
     protected TabletActivity mActivity;
     protected ProgressDialog mProgressDialog;
+    protected BroadcastReceiver mReceiverError;
+    protected BroadcastReceiver mReceiverSuccess;
 
     public WarehouseFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -55,6 +58,36 @@ public class WarehouseFragment extends Fragment implements OnClickListener,
         mProgressDialog.setCancelable(false);
         setRetainInstance(true);
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mReceiverError = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mProgressDialog.dismiss();
+                showError(intent.getStringExtra(SqlQueryIntentService.EXTRA_ERROR_MESSAGE));
+            }
+        };
+    }
+
+    @Override
+    public void onStart() {
+        IntentFilter filterSuccess = new IntentFilter(SqlQueryIntentService.QUERY_SUCCESSFUL);
+        IntentFilter filterError = new IntentFilter(SqlQueryIntentService.QUERY_ERROR);
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverSuccess, filterSuccess);
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverError, filterError);
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mReceiverSuccess);
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mReceiverError);
+        mProgressDialog.dismiss();
+        super.onStop();
+    }
+
 
     @Override
     public void onDetach() {

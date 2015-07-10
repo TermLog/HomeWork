@@ -26,14 +26,11 @@ import android.widget.PopupMenu;
 
 import com.alexzandr.myapplication.service.RegistrationIntentService;
 import com.alexzandr.myapplication.service.SqlQueryIntentService;
-import com.alexzandr.myapplication.sql.DataBaseTask;
 import com.alexzandr.myapplication.sql.QueryToServer;
 import com.alexzandr.myapplication.R;
 import com.alexzandr.myapplication.application.Singleton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-
-import java.util.HashMap;
 
 /**
  * Created by anekrasov on 03.06.15.
@@ -90,7 +87,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog);
-//        setRetainInstance(true);
         setCancelable(false);
 
         if (savedInstanceState != null) {
@@ -106,7 +102,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
                 boolean sentToken = sharedPreferences
                         .getBoolean(RegistrationIntentService.SENT_TOKEN_TO_SERVER, false);
 
-                System.out.println("CATCH REGISTRATION");
                 if (sentToken) {
                     SqlQueryIntentService.executeQuery(getActivity(), SqlQueryIntentService.CHECK_CONNECTION);
                 } else {
@@ -119,11 +114,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
         mReceiverSuccess = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                System.out.println("CATCH SUCCESS");
-//                int queryType = intent.getIntExtra(SqlQueryIntentService.EXTRA_QUERY_TYPE, SqlQueryIntentService.CHECK_CONNECTION);
-//                HashMap<String, Integer> resultMap =
-//                        (HashMap<String, Integer>)intent.getSerializableExtra(SqlQueryIntentService.EXTRA_RESULT_MAP);
-
                 mProgressDialog.dismiss();
                 rememberMe();
                 Singleton.setPreferencesName(mEditTextUser.getText().toString());
@@ -135,7 +125,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
         mReceiverError = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                System.out.println("CATCH ERROR");
                 mProgressDialog.dismiss();
                 showError(intent.getStringExtra(SqlQueryIntentService.EXTRA_ERROR_MESSAGE));
             }
@@ -176,8 +165,12 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     public void onStart() {
         IntentFilter filterSuccess = new IntentFilter(SqlQueryIntentService.QUERY_SUCCESSFUL);
         IntentFilter filterError = new IntentFilter(SqlQueryIntentService.QUERY_ERROR);
+        IntentFilter filterRegistration = new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE);
+
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverSuccess, filterSuccess);
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverError, filterError);
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mRegistrationBroadcastReceiver,
+                filterRegistration);
         super.onStart();
     }
 
@@ -193,6 +186,7 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mRegistrationBroadcastReceiver);
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mReceiverSuccess);
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mReceiverError);
+        mProgressDialog.dismiss();
         super.onStop();
     }
 
@@ -313,15 +307,11 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     private void createConnection(){
         QueryToServer mQueryToServer = new QueryToServer(mServerIp, mEditTextUser.getText().toString(), mEditTextPassword.getText().toString());
         Singleton.setQuery(mQueryToServer);
-        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE));
         if (checkPlayServices()) {
             Intent intent = new Intent(mActivity, RegistrationIntentService.class);
             mActivity.startService(intent);
         }
         mProgressDialog.show();
-//        InnerTask task = new InnerTask();
-//        task.execute(DataBaseTask.CHECK_CONNECTION);
     }
 
     public void rememberMe() {
@@ -358,47 +348,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
             mPreferences.edit().putBoolean(getString(R.string.remember_preference_key_is_active), REMEMBER_NOT_ACTIVE).apply();
         } else {
             mPreferences.edit().putBoolean(getString(R.string.remember_preference_key_is_active), REMEMBER_IS_ACTIVE).apply();
-        }
-    }
-
-    private class InnerTask extends DataBaseTask{
-
-        @Override
-        protected void onPreExecute(){
-//            mProgressDialog.show();
-        }
-
-        @Override
-        protected void onPostExecute(HashMap<String, Integer> result) {
-
-            mProgressDialog.dismiss();
-
-            if (exception == null){
-
-                rememberMe();
-                Singleton.setPreferencesName(mEditTextUser.getText().toString());
-                mListener.onLogIn();
-                LoginDialog.this.dismiss();
-
-            } else {
-
-                String errorMassage = exception.getMessage();
-
-                switch (mServerId){
-                    case SERVER_HOME:
-                        errorMassage = errorMassage + getString(R.string.serverName_home);
-                        break;
-                    case SERVER_WORK:
-                        errorMassage = errorMassage + getString(R.string.serverName_work);
-                        break;
-                    case SERVER_OTHER:
-                        errorMassage = errorMassage + mServerIp;
-                        break;
-                    default: break;
-                }
-
-                showError(errorMassage);
-            }
         }
     }
 
