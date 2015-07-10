@@ -108,12 +108,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
 
                 System.out.println("CATCH REGISTRATION");
                 if (sentToken) {
-//                    InnerTask task = new InnerTask();
-//                    task.execute(DataBaseTask.CHECK_CONNECTION);
-                    IntentFilter filterSuccess = new IntentFilter(SqlQueryIntentService.QUERY_SUCCESSFUL);
-                    IntentFilter filterError = new IntentFilter(SqlQueryIntentService.QUERY_ERROR);
-                    LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverSuccess, filterSuccess);
-                    LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverError, filterError);
                     SqlQueryIntentService.executeQuery(getActivity(), SqlQueryIntentService.CHECK_CONNECTION);
                 } else {
                     mProgressDialog.dismiss();
@@ -142,9 +136,6 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
             @Override
             public void onReceive(Context context, Intent intent) {
                 System.out.println("CATCH ERROR");
-//                int queryType = intent.getIntExtra(SqlQueryIntentService.EXTRA_QUERY_TYPE, SqlQueryIntentService.CHECK_CONNECTION);
-//                HashMap<String, Integer> resultMap =
-//                        (HashMap<String, Integer>)intent.getSerializableExtra(SqlQueryIntentService.EXTRA_RESULT_MAP);
                 mProgressDialog.dismiss();
                 showError(intent.getStringExtra(SqlQueryIntentService.EXTRA_ERROR_MESSAGE));
             }
@@ -182,12 +173,12 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     }
 
     @Override
-    public void onResume() {
-//        IntentFilter filterSuccess = new IntentFilter(SqlQueryIntentService.QUERY_SUCCESSFUL);
-//        IntentFilter filterError = new IntentFilter(SqlQueryIntentService.QUERY_ERROR);
-//        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverSuccess, filterSuccess);
-//        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverError, filterError);
-        super.onResume();
+    public void onStart() {
+        IntentFilter filterSuccess = new IntentFilter(SqlQueryIntentService.QUERY_SUCCESSFUL);
+        IntentFilter filterError = new IntentFilter(SqlQueryIntentService.QUERY_ERROR);
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverSuccess, filterSuccess);
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mReceiverError, filterError);
+        super.onStart();
     }
 
     @Override
@@ -198,11 +189,11 @@ public class LoginDialog extends DialogFragment implements OnClickListener,
     }
 
     @Override
-    public void onPause() {
+    public void onStop() {
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mRegistrationBroadcastReceiver);
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mReceiverSuccess);
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mReceiverError);
-        super.onPause();
+        super.onStop();
     }
 
 
