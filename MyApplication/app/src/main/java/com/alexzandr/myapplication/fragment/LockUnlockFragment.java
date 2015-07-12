@@ -1,7 +1,9 @@
 package com.alexzandr.myapplication.fragment;
 
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.alexzandr.myapplication.service.SqlQueryIntentService;
 import com.alexzandr.myapplication.sql.DataBaseTask;
 import com.alexzandr.myapplication.adapter.LockUnlockAdapter;
 import com.alexzandr.myapplication.R;
@@ -35,6 +38,10 @@ public class LockUnlockFragment extends WarehouseFragment {
     private GridView mGridViewLevel;
     private GridView mGridViewSection;
 
+    public SectionHandler mItemHandler;
+    public boolean mIsZoneChanged;
+    public int mZoneLevelIndex;
+
     private final static String KEY_COUNT_OF_ZONES = "zoneCount";
     private final static String KEY_COUNT_OF_LEVELS = "levelCount";
     private final static int ID_FOR_NOTIFICATION = 1;
@@ -47,6 +54,8 @@ public class LockUnlockFragment extends WarehouseFragment {
         } else {
             mStartOrientationIsPort = false;
         }
+
+        mReceiverSuccess = new LockBroadcastReceiver();
     }
 
     @Override
@@ -56,20 +65,31 @@ public class LockUnlockFragment extends WarehouseFragment {
         mGridViewLevel = (GridView) view.findViewById(R.id.lockUnlock_test_firstRow);
         mGridViewSection = (GridView) view.findViewById(R.id.lockUnlock_test_sections);
 
-        LockTask task = new LockTask();
-        task.execute(DataBaseTask.GET_ALL_DATA);
+//        LockTask task = new LockTask();
+//        task.execute(DataBaseTask.GET_ALL_DATA);
 
         if (isPortOrientation()) {
             mActivity.setTitle(R.string.title_activity_lock_unlock);
         }
+
         return view;
     }
 
     @Override
+    public void onStart() {
+        System.out.println("START LockUnlockFragment");
+        super.onStart();
+
+    }
+
+    @Override
     public void onResume() {
+        System.out.println("RESUME LockUnlockFragment");
         super.onResume();
         onAdapterChanged();
+        refresh();
     }
+
 
     @Override
     public void onStop() {
@@ -173,15 +193,33 @@ public class LockUnlockFragment extends WarehouseFragment {
     }
 
     public void refresh(){
-        LockTask task = new LockTask();
-        task.execute(DataBaseTask.GET_ALL_DATA);
+//        LockTask task = new LockTask();
+//        task.execute(DataBaseTask.GET_ALL_DATA);
+        System.out.println("REFRESH_REFRESH_REFRESH_REFRESH");
+//        SqlQueryIntentService.executeQuery(
+//                getActivity(),
+//                SqlQueryIntentService.GET_ALL_DATA
+//        );
+        Intent intent = new Intent(getActivity(), SqlQueryIntentService.class);
+        intent.putExtra(SqlQueryIntentService.EXTRA_QUERY_TYPE, SqlQueryIntentService.GET_ALL_DATA);
+        getActivity().startService(intent);
+        mProgressDialog.show();
     }
 
     private void sectionClick(SectionHandler handler){
-        LockTask task = new LockTask(handler);
-        task.procedureParamZone = handler.getZone();
-        task.procedureParamLevel = handler.getLevel();
-        task.execute(DataBaseTask.SECTION_CHANGE);
+        mItemHandler = handler;
+//        LockTask task = new LockTask(handler);
+//        task.procedureParamZone = handler.getZone();
+//        task.procedureParamLevel = handler.getLevel();
+//        task.execute(DataBaseTask.SECTION_CHANGE);
+
+        SqlQueryIntentService.executeQuery(
+                mActivity,
+                SqlQueryIntentService.SECTION_CHANGE,
+                handler.getZone(),
+                handler.getLevel()
+        );
+        mProgressDialog.show();
     }
 
     private void sectionChange(SectionHandler handler, HashMap<String, Integer> map){
@@ -192,10 +230,20 @@ public class LockUnlockFragment extends WarehouseFragment {
     }
 
     private void zoneClick(ZoneHandler handler, int position){
-        LockTask task = new LockTask(handler, position);
-        task.procedureParamType = handler.getType();
-        task.procedureParamValue = handler.getZone();
-        task.execute(DataBaseTask.ZONE_LEVEL_CHANGE);
+        mIsZoneChanged = true;
+        mZoneLevelIndex = position;
+//        LockTask task = new LockTask(handler, position);
+//        task.procedureParamType = handler.getType();
+//        task.procedureParamValue = handler.getZone();
+//        task.execute(DataBaseTask.ZONE_LEVEL_CHANGE);
+
+        SqlQueryIntentService.executeQuery(
+                mActivity,
+                SqlQueryIntentService.ZONE_LEVEL_CHANGE,
+                handler.getType(),
+                handler.getZone()
+        );
+        mProgressDialog.show();
     }
 
     private void zoneChange(int itemIndex, HashMap<String, Integer> map){
@@ -214,10 +262,20 @@ public class LockUnlockFragment extends WarehouseFragment {
     }
 
     private void levelClick(int level){
-        LockTask task = new LockTask(level);
-        task.procedureParamType = AdapterItemHandler.LEVEL_BUTTON;
-        task.procedureParamValue = level;
-        task.execute(DataBaseTask.ZONE_LEVEL_CHANGE);
+        mIsZoneChanged = false;
+        mZoneLevelIndex = level;
+//        LockTask task = new LockTask(level);
+//        task.procedureParamType = AdapterItemHandler.LEVEL_BUTTON;
+//        task.procedureParamValue = level;
+//        task.execute(DataBaseTask.ZONE_LEVEL_CHANGE);
+
+        SqlQueryIntentService.executeQuery(
+                mActivity,
+                SqlQueryIntentService.ZONE_LEVEL_CHANGE,
+                AdapterItemHandler.LEVEL_BUTTON,
+                level
+        );
+        mProgressDialog.show();
     }
 
     private void levelChange(int level, HashMap<String, Integer> map){
@@ -263,6 +321,45 @@ public class LockUnlockFragment extends WarehouseFragment {
                 (NotificationManager) mActivity.getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(ID_FOR_NOTIFICATION /* ID of notification */, notificationBuilder.build());
+    }
+
+    class LockBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                System.out.println("CATCH SUCCESS");
+                mProgressDialog.dismiss();
+
+                int queryType = intent.getIntExtra(SqlQueryIntentService.EXTRA_QUERY_TYPE,
+                        SqlQueryIntentService.GET_ALL_DATA);
+
+                HashMap<String, Integer> resultMap =
+                        (HashMap<String, Integer>) intent.getSerializableExtra(SqlQueryIntentService.EXTRA_RESULT_MAP);
+
+                if (mItemHandler != null)
+                    System.out.println("LEVEL IS - " + mItemHandler.getLevel());
+
+                switch (queryType) {
+                    case SqlQueryIntentService.GET_ALL_DATA:
+                        createTable(resultMap);
+                        break;
+                    case SqlQueryIntentService.SECTION_CHANGE:
+                        sectionChange(mItemHandler, resultMap);
+                        break;
+                    case SqlQueryIntentService.ZONE_LEVEL_CHANGE:
+                        if (mIsZoneChanged) {
+                            zoneChange(mZoneLevelIndex, resultMap);
+                        } else {
+                            levelChange(mZoneLevelIndex, resultMap);
+                        }
+                    default:
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println("ERROR_ERROR_ERROR_ERROR_ERROR_ERROR_ERROR");
+                e.printStackTrace();
+            }
+        }
     }
 
     private class LockTask extends WarehouseTask {

@@ -108,6 +108,9 @@ public class SqlQueryIntentService extends IntentService {
                 .putExtra(EXTRA_QUERY_TYPE, queryType);
         System.out.println("SEND RESULT MAP");
 
+        if (result == null)
+            System.out.println("RESULT MAP IS NULL");
+
         LocalBroadcastManager.getInstance(this).sendBroadcast(resultIntent);
     }
 
