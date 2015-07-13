@@ -25,6 +25,8 @@ import com.alexzandr.myapplication.handler.ZoneHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import de.greenrobot.event.EventBus;
+
 public class LockUnlockFragment extends WarehouseFragment {
 
     private int mLevelsCount;
@@ -37,6 +39,7 @@ public class LockUnlockFragment extends WarehouseFragment {
     private ArrayList<AdapterItemHandler> mLevels;
     private GridView mGridViewLevel;
     private GridView mGridViewSection;
+    private EventBus mBus = EventBus.getDefault();
 
     public SectionHandler mItemHandler;
     public boolean mIsZoneChanged;
@@ -56,6 +59,7 @@ public class LockUnlockFragment extends WarehouseFragment {
         }
 
         mReceiverSuccess = new LockBroadcastReceiver();
+        mBus.register(this);
     }
 
     @Override
@@ -65,8 +69,8 @@ public class LockUnlockFragment extends WarehouseFragment {
         mGridViewLevel = (GridView) view.findViewById(R.id.lockUnlock_test_firstRow);
         mGridViewSection = (GridView) view.findViewById(R.id.lockUnlock_test_sections);
 
-//        LockTask task = new LockTask();
-//        task.execute(DataBaseTask.GET_ALL_DATA);
+        LockTask task = new LockTask();
+        task.execute(DataBaseTask.GET_ALL_DATA);
 
         if (isPortOrientation()) {
             mActivity.setTitle(R.string.title_activity_lock_unlock);
@@ -87,7 +91,7 @@ public class LockUnlockFragment extends WarehouseFragment {
         System.out.println("RESUME LockUnlockFragment");
         super.onResume();
         onAdapterChanged();
-        refresh();
+//        refresh();
     }
 
 
@@ -102,6 +106,7 @@ public class LockUnlockFragment extends WarehouseFragment {
             showNotification(sNumberOfChanges);
             sNumberOfChanges = 0;
         }
+        mBus.unregister(this);
     }
 
     void createTable(HashMap<String, Integer> map){
@@ -196,13 +201,10 @@ public class LockUnlockFragment extends WarehouseFragment {
 //        LockTask task = new LockTask();
 //        task.execute(DataBaseTask.GET_ALL_DATA);
         System.out.println("REFRESH_REFRESH_REFRESH_REFRESH");
-//        SqlQueryIntentService.executeQuery(
-//                getActivity(),
-//                SqlQueryIntentService.GET_ALL_DATA
-//        );
-        Intent intent = new Intent(getActivity(), SqlQueryIntentService.class);
-        intent.putExtra(SqlQueryIntentService.EXTRA_QUERY_TYPE, SqlQueryIntentService.GET_ALL_DATA);
-        getActivity().startService(intent);
+        SqlQueryIntentService.executeQuery(
+                getActivity(),
+                SqlQueryIntentService.GET_ALL_DATA
+        );
         mProgressDialog.show();
     }
 
@@ -323,12 +325,39 @@ public class LockUnlockFragment extends WarehouseFragment {
         notificationManager.notify(ID_FOR_NOTIFICATION /* ID of notification */, notificationBuilder.build());
     }
 
-    class LockBroadcastReceiver extends BroadcastReceiver {
+    public void onEvent(SqlChargingEvent event){
+        System.out.println("EVENT BUS IN WORK");
+        int type = event.getType();
+        HashMap<String, Integer> map = event.getMap();
+
+        switch (type) {
+            case SqlQueryIntentService.GET_ALL_DATA:
+                createTable(map);
+                break;
+            case SqlQueryIntentService.SECTION_CHANGE:
+                sectionChange(mItemHandler, map);
+                break;
+            case SqlQueryIntentService.ZONE_LEVEL_CHANGE:
+                if (mIsZoneChanged) {
+                    zoneChange(mZoneLevelIndex, map);
+                } else {
+                    levelChange(mZoneLevelIndex, map);
+                }
+            default:
+                break;
+        }
+
+    }
+
+    public class LockBroadcastReceiver extends BroadcastReceiver {
+        private EventBus eventBus = EventBus.getDefault();
+
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
                 System.out.println("CATCH SUCCESS");
                 mProgressDialog.dismiss();
+                SqlChargingEvent event = null;
 
                 int queryType = intent.getIntExtra(SqlQueryIntentService.EXTRA_QUERY_TYPE,
                         SqlQueryIntentService.GET_ALL_DATA);
@@ -339,26 +368,30 @@ public class LockUnlockFragment extends WarehouseFragment {
                 if (mItemHandler != null)
                     System.out.println("LEVEL IS - " + mItemHandler.getLevel());
 
-                switch (queryType) {
-                    case SqlQueryIntentService.GET_ALL_DATA:
-                        createTable(resultMap);
-                        break;
-                    case SqlQueryIntentService.SECTION_CHANGE:
-                        sectionChange(mItemHandler, resultMap);
-                        break;
-                    case SqlQueryIntentService.ZONE_LEVEL_CHANGE:
-                        if (mIsZoneChanged) {
-                            zoneChange(mZoneLevelIndex, resultMap);
-                        } else {
-                            levelChange(mZoneLevelIndex, resultMap);
-                        }
-                    default:
-                        break;
-                }
+                event = new SqlChargingEvent(resultMap, queryType);
+                eventBus.post(event);
             } catch (Exception e) {
                 System.out.println("ERROR_ERROR_ERROR_ERROR_ERROR_ERROR_ERROR");
                 e.printStackTrace();
             }
+        }
+    }
+
+    class SqlChargingEvent {
+        private HashMap<String, Integer> mMap;
+        private int mType;
+
+        public SqlChargingEvent(HashMap<String, Integer> map, int type){
+            mMap = map;
+            mType = type;
+        }
+
+        public HashMap<String, Integer> getMap(){
+            return mMap;
+        }
+
+        public int getType() {
+            return mType;
         }
     }
 
